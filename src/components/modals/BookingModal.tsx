@@ -251,7 +251,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                           {/* Child Name */}
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Child's Name *
+                              Child&apos;s Name *
                             </label>
                             <Controller
                               name="childName"
@@ -279,7 +279,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                           {/* Child Age */}
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Child's Age *
+                              Child&apos;s Age *
                             </label>
                             <Controller
                               name="childAge"

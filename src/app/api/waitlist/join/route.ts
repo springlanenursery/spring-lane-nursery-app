@@ -796,11 +796,11 @@ export async function POST(request: NextRequest) {
       childrenDetails: body.childrenDetails?.trim() || "",
     };
 
-    // sendWaitlistEmail(waitlistRequest, position, estimatedWaitTime).catch(
-    //   (error) => {
-    //     console.error("Failed to send waitlist email:", error);
-    //   }
-    // );
+    sendWaitlistEmail(waitlistRequest, position, estimatedWaitTime).catch(
+      (error) => {
+        console.error("Failed to send waitlist email:", error);
+      }
+    );
 
     // Log successful addition
     console.log(

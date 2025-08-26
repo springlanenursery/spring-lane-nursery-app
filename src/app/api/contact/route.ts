@@ -726,9 +726,9 @@ export async function POST(request: NextRequest) {
       message: body.message.trim(),
     };
 
-    // sendContactInquiryEmail(contactRequest, referenceNumber).catch((error) => {
-    //   console.error("Failed to send contact inquiry email:", error);
-    // });
+    sendContactInquiryEmail(contactRequest, referenceNumber).catch((error) => {
+      console.error("Failed to send contact inquiry email:", error);
+    });
 
     // Log successful submission
     console.log(`New contact inquiry: ${result.insertedId} - ${body.fullName}`);

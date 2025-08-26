@@ -353,7 +353,7 @@ const Fees: React.FC = () => {
         </div>
 
         <p className="text-[#252650] leading-relaxed mt-8">
-          Funded hours can be used flexibly across your child's weekly schedule. Additional hours beyond the funded entitlement will be charged at the standard hourly rate.
+          Funded hours can be used flexibly across your child&apos;s weekly schedule. Additional hours beyond the funded entitlement will be charged at the standard hourly rate.
         </p>
       </div>
 
@@ -472,7 +472,7 @@ const Fees: React.FC = () => {
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">Security Deposits</h3>
               <p className="text-3xl font-bold text-[#2AA631]">£250.00</p>
-              <p className="text-sm text-[#252650]">Refundable with 4 weeks' notice</p>
+              <p className="text-sm text-[#252650]">Refundable with 4 weeks&apos; notice</p>
             </div>
           </div>
         </div>
@@ -501,7 +501,7 @@ const Fees: React.FC = () => {
           
           <div className="flex items-start gap-3">
             <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
-            <p className="text-[#252650]">All fees are reviewed annually and subject to change with 4 weeks' notice.</p>
+            <p className="text-[#252650]">All fees are reviewed annually and subject to change with 4 weeks&apos; notice.</p>
           </div>
           
           <div className="flex items-start gap-3">

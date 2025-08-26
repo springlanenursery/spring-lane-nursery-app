@@ -389,7 +389,7 @@ const CTA: React.FC = () => {
                 <div className="p-8 md:p-12 lg:p-16">
                   {/* Heading */}
                   <h2 className="text-base md:text-2xl font-bold text-white mb-6 md:mb-8 leading-tight">
-                    We would love to hear from you! Whether you're ready to book
+                    We would love to hear from you! Whether you&apos;re ready to book
                     a visit or just have a few questions, our friendly team is
                     here to help.
                   </h2>

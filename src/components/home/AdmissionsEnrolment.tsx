@@ -53,13 +53,13 @@ const AdmissionsEnrolment = () => {
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-[#52525B] rounded-full mt-2 flex-shrink-0"></div>
                 <span className="text-[#52525B] text-base">
-                  Your child's details
+                  Your child&apos;s details
                 </span>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-[#52525B] rounded-full mt-2 flex-shrink-0"></div>
                 <span className="text-[#52525B] text-base">
-                  An online account via the government's
+                  An online account via the government&apos;s
                 </span>
               </div>
             </div>

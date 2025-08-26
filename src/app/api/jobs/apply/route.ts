@@ -23,7 +23,7 @@ async function sendJobApplicationEmail(
 ) {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
+  // const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
   const hrEmail =
     process.env.HR_EMAIL || process.env.ADMIN_EMAIL || "hr@yourdomain.com";
 

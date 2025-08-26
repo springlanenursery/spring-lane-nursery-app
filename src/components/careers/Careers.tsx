@@ -81,7 +81,7 @@ const CareersPage: React.FC = () => {
               {/* Header */}
               <div className="space-y-6">
                 <h2 className="text-3xl lg:text-4xl font-bold text-[#2C97A9]">
-                  We're hiring!
+                  We&apos;re hiring!
                 </h2>
                 <p className="text-lg text-[#252650] leading-relaxed max-w-lg">
                   Our philosophy is simple — hire a team of diverse, passionate

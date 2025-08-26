@@ -405,7 +405,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-3">
                   Do you have any criminal convictions, cautions, reprimands, or
-                  warnings that are not 'protected' under the Rehabilitation of
+                  warnings that are not &apos;protected&apos; under the Rehabilitation of
                   Offenders Act 1974? If yes, please provide details:
                 </label>
                 <div className="flex space-x-4 mb-4">
