@@ -16,6 +16,58 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
+// Validation schema
+interface WaitlistRequest {
+  fullName: string;
+  phoneNumber: string;
+  childrenDetails: string;
+}
+
+// Type for unvalidated waitlist data
+interface UnvalidatedWaitlistData {
+  fullName?: unknown;
+  phoneNumber?: unknown;
+  childrenDetails?: unknown;
+}
+
+function validateWaitlistRequest(data: UnvalidatedWaitlistData): {
+  isValid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (
+    !data.fullName ||
+    typeof data.fullName !== "string" ||
+    data.fullName.trim().length < 2
+  ) {
+    errors.push("Full name is required and must be at least 2 characters long");
+  }
+
+  if (
+    !data.phoneNumber ||
+    typeof data.phoneNumber !== "string" ||
+    data.phoneNumber.trim().length < 10
+  ) {
+    errors.push(
+      "Phone number is required and must be at least 10 characters long"
+    );
+  }
+
+  // Phone number format validation (basic)
+  if (data.phoneNumber && typeof data.phoneNumber === "string") {
+    const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
+    if (!phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))) {
+      errors.push("Please enter a valid phone number");
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
 // Email service using Postmark
 async function sendWaitlistEmail(
   data: WaitlistRequest,
@@ -674,52 +726,6 @@ The Nursery Team
     userHtml,
     adminText,
     userText,
-  };
-}
-
-// Validation schema
-interface WaitlistRequest {
-  fullName: string;
-  phoneNumber: string;
-  childrenDetails: string;
-}
-
-function validateWaitlistRequest(data: any): {
-  isValid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-
-  if (
-    !data.fullName ||
-    typeof data.fullName !== "string" ||
-    data.fullName.trim().length < 2
-  ) {
-    errors.push("Full name is required and must be at least 2 characters long");
-  }
-
-  if (
-    !data.phoneNumber ||
-    typeof data.phoneNumber !== "string" ||
-    data.phoneNumber.trim().length < 10
-  ) {
-    errors.push(
-      "Phone number is required and must be at least 10 characters long"
-    );
-  }
-
-  // Phone number format validation (basic)
-  const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
-  if (
-    data.phoneNumber &&
-    !phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))
-  ) {
-    errors.push("Please enter a valid phone number");
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors,
   };
 }
 

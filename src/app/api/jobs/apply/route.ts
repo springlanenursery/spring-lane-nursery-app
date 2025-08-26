@@ -872,7 +872,12 @@ interface JobApplicationRequest {
   date: string;
 }
 
-function validateJobApplication(data: any): {
+// Define a more specific type for the validation data
+interface ValidationData extends Partial<JobApplicationRequest> {
+  [key: string]: unknown; // Allow additional properties for flexibility
+}
+
+function validateJobApplication(data: ValidationData): {
   isValid: boolean;
   errors: string[];
 } {
@@ -902,7 +907,7 @@ function validateJobApplication(data: any): {
   requiredFields.forEach((field) => {
     if (
       !data[field] ||
-      (typeof data[field] === "string" && data[field].trim().length === 0)
+      (typeof data[field] === "string" && (data[field] as string).trim().length === 0)
     ) {
       const fieldLabel = field
         .replace(/([A-Z])/g, " $1")
@@ -914,6 +919,7 @@ function validateJobApplication(data: any): {
   // Specific field validations
   if (
     data.fullName &&
+    typeof data.fullName === "string" &&
     (data.fullName.trim().length < 2 || data.fullName.trim().length > 100)
   ) {
     errors.push("Full name must be between 2 and 100 characters");
@@ -921,23 +927,13 @@ function validateJobApplication(data: any): {
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (data.emailAddress && !emailRegex.test(data.emailAddress)) {
+  if (data.emailAddress && typeof data.emailAddress === "string" && !emailRegex.test(data.emailAddress)) {
     errors.push("Please enter a valid email address");
   }
 
-  // Phone number validation
-  // const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
-  // if (
-  //   data.phoneNumber &&
-  //   !phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))
-  // ) {
-  //   errors.push("Please enter a valid phone number");
-  // }
-  const phoneRegex = /^[\+]?[\d\s\-\(\)]{7,20}$/;
-
-  if (data.phoneNumber && data.phoneNumber.trim()) {
+  // Phone number validation - removed unused phoneRegex variable
+  if (data.phoneNumber && typeof data.phoneNumber === "string" && data.phoneNumber.trim()) {
     const cleanedPhone = data.phoneNumber.replace(/\s|-|\(|\)/g, "");
-
     const digitRegex = /^[\+]?[\d]{7,15}$/;
 
     if (!digitRegex.test(cleanedPhone)) {
@@ -948,7 +944,7 @@ function validateJobApplication(data: any): {
   }
 
   // Date of birth validation (must be at least 16 years old)
-  if (data.dateOfBirth) {
+  if (data.dateOfBirth && typeof data.dateOfBirth === "string") {
     const birthDate = new Date(data.dateOfBirth);
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
@@ -972,6 +968,7 @@ function validateJobApplication(data: any): {
     /^[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z]\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]$/i;
   if (
     data.nationalInsuranceNumber &&
+    typeof data.nationalInsuranceNumber === "string" &&
     !niRegex.test(data.nationalInsuranceNumber.replace(/\s/g, ""))
   ) {
     errors.push(
@@ -982,6 +979,7 @@ function validateJobApplication(data: any): {
   // Right to work validation
   if (
     data.rightToWorkUK &&
+    typeof data.rightToWorkUK === "string" &&
     !["yes", "no"].includes(data.rightToWorkUK.toLowerCase())
   ) {
     errors.push("Please specify if you have the right to work in the UK");
@@ -990,6 +988,7 @@ function validateJobApplication(data: any): {
   // DBS certificate validation
   if (
     data.currentDBSCertificate &&
+    typeof data.currentDBSCertificate === "string" &&
     !["yes", "no"].includes(data.currentDBSCertificate.toLowerCase())
   ) {
     errors.push("Please specify if you have a current DBS certificate");
@@ -998,25 +997,26 @@ function validateJobApplication(data: any): {
   // Criminal convictions validation
   if (
     data.criminalConvictions &&
+    typeof data.criminalConvictions === "string" &&
     !["yes", "no"].includes(data.criminalConvictions.toLowerCase())
   ) {
     errors.push("Please specify if you have any criminal convictions");
   }
 
   // Text length validations
-  if (data.qualifications && data.qualifications.length > 2000) {
+  if (data.qualifications && typeof data.qualifications === "string" && data.qualifications.length > 2000) {
     errors.push("Qualifications section must be less than 2000 characters");
   }
 
-  if (data.employmentHistory && data.employmentHistory.length > 3000) {
+  if (data.employmentHistory && typeof data.employmentHistory === "string" && data.employmentHistory.length > 3000) {
     errors.push("Employment history must be less than 3000 characters");
   }
 
-  if (data.references && data.references.length > 2000) {
+  if (data.references && typeof data.references === "string" && data.references.length > 2000) {
     errors.push("References section must be less than 2000 characters");
   }
 
-  if (data.whyWorkHere && data.whyWorkHere.length > 1500) {
+  if (data.whyWorkHere && typeof data.whyWorkHere === "string" && data.whyWorkHere.length > 1500) {
     errors.push("Why work here section must be less than 1500 characters");
   }
 
@@ -1024,18 +1024,6 @@ function validateJobApplication(data: any): {
   if (data.declaration !== true) {
     errors.push("You must confirm the declaration to submit your application");
   }
-
-  // Application date validation
-  // if (data.date) {
-  //   const appDate = new Date(data.date);
-  //   const today = new Date();
-  //   const diffTime = Math.abs(today.getTime() - appDate.getTime());
-  //   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  //   if (diffDays > 7) {
-  //     errors.push("Application date must be within the last 7 days");
-  //   }
-  // }
 
   return {
     isValid: errors.length === 0,

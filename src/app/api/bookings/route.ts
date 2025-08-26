@@ -16,6 +16,133 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
+// Validation schema
+interface BookingRequest {
+  parentName: string;
+  childName: string;
+  childAge: number;
+  email: string;
+  phone: string;
+  visitDate: string;
+  visitTime: string;
+  message?: string;
+}
+
+// Type for unvalidated request data
+interface UnvalidatedBookingData {
+  parentName?: unknown;
+  childName?: unknown;
+  childAge?: unknown;
+  email?: unknown;
+  phone?: unknown;
+  visitDate?: unknown;
+  visitTime?: unknown;
+  message?: unknown;
+}
+
+function validateBookingRequest(data: UnvalidatedBookingData): {
+  isValid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  // Parent name validation
+  if (
+    !data.parentName ||
+    typeof data.parentName !== "string" ||
+    data.parentName.trim().length < 2
+  ) {
+    errors.push(
+      "Parent name is required and must be at least 2 characters long"
+    );
+  }
+
+  // Child name validation
+  if (
+    !data.childName ||
+    typeof data.childName !== "string" ||
+    data.childName.trim().length < 2
+  ) {
+    errors.push(
+      "Child name is required and must be at least 2 characters long"
+    );
+  }
+
+  // Child age validation
+  if (
+    data.childAge === undefined ||
+    typeof data.childAge !== "number" ||
+    data.childAge < 0 ||
+    data.childAge > 12
+  ) {
+    errors.push("Child age must be a number between 0 and 12");
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (
+    !data.email ||
+    typeof data.email !== "string" ||
+    !emailRegex.test(data.email.trim())
+  ) {
+    errors.push("Please enter a valid email address");
+  }
+
+  // Phone validation
+  if (
+    !data.phone ||
+    typeof data.phone !== "string" ||
+    data.phone.trim().length < 10
+  ) {
+    errors.push(
+      "Phone number is required and must be at least 10 characters long"
+    );
+  }
+
+  // Phone number format validation (basic)
+  if (data.phone && typeof data.phone === "string") {
+    const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
+    if (!phoneRegex.test(data.phone.replace(/\s|-|\(|\)/g, ""))) {
+      errors.push("Please enter a valid phone number");
+    }
+  }
+
+  // Visit date validation
+  if (!data.visitDate) {
+    errors.push("Visit date is required");
+  } else if (typeof data.visitDate === "string") {
+    const visitDate = new Date(data.visitDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (isNaN(visitDate.getTime())) {
+      errors.push("Please enter a valid visit date");
+    } else if (visitDate < today) {
+      errors.push("Visit date cannot be in the past");
+    } else if (visitDate.getDay() === 0 || visitDate.getDay() === 6) {
+      errors.push("Visits are not available on weekends");
+    }
+  }
+
+  // Visit time validation
+  const validTimes = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+  ];
+  if (!data.visitTime || !validTimes.includes(data.visitTime as string)) {
+    errors.push("Please select a valid visit time");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
 // Email service using Postmark
 async function sendBookingConfirmationEmail(data: BookingRequest) {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
@@ -523,119 +650,6 @@ Where small steps lead to big discoveries!
     userHtml,
     adminText,
     userText,
-  };
-}
-
-// Validation schema
-interface BookingRequest {
-  parentName: string;
-  childName: string;
-  childAge: number;
-  email: string;
-  phone: string;
-  visitDate: string;
-  visitTime: string;
-  message?: string;
-}
-
-function validateBookingRequest(data: any): {
-  isValid: boolean;
-  errors: string[];
-} {
-  const errors: string[] = [];
-
-  // Parent name validation
-  if (
-    !data.parentName ||
-    typeof data.parentName !== "string" ||
-    data.parentName.trim().length < 2
-  ) {
-    errors.push(
-      "Parent name is required and must be at least 2 characters long"
-    );
-  }
-
-  // Child name validation
-  if (
-    !data.childName ||
-    typeof data.childName !== "string" ||
-    data.childName.trim().length < 2
-  ) {
-    errors.push(
-      "Child name is required and must be at least 2 characters long"
-    );
-  }
-
-  // Child age validation
-  if (
-    data.childAge === undefined ||
-    typeof data.childAge !== "number" ||
-    data.childAge < 0 ||
-    data.childAge > 12
-  ) {
-    errors.push("Child age must be a number between 0 and 12");
-  }
-
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (
-    !data.email ||
-    typeof data.email !== "string" ||
-    !emailRegex.test(data.email.trim())
-  ) {
-    errors.push("Please enter a valid email address");
-  }
-
-  // Phone validation
-  if (
-    !data.phone ||
-    typeof data.phone !== "string" ||
-    data.phone.trim().length < 10
-  ) {
-    errors.push(
-      "Phone number is required and must be at least 10 characters long"
-    );
-  }
-
-  // Phone number format validation (basic)
-  const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
-  if (data.phone && !phoneRegex.test(data.phone.replace(/\s|-|\(|\)/g, ""))) {
-    errors.push("Please enter a valid phone number");
-  }
-
-  // Visit date validation
-  if (!data.visitDate) {
-    errors.push("Visit date is required");
-  } else {
-    const visitDate = new Date(data.visitDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (isNaN(visitDate.getTime())) {
-      errors.push("Please enter a valid visit date");
-    } else if (visitDate < today) {
-      errors.push("Visit date cannot be in the past");
-    } else if (visitDate.getDay() === 0 || visitDate.getDay() === 6) {
-      errors.push("Visits are not available on weekends");
-    }
-  }
-
-  // Visit time validation
-  const validTimes = [
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "2:00 PM",
-    "3:00 PM",
-    "4:00 PM",
-  ];
-  if (!data.visitTime || !validTimes.includes(data.visitTime)) {
-    errors.push("Please select a valid visit time");
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors,
   };
 }
 
