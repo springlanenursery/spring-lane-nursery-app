@@ -38,14 +38,15 @@ async function sendAvailabilityRequestEmail(data: AvailabilityRequest) {
     TextBody: emailTemplate.adminText,
   };
 
-  // Send confirmation email to user
-  const userEmailPayload = {
-    From: fromEmail,
-    To: data.fullName.includes("@") ? data.fullName : fromEmail, // Fallback if no email provided
-    Subject: "Availability Request Received - Thank You!",
-    HtmlBody: emailTemplate.userHtml,
-    TextBody: emailTemplate.userText,
-  };
+  // Note: User email functionality commented out as email field is not collected
+  // To enable user confirmation emails, add email field to the form and uncomment below:
+  // const userEmailPayload = {
+  //   From: fromEmail,
+  //   To: data.email, // Add email field to AvailabilityRequest interface
+  //   Subject: "Availability Request Received - Thank You!",
+  //   HtmlBody: emailTemplate.userHtml,
+  //   TextBody: emailTemplate.userText,
+  // };
 
   try {
     // Send admin notification
@@ -59,8 +60,6 @@ async function sendAvailabilityRequestEmail(data: AvailabilityRequest) {
       body: JSON.stringify(adminEmailPayload),
     });
 
-    // Note: Only send user email if we have a valid email address
-    // You might want to add email field to your form
     console.log("Admin notification email sent successfully");
   } catch (error) {
     console.error("Error sending email:", error);
@@ -409,7 +408,14 @@ interface AvailabilityRequest {
   childrenDetails: string;
 }
 
-function validateAvailabilityRequest(data: any): {
+// Define a proper type for the validation input
+interface ValidationInput {
+  fullName?: unknown;
+  phoneNumber?: unknown;
+  childrenDetails?: unknown;
+}
+
+function validateAvailabilityRequest(data: ValidationInput): {
   isValid: boolean;
   errors: string[];
 } {
@@ -437,6 +443,7 @@ function validateAvailabilityRequest(data: any): {
   const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
   if (
     data.phoneNumber &&
+    typeof data.phoneNumber === "string" &&
     !phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))
   ) {
     errors.push("Please enter a valid phone number");

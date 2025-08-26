@@ -261,7 +261,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
             {/* Header */}
             <div className="space-y-4">
               <h2 className="text-3xl lg:text-4xl font-bold text-[#2C97A9]">
-                We're hiring!
+                We&apos;re hiring!
               </h2>
               <p className="text-lg text-[#252650] leading-relaxed">
                 {job.description}
