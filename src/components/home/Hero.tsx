@@ -76,36 +76,6 @@ const Hero: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Mobile-specific decorative wavy border at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 md:hidden">
-          <svg
-            className="w-full h-8"
-            viewBox="0 0 400 40"
-            fill="none"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 20C50 40 150 0 200 20C250 40 350 0 400 20V40H0V20Z"
-              fill="white"
-            />
-          </svg>
-        </div>
-
-        {/* Desktop decorative wavy border */}
-        <div className="hidden md:block absolute bottom-0 left-0 right-0 z-20">
-          <svg
-            className="w-full h-16"
-            viewBox="0 0 1440 80"
-            fill="none"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0 40C180 80 360 0 540 40C720 80 900 0 1080 40C1260 80 1380 60 1440 40V80H0V40Z"
-              fill="white"
-            />
-          </svg>
-        </div>
       </section>
 
       {/* Booking Modal */}

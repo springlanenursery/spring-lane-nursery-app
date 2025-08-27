@@ -3,7 +3,6 @@ import AdmissionsEnrolment from "@/components/home/AdmissionsEnrolment";
 import AvailabilityWaitingList from "@/components/home/AvailabilityWaitingList";
 import BookClubs from "@/components/home/BookClubs";
 import CourseCurriculum from "@/components/home/CourseCurriculum";
-import EnquireNow from "@/components/home/EnquireNow";
 import ExtraCurriculum from "@/components/home/ExtraCurriculum";
 import FAQ from "@/components/home/Faqs";
 import Footer from "@/components/common/Footer";

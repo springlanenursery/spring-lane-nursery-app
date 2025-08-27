@@ -1,8 +1,17 @@
 // components/OurLocation.js
+"use client"
 import React from "react";
 import Image from "next/image";
 
 const OurLocation = () => {
+  const address = "23 Spring Lane, Croydon SE25 4SP, UK";
+  const encodedAddress = encodeURIComponent(address);
+
+  const handleGetDirections = () => {
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+    window.open(mapsUrl, '_blank');
+  };
+
   return (
     <section className="py-12 md:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,7 +28,10 @@ const OurLocation = () => {
             </p>
 
             {/* CTA Button */}
-            <button className="bg-[#2C97A9] cursor-pointer hover:bg-[#247a89] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 inline-flex items-center gap-2">
+            <button 
+              onClick={handleGetDirections}
+              className="bg-[#2C97A9] cursor-pointer hover:bg-[#247a89] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 inline-flex items-center gap-2"
+            >
               Get Direction
               <Image
                 src="/assets/export.svg"
@@ -35,12 +47,15 @@ const OurLocation = () => {
             <div className="relative">
               {/* Map Background with Orange Border */}
               <div className=" overflow-hidden border-t-3 rounded-sm border-b-3 border-[#F9AE15]  h-[300px] md:h-[350px] relative">
-                {/* Map Image */}
-                <Image
-                  src="/assets/map.svg"
-                  alt="Location map"
-                  fill
-                  className="object-cover"
+                {/* Interactive Map */}
+                <iframe
+                  src={`https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Location map"
                 />
               </div>
 

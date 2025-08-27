@@ -8,8 +8,10 @@ const Tour: React.FC = () => {
 
   const handlePlayVideo = () => {
     setIsVideoPlaying(true);
-    // You can implement actual video playback logic here
-    console.log("Playing video...");
+  };
+
+  const handleCloseTour = () => {
+    setIsVideoPlaying(false);
   };
 
   return (
@@ -17,7 +19,7 @@ const Tour: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title and Description */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-[40px]  font-[900] text-[#252650] mb-6 lg:mb-8">
+          <h2 className="text-3xl lg:text-[40px] font-[900] text-[#252650] mb-6 lg:mb-8">
             Take a tour of Spring Lane
           </h2>
           <p className="text-base lg:text-lg xl:text-xl leading-relaxed text-[#515151] max-w-3xl mx-auto">
@@ -27,22 +29,24 @@ const Tour: React.FC = () => {
           </p>
         </div>
 
-        {/* Video Player */}
+        {/* Virtual Tour Player */}
         <div className="relative mb-12 lg:mb-16">
           <div
-            className="relative w-full aspect-video rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl cursor-pointer group"
+            className="relative w-full aspect-video rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl"
             style={{ backgroundColor: "#F9AE15" }}
-            onClick={handlePlayVideo}
           >
             {!isVideoPlaying ? (
               <>
-                {/* Video Thumbnail/Placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                {/* Tour Thumbnail/Placeholder */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer group"
+                  onClick={handlePlayVideo}
+                >
                   {/* Play Button */}
-                  <div className="w-16 h-16 lg:w-20 lg:h-20  flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <Image
                       src="/assets/play.svg"
-                      alt=""
+                      alt="Start Virtual Tour"
                       width={56}
                       height={56}
                       className="w-24 h-24 xl:w-30 xl:h-30 opacity-80"
@@ -51,15 +55,38 @@ const Tour: React.FC = () => {
                 </div>
               </>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-white text-lg lg:text-xl font-medium">
-                {/* Replace this with actual video component */}
-                <div className="text-center">
-                  <p>Video Player would be embedded here</p>
-                  <p className="text-sm mt-2">
-                    Replace with your video component
-                  </p>
-                </div>
-              </div>
+              <>
+                {/* Matterport Virtual Tour Iframe */}
+                <iframe
+                  src="https://my.matterport.com/show/?m=ybxkgEgM6J2"
+                  className="absolute inset-0 w-full h-full"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="xr-spatial-tracking"
+                  title="Spring Lane Nursery Virtual Tour"
+                />
+
+                {/* Close Button */}
+                <button
+                  onClick={handleCloseTour}
+                  className="absolute top-4 right-4 z-10 bg-black bg-opacity-50 hover:bg-opacity-70 text-white rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200"
+                  aria-label="Close virtual tour"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </>
             )}
           </div>
         </div>

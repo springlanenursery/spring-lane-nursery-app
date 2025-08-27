@@ -17,11 +17,13 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
   return (
     <div className="flex flex-col items-center">
       {/* Number above the card - responsive sizing */}
-      <div className="text-white text-3xl md:text-4xl lg:text-6xl font-bold mb-2 md:mb-4">{number}</div>
+      <div className="text-white text-3xl md:text-4xl lg:text-6xl font-bold mb-2 md:mb-4">
+        {number}
+      </div>
 
-      {/* Card container with flip effect - responsive sizing */}
-      <div className="relative w-40 h-60 md:w-56 md:h-80 lg:w-72 lg:h-100 perspective-1000">
-        <div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180">
+      {/* Card container with flip effect - MAXIMUM mobile sizing */}
+      <div className="relative w-full max-w-sm h-128 sm:w-56 sm:h-80 md:w-60 md:h-84 lg:w-72 lg:h-100 perspective-1000 mx-auto">
+        <div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180 group">
           {/* Front side */}
           <div className="absolute inset-0 w-full h-full backface-hidden">
             <Image
@@ -29,7 +31,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} front`}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
+              sizes="(max-width: 640px) 384px, (max-width: 768px) 224px, (max-width: 1024px) 240px, 288px"
             />
           </div>
 
@@ -40,11 +42,16 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} back`}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
+              sizes="(max-width: 640px) 384px, (max-width: 768px) 224px, (max-width: 1024px) 240px, 288px"
             />
           </div>
         </div>
       </div>
+
+      {/* Mobile tap instruction - shows only on mobile */}
+      <p className="text-white text-xs mt-2 opacity-70 block sm:hidden">
+        Tap to flip
+      </p>
     </div>
   );
 };
@@ -52,7 +59,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
 const OurClassrooms: React.FC = () => {
   return (
     <section className="py-20 px-4 relative overflow-hidden ">
-      {/* Background Images - Method 1: Using Next.js Image component (Recommended) */}
+      {/* Background Images */}
       {/* Desktop Background */}
       <div className="absolute inset-0 hidden md:block">
         <Image
@@ -68,12 +75,12 @@ const OurClassrooms: React.FC = () => {
       {/* Mobile Background */}
       <div className="absolute inset-0 block md:hidden">
         <Image
-          src="/assets/classroom-bg-mobile.png" 
+          src="/assets/classroom-bg-mobile.png"
           alt="Classroom background mobile"
           fill
           className="object-cover"
           priority
-          sizes="50vw"
+          sizes="100vw"
         />
       </div>
 
@@ -90,8 +97,8 @@ const OurClassrooms: React.FC = () => {
           setting
         </p>
 
-        {/* Cards - Single row on all screen sizes with responsive gaps */}
-        <div className="flex items-center flex-col sm:flex-row justify-center sm:items-start gap-4 md:gap-8 lg:gap-16 xl:gap-24 mt-10 md:mt-20">
+        {/* Cards Layout - Responsive: Single column on mobile, row on larger screens */}
+        <div className="flex flex-col space-y-8 sm:space-y-0 sm:flex-row sm:justify-center sm:items-start sm:gap-4 md:gap-8 lg:gap-16 xl:gap-24 mt-10 md:mt-20">
           <ClassroomCard
             frontImage="/assets/blossom-front.png"
             backImage="/assets/blossom-back.png"
@@ -117,5 +124,4 @@ const OurClassrooms: React.FC = () => {
     </section>
   );
 };
-
 export default OurClassrooms;

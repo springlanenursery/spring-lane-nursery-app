@@ -11,14 +11,14 @@ interface CourseCard {
 const CourseCurriculumSection: React.FC = () => {
   const courses: CourseCard[] = [
     {
-      title: "Communication & Language",
+      title: "Communication &\nLanguage",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       backgroundColor: "#F9AE15",
       image: "/assets/curriculum-img.png",
     },
     {
-      title: "Physical Development",
+      title: "Physical\nDevelopment",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       backgroundColor: "#F6353B",
@@ -32,7 +32,7 @@ const CourseCurriculumSection: React.FC = () => {
       image: "/assets/curriculum-img.png",
     },
     {
-      title: "Mathematics Study",
+      title: "Mathematics\nStudy",
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       backgroundColor: "#2C97A9",

@@ -181,298 +181,297 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
+          {/* FIXED: Proper scrollable container structure */}
+          <div className="fixed inset-0 z-10 overflow-y-auto">
+            <div className="flex min-h-full items-start justify-center p-4 text-center sm:items-center sm:p-0">
               <Transition.Child
                 enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
                 leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all max-h-[90vh] flex flex-col">
-                  {/* Fixed Header */}
-                  <div className="relative shadow-md p-6 flex-shrink-0">
+                {/* FIXED: Removed max-h and flex constraints that were preventing scrolling */}
+                <Dialog.Panel className="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all my-8">
+                  
+                  {/* Header - Fixed position */}
+                  <div className="relative bg-white p-6 border-b border-gray-200">
                     <button
                       onClick={handleClose}
-                      className="absolute top-4 right-4 text-black hover:text-gray-200 transition-colors"
+                      className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       <XMarkIcon className="h-6 w-6" />
                     </button>
 
-                    <Dialog.Title className="text-2xl font-bold text-black">
+                    <Dialog.Title className="text-2xl font-bold text-gray-900">
                       Book Your Visit
                     </Dialog.Title>
-                    <p className="text-black mt-2">
+                    <p className="text-gray-600 mt-2">
                       Schedule a visit to see where small steps lead to big
                       discoveries!
                     </p>
                   </div>
 
-                  {/* Form with proper structure */}
-                  <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className="flex-1 flex flex-col"
-                  >
+                  {/* FIXED: Form with proper scrolling structure */}
+                  <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Scrollable Form Content */}
-                    <div className="flex-1 overflow-y-auto p-6">
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {/* Parent Name */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              <UserIcon className="w-4 h-4 inline mr-2" />
-                              Parent/Guardian Name *
-                            </label>
-                            <Controller
-                              name="parentName"
-                              control={control}
-                              render={({ field }) => (
-                                <input
-                                  {...field}
-                                  type="text"
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.parentName
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                  placeholder="Enter your name"
-                                />
-                              )}
-                            />
-                            {errors.parentName && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.parentName.message}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Child Name */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Child&apos;s Name *
-                            </label>
-                            <Controller
-                              name="childName"
-                              control={control}
-                              render={({ field }) => (
-                                <input
-                                  {...field}
-                                  type="text"
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.childName
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                  placeholder="Enter child's name"
-                                />
-                              )}
-                            />
-                            {errors.childName && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.childName.message}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Child Age */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              Child&apos;s Age *
-                            </label>
-                            <Controller
-                              name="childAge"
-                              control={control}
-                              render={({ field: { onChange, value } }) => (
-                                <select
-                                  value={value}
-                                  onChange={(e) =>
-                                    onChange(Number(e.target.value))
-                                  }
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.childAge
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                >
-                                  {Array.from({ length: 13 }, (_, i) => (
-                                    <option key={i} value={i}>
-                                      {i === 0
-                                        ? "Under 1"
-                                        : `${i} year${i > 1 ? "s" : ""} old`}
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-                            />
-                            {errors.childAge && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.childAge.message}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Email */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              <EnvelopeIcon className="w-4 h-4 inline mr-2" />
-                              Email Address *
-                            </label>
-                            <Controller
-                              name="email"
-                              control={control}
-                              render={({ field }) => (
-                                <input
-                                  {...field}
-                                  type="email"
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.email
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                  placeholder="your.email@example.com"
-                                />
-                              )}
-                            />
-                            {errors.email && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.email.message}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Phone */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              <PhoneIcon className="w-4 h-4 inline mr-2" />
-                              Phone Number *
-                            </label>
-                            <Controller
-                              name="phone"
-                              control={control}
-                              render={({ field }) => (
-                                <input
-                                  {...field}
-                                  type="tel"
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.phone
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                  placeholder="+1 (555) 123-4567"
-                                />
-                              )}
-                            />
-                            {errors.phone && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.phone.message}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Visit Date */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                              <CalendarIcon className="w-4 h-4 inline mr-2" />
-                              Preferred Visit Date *
-                            </label>
-                            <Controller
-                              name="visitDate"
-                              control={control}
-                              render={({ field }) => (
-                                <DatePicker
-                                  selected={field.value}
-                                  onChange={field.onChange}
-                                  filterDate={(date) => !isDateDisabled(date)}
-                                  minDate={new Date()}
-                                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
-                                    errors.visitDate
-                                      ? "border-red-300 bg-red-50"
-                                      : "border-gray-300"
-                                  }`}
-                                  placeholderText="Select a date"
-                                  dateFormat="MMMM d, yyyy"
-                                />
-                              )}
-                            />
-                            {errors.visitDate && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.visitDate.message}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Visit Time */}
+                    <div className="px-6 py-6 space-y-6 max-h-[60vh] overflow-y-auto">
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Parent Name */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-3">
-                            <ClockIcon className="w-4 h-4 inline mr-2" />
-                            Preferred Visit Time *
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <UserIcon className="w-4 h-4 inline mr-2" />
+                            Parent/Guardian Name *
                           </label>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                            {timeSlots.map((time) => (
-                              <Controller
-                                key={time}
-                                name="visitTime"
-                                control={control}
-                                render={({ field }) => (
-                                  <button
-                                    type="button"
-                                    onClick={() => field.onChange(time)}
-                                    className={`px-4 py-3 border rounded-lg text-sm font-medium transition-all ${
-                                      selectedTime === time
-                                        ? "bg-[#2C97A9] text-white border-[#2C97A9]"
-                                        : "bg-white text-gray-700 border-gray-300 hover:border-[#2C97A9] hover:text-[#2C97A9]"
-                                    }`}
-                                  >
-                                    {time}
-                                  </button>
-                                )}
+                          <Controller
+                            name="parentName"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="text"
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.parentName
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                                placeholder="Enter your name"
                               />
-                            ))}
-                          </div>
-                          {errors.visitTime && (
-                            <p className="text-red-600 text-sm mt-2">
-                              {errors.visitTime.message}
+                            )}
+                          />
+                          {errors.parentName && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.parentName.message}
                             </p>
                           )}
                         </div>
 
-                        {/* Message */}
+                        {/* Child Name */}
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Additional Message (Optional)
+                            Child&apos;s Name *
                           </label>
                           <Controller
-                            name="message"
+                            name="childName"
                             control={control}
                             render={({ field }) => (
-                              <textarea
+                              <input
                                 {...field}
-                                rows={3}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all resize-none"
-                                placeholder="Any specific questions or requirements..."
+                                type="text"
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.childName
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                                placeholder="Enter child's name"
                               />
                             )}
                           />
+                          {errors.childName && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.childName.message}
+                            </p>
+                          )}
                         </div>
+
+                        {/* Child Age */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Child&apos;s Age *
+                          </label>
+                          <Controller
+                            name="childAge"
+                            control={control}
+                            render={({ field: { onChange, value } }) => (
+                              <select
+                                value={value}
+                                onChange={(e) =>
+                                  onChange(Number(e.target.value))
+                                }
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.childAge
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                              >
+                                {Array.from({ length: 13 }, (_, i) => (
+                                  <option key={i} value={i}>
+                                    {i === 0
+                                      ? "Under 1"
+                                      : `${i} year${i > 1 ? "s" : ""} old`}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                          />
+                          {errors.childAge && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.childAge.message}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <EnvelopeIcon className="w-4 h-4 inline mr-2" />
+                            Email Address *
+                          </label>
+                          <Controller
+                            name="email"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="email"
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.email
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                                placeholder="your.email@example.com"
+                              />
+                            )}
+                          />
+                          {errors.email && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.email.message}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Phone */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <PhoneIcon className="w-4 h-4 inline mr-2" />
+                            Phone Number *
+                          </label>
+                          <Controller
+                            name="phone"
+                            control={control}
+                            render={({ field }) => (
+                              <input
+                                {...field}
+                                type="tel"
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.phone
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                                placeholder="+1 (555) 123-4567"
+                              />
+                            )}
+                          />
+                          {errors.phone && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.phone.message}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Visit Date */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <CalendarIcon className="w-4 h-4 inline mr-2" />
+                            Preferred Visit Date *
+                          </label>
+                          <Controller
+                            name="visitDate"
+                            control={control}
+                            render={({ field }) => (
+                              <DatePicker
+                                selected={field.value}
+                                onChange={field.onChange}
+                                filterDate={(date) => !isDateDisabled(date)}
+                                minDate={new Date()}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all ${
+                                  errors.visitDate
+                                    ? "border-red-300 bg-red-50"
+                                    : "border-gray-300"
+                                }`}
+                                placeholderText="Select a date"
+                                dateFormat="MMMM d, yyyy"
+                              />
+                            )}
+                          />
+                          {errors.visitDate && (
+                            <p className="text-red-600 text-sm mt-1">
+                              {errors.visitDate.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Visit Time */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">
+                          <ClockIcon className="w-4 h-4 inline mr-2" />
+                          Preferred Visit Time *
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {timeSlots.map((time) => (
+                            <Controller
+                              key={time}
+                              name="visitTime"
+                              control={control}
+                              render={({ field }) => (
+                                <button
+                                  type="button"
+                                  onClick={() => field.onChange(time)}
+                                  className={`px-4 py-3 border rounded-lg text-sm font-medium transition-all ${
+                                    selectedTime === time
+                                      ? "bg-[#2C97A9] text-white border-[#2C97A9]"
+                                      : "bg-white text-gray-700 border-gray-300 hover:border-[#2C97A9] hover:text-[#2C97A9]"
+                                  }`}
+                                >
+                                  {time}
+                                </button>
+                              )}
+                            />
+                          ))}
+                        </div>
+                        {errors.visitTime && (
+                          <p className="text-red-600 text-sm mt-2">
+                            {errors.visitTime.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Message */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Additional Message (Optional)
+                        </label>
+                        <Controller
+                          name="message"
+                          control={control}
+                          render={({ field }) => (
+                            <textarea
+                              {...field}
+                              rows={3}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-transparent transition-all resize-none"
+                              placeholder="Any specific questions or requirements..."
+                            />
+                          )}
+                        />
                       </div>
                     </div>
 
-                    {/* Submit Button */}
-                    <div className="flex gap-4 p-4 bg-white shadow-lg sticky bottom-0">
+                    {/* FIXED: Footer buttons - properly positioned */}
+                    <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex gap-4">
                       <button
                         type="button"
                         onClick={handleClose}
-                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 px-6 py-3 bg-[#F95269] text-white rounded-lg hover:from-[#247a89] hover:to-[#e74a60] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
+                        className="flex-1 px-6 py-3 bg-[#F95269] text-white rounded-lg hover:bg-[#e74a60] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95"
                       >
                         {isSubmitting ? (
                           <div className="flex items-center justify-center">
