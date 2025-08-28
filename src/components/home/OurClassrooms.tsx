@@ -21,9 +21,9 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
         {number}
       </div>
 
-      {/* Card container with flip effect - MAXIMUM mobile sizing */}
-      <div className="relative w-full max-w-sm h-128 sm:w-56 sm:h-80 md:w-60 md:h-84 lg:w-72 lg:h-100 perspective-1000 mx-auto">
-        <div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180 group">
+      {/* Card container with flip effect - responsive sizing */}
+      <div className="relative w-40 h-60 md:w-56 md:h-80 lg:w-72 lg:h-100 perspective-1000">
+        <div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180">
           {/* Front side */}
           <div className="absolute inset-0 w-full h-full backface-hidden">
             <Image
@@ -31,7 +31,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} front`}
               fill
               className="object-contain"
-              sizes="(max-width: 640px) 384px, (max-width: 768px) 224px, (max-width: 1024px) 240px, 288px"
+              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
             />
           </div>
 
@@ -42,16 +42,11 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} back`}
               fill
               className="object-contain"
-              sizes="(max-width: 640px) 384px, (max-width: 768px) 224px, (max-width: 1024px) 240px, 288px"
+              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
             />
           </div>
         </div>
       </div>
-
-      {/* Mobile tap instruction - shows only on mobile */}
-      <p className="text-white text-xs mt-2 opacity-70 block sm:hidden">
-        Tap to flip
-      </p>
     </div>
   );
 };
@@ -59,7 +54,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
 const OurClassrooms: React.FC = () => {
   return (
     <section className="py-20 px-4 relative overflow-hidden ">
-      {/* Background Images */}
+      {/* Background Images - Method 1: Using Next.js Image component (Recommended) */}
       {/* Desktop Background */}
       <div className="absolute inset-0 hidden md:block">
         <Image
@@ -80,7 +75,7 @@ const OurClassrooms: React.FC = () => {
           fill
           className="object-cover"
           priority
-          sizes="100vw"
+          sizes="50vw"
         />
       </div>
 
@@ -97,8 +92,8 @@ const OurClassrooms: React.FC = () => {
           setting
         </p>
 
-        {/* Cards Layout - Responsive: Single column on mobile, row on larger screens */}
-        <div className="flex flex-col space-y-8 sm:space-y-0 sm:flex-row sm:justify-center sm:items-start sm:gap-4 md:gap-8 lg:gap-16 xl:gap-24 mt-10 md:mt-20">
+        {/* Cards - Single row on all screen sizes with responsive gaps */}
+        <div className=" hidden justify-center sm:flex md:flex-row gap-4 md:gap-8 lg:gap-16 xl:gap-24 mt-10 md:mt-20">
           <ClassroomCard
             frontImage="/assets/blossom-front.png"
             backImage="/assets/blossom-back.png"
@@ -120,8 +115,45 @@ const OurClassrooms: React.FC = () => {
             number="3"
           />
         </div>
+
+        <div className="sm:hidden">
+          <div className="flex gap-6 overflow-x-auto pb-4 px-4 snap-x snap-mandatory scrollbar-hide">
+            <div className="flex-shrink-0 snap-center">
+              <ClassroomCard
+                frontImage="/assets/blossom-front.png"
+                backImage="/assets/blossom-back.png"
+                alt="Blossom Room"
+                number="1"
+              />
+            </div>
+            <div className="flex-shrink-0 snap-center">
+              <ClassroomCard
+                frontImage="/assets/sunshine-front.png"
+                backImage="/assets/sunshine-back.png"
+                alt="Sunshine Room"
+                number="2"
+              />
+            </div>
+            <div className="flex-shrink-0 snap-center">
+              <ClassroomCard
+                frontImage="/assets/rainbow-front.png"
+                backImage="/assets/rainbow-back.png"
+                alt="Rainbow Room"
+                number="3"
+              />
+            </div>
+          </div>
+
+          {/* Dots indicator for mobile */}
+          <div className="flex justify-center gap-2 mt-4">
+            <div className="w-2 h-2 rounded-full bg-white opacity-50"></div>
+            <div className="w-2 h-2 rounded-full bg-white opacity-50"></div>
+            <div className="w-2 h-2 rounded-full bg-white opacity-50"></div>
+          </div>
+        </div>
       </div>
     </section>
   );
 };
+
 export default OurClassrooms;
