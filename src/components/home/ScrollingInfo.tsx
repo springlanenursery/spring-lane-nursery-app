@@ -68,7 +68,7 @@ const ScrollingInfoSection: React.FC = () => {
 
   return (
     <div
-      className="w-full py-[40px] overflow-hidden"
+      className="w-full py-[20px] overflow-hidden"
       style={{ backgroundColor: "#5D9394" }}
     >
       <div className="flex w-full animate-scroll-left">
