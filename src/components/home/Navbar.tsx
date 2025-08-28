@@ -1,3 +1,5 @@
+// home nav
+
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -7,7 +9,7 @@ interface NavItem {
   name: string;
   href: string;
   isActive?: boolean;
-  isSection?: boolean; // Add this to distinguish sections from pages
+  isSection?: boolean; 
 }
 
 const Navbar: React.FC = () => {

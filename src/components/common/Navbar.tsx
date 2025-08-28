@@ -36,14 +36,27 @@ const Navbar: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll);
 
+    // Prevent body scroll when mobile menu is open
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      document.body.style.overflow = 'unset';
     };
-  }, []);
+  }, [isMobileMenuOpen]);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <>
+      {/* Desktop Navigation */}
       <nav
         className={`bg-white hidden lg:block relative z-50 transition-all duration-300 ${
           isScrolled ? "fixed top-0 left-0 right-0 shadow-lg" : "shadow-sm"
@@ -65,39 +78,37 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:block">
-              <div className="flex items-center space-x-8">
-                {navItems.map((item) => (
-                  <div key={item.name} className="relative">
-                    <Link
-                      href={item.href}
-                      className={`px-3 py-2 text-base font-medium transition-colors duration-200 ${
-                        isActive(item.href)
-                          ? "text-[#2C97A9]"
-                          : "text-[#252650] hover:text-[#2C97A9]"
-                      }`}
-                    >
-                      {item.name}
-                    </Link>
-                    {/* Active indicator using your SVG */}
-                    {isActive(item.href) && (
-                      <div className="absolute -bottom-1 left-0 right-0 flex justify-center">
-                        <Image
-                          src="/assets/active-indicator.svg"
-                          alt=""
-                          width={40}
-                          height={8}
-                          className="h-2 w-auto"
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+            <div className="flex items-center space-x-8">
+              {navItems.map((item) => (
+                <div key={item.name} className="relative">
+                  <Link
+                    href={item.href}
+                    className={`px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? "text-[#2C97A9]"
+                        : "text-[#252650] hover:text-[#2C97A9]"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                  {/* Active indicator using your SVG */}
+                  {isActive(item.href) && (
+                    <div className="absolute -bottom-1 left-0 right-0 flex justify-center">
+                      <Image
+                        src="/assets/active-indicator.svg"
+                        alt=""
+                        width={40}
+                        height={8}
+                        className="h-2 w-auto"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Phone Number with Star Icon - Desktop only */}
-            <div className="hidden lg:flex items-center space-x-2 relative">
+            <div className="flex items-center space-x-2 relative">
               {/* Phone icon in circle */}
               <div className="w-[32] h-[32] bg-[#F95921] rounded-full flex items-center justify-center">
                 <Image
@@ -113,15 +124,35 @@ const Navbar: React.FC = () => {
                 07769 639328
               </span>
             </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation Header */}
+      <nav className="bg-white lg:hidden relative z-50 shadow-sm">
+        <div className="px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Link href="/" className="flex items-center">
+                <Image
+                  src="/assets/nav-logo.svg"
+                  alt="Spring Lane Nursery"
+                  width={120}
+                  height={60}
+                  className="h-10 w-auto"
+                />
+              </Link>
+            </div>
 
             {/* Mobile menu button */}
-            <div className="lg:hidden">
+            <div>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 rounded-md text-[#252650] cursor-pointer hover:text-[#2C97A9] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#2C97A9]"
+                className="p-2 rounded-md text-[#252650] cursor-pointer hover:text-[#2C97A9] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#2C97A9] transition-colors duration-200"
               >
                 <svg
-                  className="h-6 w-6"
+                  className="h-6 w-6 transition-transform duration-200"
                   stroke="currentColor"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -152,20 +183,20 @@ const Navbar: React.FC = () => {
       <div className="lg:hidden">
         {/* Overlay */}
         <div
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50  transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-all duration-300 ease-out ${
             isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
           }`}
-          onClick={() => setIsMobileMenuOpen(false)}
+          onClick={closeMobileMenu}
         />
 
         {/* Sidebar */}
         <div
-          className={`fixed top-0 left-0 h-full w-80 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out ${
+          className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-all duration-300 ease-out ${
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-6 border-b">
+          <div className="flex items-center justify-between p-6 border-b border-gray-100">
             <Image
               src="/assets/nav-logo.svg"
               alt="Spring Lane Nursery"
@@ -174,11 +205,11 @@ const Navbar: React.FC = () => {
               className="h-12 w-auto"
             />
             <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-gray-600 hover:text-gray-800 p-1 cursor-pointer"
+              onClick={closeMobileMenu}
+              className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-200"
             >
               <svg
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -194,16 +225,22 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Navigation Links */}
-          <div className="py-6">
-            {navItems.map((item) => (
-              <div key={item.name} className="px-6 py-3">
+          <div className="py-4">
+            {navItems.map((item, index) => (
+              <div 
+                key={item.name} 
+                className="px-6 py-2"
+                style={{
+                  animationDelay: isMobileMenuOpen ? `${index * 50}ms` : '0ms'
+                }}
+              >
                 <Link
                   href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`block text-lg font-medium transition-colors duration-200 ${
+                  onClick={closeMobileMenu}
+                  className={`block text-lg font-medium py-3 px-2 rounded-md transition-all duration-200 ${
                     isActive(item.href)
-                      ? "text-[#2C97A9]"
-                      : "text-[#252650] hover:text-[#2C97A9]"
+                      ? "text-[#2C97A9] bg-[#2C97A9]/10"
+                      : "text-[#252650] hover:text-[#2C97A9] hover:bg-gray-50"
                   }`}
                 >
                   {item.name}
@@ -214,8 +251,8 @@ const Navbar: React.FC = () => {
 
           {/* Contact Info */}
           <div className="absolute bottom-6 left-6 right-6">
-            <div className="border-t pt-6">
-              <div className="flex items-center justify-center space-x-3 px-4 py-3 rounded-full bg-[#F95921] text-white font-medium">
+            <div className="border-t border-gray-100 pt-6">
+              <div className="flex items-center justify-center space-x-3 px-4 py-4 rounded-full bg-[#F95921] text-white font-medium shadow-lg hover:shadow-xl transition-shadow duration-200">
                 <Image
                   src="/assets/nav-call.svg"
                   alt="Phone"

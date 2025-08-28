@@ -1,5 +1,5 @@
 // components/OurLocation.js
-"use client"
+"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -9,7 +9,7 @@ const OurLocation = () => {
 
   const handleGetDirections = () => {
     const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-    window.open(mapsUrl, '_blank');
+    window.open(mapsUrl, "_blank");
   };
 
   return (
@@ -28,7 +28,7 @@ const OurLocation = () => {
             </p>
 
             {/* CTA Button */}
-            <button 
+            <button
               onClick={handleGetDirections}
               className="bg-[#2C97A9] cursor-pointer hover:bg-[#247a89] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 inline-flex items-center gap-2"
             >
@@ -56,28 +56,6 @@ const OurLocation = () => {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Location map"
-                />
-              </div>
-
-              {/* Top Right Image */}
-              <div className="absolute -top-10 -right-4   overflow-hidden ">
-                <Image
-                  src="/assets/our-location-img-2.png"
-                  alt="Nursery exterior"
-                  width={58}
-                  height={77}
-                  className="object-cover"
-                />
-              </div>
-
-              {/* Bottom Left Image */}
-              <div className="absolute -bottom-14 -left-14 overflow-hidden ">
-                <Image
-                  src="/assets/our-location-img-1.png"
-                  alt="Nursery playground"
-                  width={117}
-                  height={156}
-                  className=""
                 />
               </div>
             </div>

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Navbar from "../common/Navbar";
 import Header from "../common/Header";
 import JobDetails from "./JobDetails";
 import Footer from "../common/Footer";
@@ -59,7 +58,6 @@ const CareersPage: React.FC = () => {
   if (selectedJob) {
     return (
       <>
-        <Navbar />
         <Header title={selectedJob} />
         <JobDetails jobTitle={selectedJob} onBack={handleBackToCareers} />
         <Footer />
@@ -69,7 +67,6 @@ const CareersPage: React.FC = () => {
 
   return (
     <>
-      <Navbar />
       <Header />
 
       {/* Careers Section */}
