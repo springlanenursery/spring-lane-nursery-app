@@ -1,60 +1,41 @@
 "use client";
-
-import Image from "next/image";
 import React, { useState } from "react";
+import BookingModal from "../modals/BookingModal";
 
 const Tour: React.FC = () => {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-
-  const handlePlayVideo = () => {
-    setIsVideoPlaying(true);
-  };
+  const [_, setIsVideoPlaying] = useState(false);
 
   const handleCloseTour = () => {
     setIsVideoPlaying(false);
   };
 
-  return (
-    <section className="py-12 lg:py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title and Description */}
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-[40px] font-[900] text-[#252650] mb-6 lg:mb-8">
-            Take a tour of Spring Lane
-          </h2>
-          <p className="text-base lg:text-lg xl:text-xl leading-relaxed text-[#515151] max-w-3xl mx-auto">
-            Spring Lane Nursery is a safe, warm and inclusive setting for your
-            child. Take our virtual tour to get a great view from inside our
-            setting
-          </p>
-        </div>
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
-        {/* Virtual Tour Player */}
-        <div className="relative mb-12 lg:mb-16">
-          <div
-            className="relative w-full aspect-video rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl"
-            style={{ backgroundColor: "#F9AE15" }}
-          >
-            {!isVideoPlaying ? (
-              <>
-                {/* Tour Thumbnail/Placeholder */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer group"
-                  onClick={handlePlayVideo}
-                >
-                  {/* Play Button */}
-                  <div className="w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Image
-                      src="/assets/play.svg"
-                      alt="Start Virtual Tour"
-                      width={56}
-                      height={56}
-                      className="w-24 h-24 xl:w-30 xl:h-30 opacity-80"
-                    />
-                  </div>
-                </div>
-              </>
-            ) : (
+  const openBookingModal = () => setIsBookingModalOpen(true);
+  const closeBookingModal = () => setIsBookingModalOpen(false);
+
+  return (
+    <>
+      <section className="py-12 lg:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Title and Description */}
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-3xl lg:text-[40px] font-[900] text-[#252650] mb-6 lg:mb-8">
+              Take a tour of Spring Lane
+            </h2>
+            <p className="text-base lg:text-lg xl:text-xl leading-relaxed text-[#515151] max-w-3xl mx-auto">
+              Spring Lane Nursery is a safe, warm and inclusive setting for your
+              child. Take our virtual tour to get a great view from inside our
+              setting
+            </p>
+          </div>
+
+          {/* Virtual Tour Player */}
+          <div className="relative mb-12 lg:mb-16">
+            <div
+              className="relative w-full aspect-video rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl"
+              style={{ backgroundColor: "#F9AE15" }}
+            >
               <>
                 {/* Matterport Virtual Tour Iframe */}
                 <iframe
@@ -87,23 +68,26 @@ const Tour: React.FC = () => {
                   </svg>
                 </button>
               </>
-            )}
+            </div>
+          </div>
+
+          {/* Book a Tour Button */}
+          <div className="text-center">
+            <button
+              onClick={openBookingModal}
+              style={{
+                borderRadius: "0px 25px 25px 25px",
+              }}
+              className="bg-[#252650] cursor-pointer text-white font-medium text-sm lg:text-base px-8 py-3 lg:px-12 lg:py-4 rounded-full hover:bg-[#1e1f3f] transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Book a Tour
+            </button>
           </div>
         </div>
-
-        {/* Book a Tour Button */}
-        <div className="text-center">
-          <button
-            style={{
-              borderRadius: "0px 25px 25px 25px",
-            }}
-            className="bg-[#252650] cursor-pointer text-white font-medium text-sm lg:text-base px-8 py-3 lg:px-12 lg:py-4 rounded-full hover:bg-[#1e1f3f] transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            Book a Tour
-          </button>
-        </div>
-      </div>
-    </section>
+      </section>
+      {/* Booking Modal */}
+      <BookingModal isOpen={isBookingModalOpen} onClose={closeBookingModal} />
+    </>
   );
 };
 

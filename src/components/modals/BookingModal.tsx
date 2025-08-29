@@ -199,7 +199,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose }) => {
                   <div className="relative bg-white p-6 border-b border-gray-200">
                     <button
                       onClick={handleClose}
-                      className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute top-4 right-4 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
                     >
                       <XMarkIcon className="h-6 w-6" />
                     </button>
