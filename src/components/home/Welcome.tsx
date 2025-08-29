@@ -14,7 +14,7 @@ const Welcome: React.FC = () => {
         />
       </div>
 
-      {/* <div className="absolute  top-4  md:top-8 md:right-0 z-20">
+      <div className="absolute  top-6 -right-4 z-20">
         <div className="relative w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
           <Image
             src="/assets/bird.png"
@@ -25,7 +25,7 @@ const Welcome: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-4  left-0 md:bottom-0 z-20">
+      <div className="absolute   -left-4 bottom-0 z-20">
         <div className="relative w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32">
           <Image
             src="/assets/baby.png"
@@ -34,7 +34,7 @@ const Welcome: React.FC = () => {
             className="object-contain"
           />
         </div>
-      </div> */}
+      </div>
 
       {/* Content Container */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-8 lg:px-12">

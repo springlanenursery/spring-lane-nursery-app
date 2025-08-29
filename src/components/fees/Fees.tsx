@@ -202,9 +202,9 @@ const Fees: React.FC = () => {
           <h2 className="text-xl font-bold text-[#252650]">Government Funding</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 text-center md:grid-cols-3 gap-4">
           {/* 2+ years old */}
-          <div className="bg-[#FC4C171A] rounded-lg p-6">
+          <div className="bg-[#FC4C171A]  rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">2+ years olds</h3>
               <p className="text-3xl font-bold text-[#FC4C17]">15 hours</p>
@@ -254,7 +254,7 @@ const Fees: React.FC = () => {
           <h2 className="text-xl font-bold text-[#252650]">Funding (Stretched Over 51 Weeks)</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 text-center md:grid-cols-3 gap-4 mb-8">
           {/* 2+ years old */}
           <div className="bg-[#FC4C171A] rounded-lg p-6">
             <div className="space-y-3">
@@ -457,7 +457,7 @@ const Fees: React.FC = () => {
           <h2 className="text-xl font-bold text-[#252650]">Registration & Deposits</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 text-center md:grid-cols-2 gap-4">
           {/* Registration Fee */}
           <div className="bg-[#FC4C171A] rounded-lg p-6">
             <div className="space-y-3">

@@ -22,7 +22,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
       </div>
 
       {/* Card container with flip effect - responsive sizing */}
-      <div className="relative w-40 h-60 md:w-56 md:h-80 lg:w-72 lg:h-100 perspective-1000">
+      <div className="relative w-56 h-80 sm:w-56 sm:h-80 md:w-64 md:h-[22rem] lg:w-72 lg:h-[26rem] perspective-1000">
         <div className="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d hover:rotate-y-180">
           {/* Front side */}
           <div className="absolute inset-0 w-full h-full backface-hidden">
@@ -31,7 +31,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} front`}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
+              sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, 288px"
             />
           </div>
 
@@ -42,7 +42,7 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
               alt={`${alt} back`}
               fill
               className="object-contain"
-              sizes="(max-width: 768px) 160px, (max-width: 1024px) 224px, 288px"
+              sizes="(max-width: 640px) 224px, (max-width: 768px) 256px, 288px"
             />
           </div>
         </div>
@@ -54,7 +54,6 @@ const ClassroomCard: React.FC<ClassroomCardProps> = ({
 const OurClassrooms: React.FC = () => {
   return (
     <section className="py-20 px-4 relative overflow-hidden ">
-      {/* Background Images - Method 1: Using Next.js Image component (Recommended) */}
       {/* Desktop Background */}
       <div className="absolute inset-0 hidden md:block">
         <Image
@@ -68,7 +67,7 @@ const OurClassrooms: React.FC = () => {
       </div>
 
       {/* Mobile Background */}
-      <div className="absolute inset-0 block md:hidden">
+      <div className="absolute inset-0 md:hidden">
         <Image
           src="/assets/classroom-bg-mobile.png"
           alt="Classroom background mobile"
@@ -79,10 +78,85 @@ const OurClassrooms: React.FC = () => {
         />
       </div>
 
+      <div className="absolute hidden md:block top-30 right-20 z-20">
+        <div className="relative w-17 h-25">
+          <Image
+            src="/assets/bear.png"
+            alt="Decorative bird"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="absolute hidden md:block  left-14 top-40 z-20">
+        <div className="relative w-15 h-18">
+          <Image
+            src="/assets/classroom-star.png"
+            alt="Decorative baby"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+      <div className="absolute hidden md:block left-10 bottom-10 z-20">
+        <div className="relative w-17 h-25">
+          <Image
+            src="/assets/bear-2.png"
+            alt="Decorative bird"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="absolute hidden md:block  right-14 bottom-14 z-20">
+        <div className="relative w-15 h-18">
+          <Image
+            src="/assets/classroom-star.png"
+            alt="Decorative baby"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+
+       <div className="absolute md:hidden  top-14 right-6 z-20">
+        <div className="relative w-12 h-14">
+          <Image
+            src="/assets/bear-mobile.png"
+            alt="Decorative bird"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="absolute md:hidden  left-4 top-20 z-20">
+        <div className="relative w-8 h-9">
+          <Image
+            src="/assets/classroom-star-mobile.png"
+            alt="Decorative baby"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+      <div className="absolute md:hidden right-4 bottom-25 z-20">
+        <div className="relative w-8 h-9">
+          <Image
+            src="/assets/classroom-star-mobile.png"
+            alt="Decorative baby"
+            fill
+            className="object-contain"
+          />
+        </div>
+      </div>
+
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto text-center">
         {/* Header */}
-        <h2 className="text-lg md:text-[28px] lg:text-[40px] font-[900] text-white mb-4 md:mb-6">
+        <h2 className="text-lg md:text-[28px] lg:text-[40px] font-[900] text-white ">
           Our Classrooms
         </h2>
 
