@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
     <>
       <section className="relative w-full h-screen overflow-hidden">
         {/* Background Hero Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 hidden md:block">
           <Image
             src="/assets/hero-bg.png"
             alt="Happy child playing"
@@ -21,6 +21,20 @@ const Hero: React.FC = () => {
             className="object-cover object-center"
             priority
           />
+
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/5"></div>
+        </div>
+
+        <div className="absolute inset-0 md:hidden">
+          <Image
+            src="/assets/hero-mobile.png"
+            alt="Happy child playing"
+            fill
+            className="object-cover object-center"
+            priority
+          />
+
           {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-black/5"></div>
         </div>

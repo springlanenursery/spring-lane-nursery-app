@@ -23,7 +23,8 @@ const Header: React.FC<HeaderProps> = ({
   // Handle scroll effect for sticky navigation
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       setIsScrolled(scrollTop > 50);
     };
 
@@ -101,7 +102,7 @@ const Header: React.FC<HeaderProps> = ({
       e.preventDefault();
       // Close mobile menu first
       closeMobileMenu();
-      
+
       // Navigate to home page and scroll to section after page loads
       if (pathname === "/") {
         // Already on home page, just scroll to section
@@ -121,12 +122,12 @@ const Header: React.FC<HeaderProps> = ({
     const attemptScroll = (attempt: number = 0) => {
       const maxAttempts = 5;
       const delay = attempt * 200; // 0ms, 200ms, 400ms, 600ms, 800ms
-      
+
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
           // Increased navbar height to push sections down more
-          const navbarHeight = 150; // Increased from 80 to 150
+          const navbarHeight = 600; // Increased from 80 to 150
           const elementPosition = element.offsetTop - navbarHeight;
 
           window.scrollTo({
@@ -139,7 +140,7 @@ const Header: React.FC<HeaderProps> = ({
         }
       }, delay);
     };
-    
+
     attemptScroll();
   };
 
@@ -147,6 +148,8 @@ const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash) {
       const hash = window.location.hash.replace("#", "");
+      console.log({ hash });
+
       // Give more time for route changes to complete
       const delay = pathname === "/" ? 100 : 1000;
       setTimeout(() => {
@@ -197,14 +200,12 @@ const Header: React.FC<HeaderProps> = ({
       {/* Desktop Sticky Navigation */}
       <nav
         className={`hidden lg:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white shadow-md"
-            : "bg-transparent"
+          isScrolled ? "bg-white shadow-md" : "bg-transparent"
         }`}
       >
         <div className="max-w-[1440px] mx-auto px-8">
           <div className="max-w-[1078px] mx-auto">
-            <div className="flex items-center justify-between h-16 lg:h-20">
+            <div className="flex items-center justify-between h-16 lg:h-25">
               {/* Logo */}
               <div className="flex-shrink-0">
                 <Link href="/" className="flex items-center">
@@ -402,19 +403,13 @@ const Header: React.FC<HeaderProps> = ({
               onClick={closeMobileMenu}
               className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 cursor-pointer transition-colors duration-200"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <Image
+                src="/assets/menu.svg"
+                alt="Spring Lane Nursery"
+                width={20}
+                height={20}
+                className="h-12 w-auto"
+              />
             </button>
           </div>
 

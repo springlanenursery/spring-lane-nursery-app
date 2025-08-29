@@ -9,7 +9,7 @@ interface NavItem {
   name: string;
   href: string;
   isActive?: boolean;
-  isSection?: boolean; 
+  isSection?: boolean;
 }
 
 const Navbar: React.FC = () => {
@@ -73,7 +73,7 @@ const Navbar: React.FC = () => {
       e.preventDefault();
       const element = document.getElementById(item.href);
       if (element) {
-        const navbarHeight = 80; // Adjust this to match your navbar height
+        const navbarHeight = 120; // Adjust this to match your navbar height
         const elementPosition = element.offsetTop - navbarHeight;
 
         window.scrollTo({
@@ -101,14 +101,14 @@ const Navbar: React.FC = () => {
       {/* Mobile: Rounded pill navbar with conditional styling */}
       <div
         className={`md:hidden transition-all duration-300 ${
-          isScrolled ? "mx-0 mt-0" : "mx-4 mt-4"
+          isScrolled ? "mx-0 mt-0" : "mx-4 mt-8"
         }`}
       >
         <div
           className={`px-4 transition-all duration-300 ${
             isScrolled
               ? "bg-white shadow-md rounded-none"
-              : "bg-white/80 backdrop-blur-md rounded-full shadow-lg"
+              : "bg-white/40 backdrop-blur-md rounded-full shadow-lg"
           }`}
         >
           <div className="flex items-center justify-between h-16">
@@ -131,19 +131,13 @@ const Navbar: React.FC = () => {
                 onClick={toggleMobileMenu}
                 className="text-gray-600 cursor-pointer"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <Image
+                  src="/assets/menu.svg"
+                  alt="Spring Lane Nursery"
+                  width={20}
+                  height={20}
+                  className="h-12 w-auto"
+                />
               </button>
             </div>
           </div>
@@ -156,7 +150,7 @@ const Navbar: React.FC = () => {
       >
         <div className="">
           <div className="max-w-[1078px] mx-auto px-0">
-            <div className="flex items-center justify-between h-16 lg:h-20">
+            <div className="flex items-center justify-between h-16 lg:h-25">
               {/* Logo */}
               <div className="flex-shrink-0">
                 <Link href="/" className="flex items-center">

@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
         }`}
       >
         <div className="max-w-[1078px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-16 lg:h-25">
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link href="/" className="flex items-center">

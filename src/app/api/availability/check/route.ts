@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
-// MongoDB connection
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -16,11 +15,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-// Email service using Postmark
 async function sendAvailabilityRequestEmail(data: AvailabilityRequest) {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
-  const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
+  const fromEmail = process.env.FROM_EMAIL || "";
+  const adminEmail = process.env.ADMIN_EMAIL || "";
 
   if (!postmarkToken) {
     console.error("Postmark server token not configured");
@@ -29,7 +27,6 @@ async function sendAvailabilityRequestEmail(data: AvailabilityRequest) {
 
   const emailTemplate = generateEmailTemplate(data);
 
-  // Send notification email to admin
   const adminEmailPayload = {
     From: fromEmail,
     To: adminEmail,
@@ -38,11 +35,10 @@ async function sendAvailabilityRequestEmail(data: AvailabilityRequest) {
     TextBody: emailTemplate.adminText,
   };
 
-  // Note: User email functionality commented out as email field is not collected
-  // To enable user confirmation emails, add email field to the form and uncomment below:
+
   // const userEmailPayload = {
   //   From: fromEmail,
-  //   To: data.email, // Add email field to AvailabilityRequest interface
+  //   To: data.email, 
   //   Subject: "Availability Request Received - Thank You!",
   //   HtmlBody: emailTemplate.userHtml,
   //   TextBody: emailTemplate.userText,
@@ -440,15 +436,16 @@ function validateAvailabilityRequest(data: ValidationInput): {
   }
 
   // Phone number format validation (basic)
-  const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
-  if (
-    data.phoneNumber &&
-    typeof data.phoneNumber === "string" &&
-    !phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))
-  ) {
-    errors.push("Please enter a valid phone number");
-  }
 
+  if (data.phoneNumber && typeof data.phoneNumber === "string") {
+    const cleanedPhone = data.phoneNumber.replace(/\s|-|\(|\)/g, "");
+
+    const phoneRegex = /^\+?[0-9]{7,15}$/;
+
+    if (!phoneRegex.test(cleanedPhone)) {
+      errors.push("Please enter a valid phone number");
+    }
+  }
   return {
     isValid: errors.length === 0,
     errors,
@@ -510,7 +507,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(dbRecord);
 
-   // Send email notifications (async, don't block the response)
+    // Send email notifications (async, don't block the response)
     sendAvailabilityRequestEmail(availabilityRequest).catch((error) => {
       console.error("Failed to send availability request email:", error);
     });
