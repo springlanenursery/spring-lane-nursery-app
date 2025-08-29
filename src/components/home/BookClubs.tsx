@@ -34,7 +34,7 @@ const BookClubs: React.FC = () => {
       title: "Breakfast Club",
       price: "£8.00",
       description:
-        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
       time: "6:30AM - 7:30AM",
       backgroundColor: "#FC4C171A", // Orange with alpha (same as football)
       titleColor: "#FC4C17", // Orange
@@ -44,7 +44,7 @@ const BookClubs: React.FC = () => {
       title: "After Hours Club",
       price: "£8.00",
       description:
-        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
       time: "6:00PM - 7:00PM",
       backgroundColor: "#F9AE151A", // Yellow with alpha (same as cricket)
       titleColor: "#F9AE15", // Yellow

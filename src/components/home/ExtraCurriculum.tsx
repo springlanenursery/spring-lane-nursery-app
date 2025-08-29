@@ -33,7 +33,7 @@ const ExtraCurriculum: React.FC = () => {
     {
       title: "Football",
       description:
-        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
       backgroundColor: "#FC4C171A", // Orange with alpha
       buttonColor: "#F95269",
       iconSrc: "/assets/curriculum-football.png",
@@ -42,7 +42,7 @@ const ExtraCurriculum: React.FC = () => {
     {
       title: "Cricket",
       description:
-        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
       backgroundColor: "#F9AE151A", // Yellow with alpha
       buttonColor: "#F9AE15",
       iconSrc: "/assets/curriculum-cricket.png",
