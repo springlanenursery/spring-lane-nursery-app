@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
           <div className="absolute inset-0 bg-black/5"></div>
         </div>
 
-        {/* <div className="absolute right-0 top-6 inset-0 md:hidden">
+        <div className="absolute right-7 top-30 md:hidden">
           <Image
             src="/assets/hero-mobile-bear.png"
             alt="Happy child playing"
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
             className="object-cover object-center"
             priority
           />
-        </div> */}
+        </div>
 
         {/* Star-shaped Content Container */}
         <div className="absolute inset-0 flex items-end md:items-center justify-end pr-1 pb-16 md:pb-0 md:pr-16 lg:pr-20 z-30">
