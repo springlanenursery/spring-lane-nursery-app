@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 
 const OurLocation = () => {
-  const address = "23 Spring Lane, Croydon SE25 4SP, UK";
+  const address = "25 Spring Lane, Croydon SE25 4SP, UK";
   const encodedAddress = encodeURIComponent(address);
 
   const handleGetDirections = () => {

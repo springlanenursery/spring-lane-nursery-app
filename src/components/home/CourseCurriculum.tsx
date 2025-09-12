@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 
 interface CourseCard {
@@ -9,54 +10,89 @@ interface CourseCard {
 }
 
 const CourseCurriculumSection: React.FC = () => {
-  const courses: CourseCard[] = [
+  const [showAll, setShowAll] = useState(false);
+
+  const initialCourses: CourseCard[] = [
     {
       title: "Communication &\nLanguage",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Stories, songs, rhymes and conversations are part of everyday life at our nursery. Children enjoy circle times, role play and chatting with friends.",
       backgroundColor: "#F9AE15",
       image: "/assets/curriculum-img.png",
     },
     {
       title: "Physical\nDevelopment",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "From outdoor play to dancing indoors, children develop strength, balance and coordination while learning healthy habits.",
       backgroundColor: "#F6353B",
       image: "/assets/curriculum-img.png",
     },
     {
       title: "Literacy\nLearning",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Children are surrounded by books, stories and mark-making opportunities, encouraging a love of reading and writing from an early age.",
       backgroundColor: "#FC4C17",
       image: "/assets/curriculum-img.png",
     },
+  ];
+
+  const additionalCourses: CourseCard[] = [
     {
       title: "Mathematics\nStudy",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Counting blocks, singing number songs, baking and water play – children learn numbers, shapes, size and patterns through fun activities.",
       backgroundColor: "#2C97A9",
       image: "/assets/curriculum-img.png",
     },
+    {
+      title: "Personal, Social &\nEmotional Development",
+      description:
+        "We help children build friendships, learn to share, and develop independence in a safe and caring space where they feel valued.",
+      backgroundColor: "#8B5CF6",
+      image: "/assets/curriculum-img.png",
+    },
+    {
+      title: "Understanding\nthe World",
+      description:
+        "We nurture curiosity by exploring nature, celebrating cultures and festivals, and using simple technology like magnifying glasses.",
+      backgroundColor: "#10B981",
+      image: "/assets/curriculum-img.png",
+    },
+    {
+      title: "Expressive Arts\n& Design",
+      description:
+        "Creativity is celebrated daily. Children paint, build, sing, dance and use imagination in role play with endless creative opportunities.",
+      backgroundColor: "#F59E0B",
+      image: "/assets/curriculum-img.png",
+    },
   ];
+
+  const displayedCourses = showAll
+    ? [...initialCourses, ...additionalCourses]
+    : initialCourses;
 
   return (
     <section className="py-12 lg:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Title */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-3xl lg:text-[40px]  font-[900] text-[#252650] mb-4">
-            Course Curriculum
+          <h2 className="text-3xl lg:text-[40px] font-[900] text-[#252650] mb-4">
+            Our Curriculum
           </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Every day is different at Spring Lane Nursery – here's how we
+            support your child's learning and development through the Early
+            Years Foundation Stage (EYFS).
+          </p>
         </div>
 
         {/* Course Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12">
-          {courses.map((course, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
+          {displayedCourses.map((course, index) => (
             <div key={index} className="relative">
               {/* Card */}
               <div
-                className="rounded-2xl lg:rounded-3xl p-6 lg:p-8 pt-12 lg:pt-16 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="rounded-2xl lg:rounded-3xl p-6 lg:p-8 pt-12 lg:pt-16 text-center text-white shadow-lg hover:shadow-xl transition-shadow duration-300 h-full flex flex-col"
                 style={{ backgroundColor: course.backgroundColor }}
               >
                 {/* Circular Image positioned at top center */}
@@ -73,7 +109,7 @@ const CourseCurriculumSection: React.FC = () => {
                 </div>
 
                 {/* Card Content */}
-                <div className="pt-4 lg:pt-6">
+                <div className="pt-4 lg:pt-6 flex-1 flex flex-col justify-between">
                   <h3 className="text-xl lg:text-2xl font-bold mb-4 lg:mb-6 leading-tight whitespace-pre-line">
                     {course.title}
                   </h3>
@@ -86,15 +122,16 @@ const CourseCurriculumSection: React.FC = () => {
           ))}
         </div>
 
-        {/* View More Button */}
+        {/* View More/View Less Button */}
         <div className="text-center">
           <button
+            onClick={() => setShowAll(!showAll)}
             style={{
               borderRadius: "0px 25px 25px 25px",
             }}
             className="bg-[#252650] cursor-pointer text-white font-medium text-sm lg:text-base px-8 py-3 lg:px-12 lg:py-4 rounded-full hover:bg-[#1e1f3f] transition-colors duration-300 shadow-lg hover:shadow-xl"
           >
-            View More
+            {showAll ? "View Less" : "View More"}
           </button>
         </div>
       </div>

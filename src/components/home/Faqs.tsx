@@ -32,7 +32,7 @@ const FAQ: React.FC = () => {
     {
       question: "What is included in the nursery fees?",
       answer:
-        "Our nursery fees include all meals, snacks, nappies, educational activities, and access to all our facilities and resources. There are no hidden costs for day-to-day care.",
+        "Our nursery fees cover high-quality childcare and educational provision. Please note that meals, snacks, nappies, and optional extracurricular or outdoor activities are not included and will incur an additional charge. Full details can be found in our fees section.",
     },
     {
       question: "What does a typical day look like at Spring Lane Nursery?",
@@ -61,7 +61,7 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section className="py-12 lg:py-20  relative overflow-hidden">      
+    <section className="py-12 lg:py-20  relative overflow-hidden">
       <div className="hidden lg:block absolute bottom-0 left-0 z-10">
         <Image
           src="/assets/faq.png"

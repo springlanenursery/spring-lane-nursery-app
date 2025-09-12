@@ -19,51 +19,6 @@ const GovernmentFundedChildcare = () => {
           </p>
         </div>
 
-        {/* 15 Hours Free Childcare (Universal Offer) */}
-        <div className="mb-16">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-            {/* Mobile: Image First, Desktop: Text First */}
-            <div className="w-full lg:w-1/2 order-2 lg:order-1">
-              <h3 className="text-2xl md:text-3xl font-[900] text-[#12275A] mb-4">
-                15 Hours Free Childcare
-                <br />
-                <span className="text-[#1a365d]">(Universal Offer)</span>
-              </h3>
-              <p className="text-gray-600 text-base md:text-lg mb-6  max-w-[520px]">
-                All 3 and 4-year-olds are eligible for 15 hours of free
-                childcare per week for 38 weeks per year, starting the term
-                after your child turns 3.
-              </p>
-              <Link
-                href="https://www.gov.uk/free-childcare-for-3-to-4-year-olds"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#F95269] cursor-pointer hover:bg-[#e8475e] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 inline-flex items-center gap-2"
-              >
-                Apply or Learn more
-                <Image
-                  src="/assets/export.svg"
-                  alt="Children doing activities"
-                  width={18}
-                  height={18}
-                />
-             </Link>
-            </div>
-
-            <div className="w-full lg:w-1/2 order-1 lg:order-2">
-              <div className="rounded-2xl overflow-hidden">
-                <Image
-                  src="/assets/funded-child-care-img.png"
-                  alt="Children doing activities"
-                  width={500}
-                  height={300}
-                  className="w-full h-[250px] md:h-[300px] object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* 15 Hours for 2-Year-Olds */}
         <div className="mb-16">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
@@ -101,7 +56,7 @@ const GovernmentFundedChildcare = () => {
                   width={18}
                   height={18}
                 />
-             </Link>
+              </Link>
             </div>
           </div>
         </div>
@@ -133,7 +88,7 @@ const GovernmentFundedChildcare = () => {
                   width={18}
                   height={18}
                 />
-             </Link>
+              </Link>
             </div>
 
             <div className="w-full lg:w-1/2 order-1 lg:order-2">

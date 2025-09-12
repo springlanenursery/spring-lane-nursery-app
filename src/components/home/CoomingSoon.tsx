@@ -2,15 +2,13 @@
 import React, { useState } from "react";
 import { X, Calendar } from "lucide-react";
 
-// Book Clubs Section
-interface BookClub {
+interface ActivityCard {
   title: string;
-  price: string;
   description: string;
-  time: string;
   backgroundColor: string;
-  titleColor: string;
   buttonColor: string;
+  iconSrc: string;
+  price: string;
 }
 
 interface BookingData {
@@ -19,9 +17,11 @@ interface BookingData {
   selectedDates: Date[];
 }
 
-const BookClubs: React.FC = () => {
+const CoomingSoon: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedClub, setSelectedClub] = useState<BookClub | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityCard | null>(
+    null
+  );
   const [bookingData, setBookingData] = useState<BookingData>({
     parentName: "",
     childName: "",
@@ -29,31 +29,29 @@ const BookClubs: React.FC = () => {
   });
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  const bookClubs: BookClub[] = [
+  const activities: ActivityCard[] = [
     {
-      title: "Breakfast Club",
-      price: "£8.00",
+      title: "Football",
       description:
-        "Our Breakfast Club offers a calm and welcoming start to the day. Children can arrive early, enjoy a healthy breakfast, and have time to settle before heading into their nursery session or school. A choice of cereals, toast, fruit and drinks are available each morning. We create a relaxed environment where children can chat with friends, read, or take part in quiet activities to get ready for the day ahead.",
-      time: "6:30AM - 7:30AM",
-      backgroundColor: "#FC4C171A", // Orange with alpha (same as football)
-      titleColor: "#FC4C17", // Orange
-      buttonColor: "#F95269", // Pink/Red
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+      backgroundColor: "#FC4C171A", // Orange with alpha
+      buttonColor: "#F95269",
+      iconSrc: "/assets/curriculum-football.png",
+      price: "£8.00",
     },
     {
-      title: "After Hours Club",
-      price: "£8.00",
+      title: "Cricket",
       description:
-        "Our After School Club provides a safe and supportive space for children at the end of the day. We offer a light snack and opportunities to wind down or take part in fun activities such as arts and crafts, reading, board games or outdoor play (weather permitting). It’s a chance for children to relax, socialise with friends, and end the day in a positive and engaging way.",
-      time: "6:00PM - 7:00PM",
-      backgroundColor: "#F9AE151A", // Yellow with alpha (same as cricket)
-      titleColor: "#F9AE15", // Yellow
-      buttonColor: "#F9AE15", // Yellow
+        "We operate a rolling admissions policy & welcome children throughout the year, depending on availability.",
+      backgroundColor: "#F9AE151A", // Yellow with alpha
+      buttonColor: "#F9AE15",
+      iconSrc: "/assets/curriculum-cricket.png",
+      price: "£8.00",
     },
   ];
 
-  const openModal = (club: BookClub) => {
-    setSelectedClub(club);
+  const openModal = (activity: ActivityCard) => {
+    setSelectedActivity(activity);
     setIsModalOpen(true);
     setBookingData({
       parentName: "",
@@ -64,7 +62,7 @@ const BookClubs: React.FC = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedClub(null);
+    setSelectedActivity(null);
   };
 
   const handleInputChange = (field: keyof BookingData, value: string) => {
@@ -279,7 +277,7 @@ const BookClubs: React.FC = () => {
     // Here you would integrate with Stripe
     // This is a placeholder for Stripe integration
     alert(
-      `Payment integration with Stripe would be implemented here.\n\nBooking Details:\nParent: ${bookingData.parentName}\nChild: ${bookingData.childName}\nDates: ${bookingData.selectedDates.length}\nTotal: £${totalAmount}`
+      `Payment integration with Stripe would be implemented here.\n\nBooking Details:\nParent: ${bookingData.parentName}\nChild: ${bookingData.childName}\nActivity: ${selectedActivity?.title}\nDates: ${bookingData.selectedDates.length}\nTotal: £${totalAmount}`
     );
 
     // Close modal after successful payment
@@ -292,53 +290,59 @@ const BookClubs: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Title */}
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-[40px] font-[900] text-[#252650] mb-4">
-              Clubs
+            <h2 className="text-3xl lg:text-[40px] font-bold text-[#252650] mb-4">
+              Extra Curriculum Activities
             </h2>
           </div>
 
-          {/* Book Clubs Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 xl:gap-12">
-            {bookClubs.map((club, index) => (
+          {/* Activities Cards */}
+          <div className="space-y-6 lg:space-y-8">
+            {activities.map((activity, index) => (
               <div
                 key={index}
-                className="rounded-[10px] p-6 lg:p-8 xl:p-10"
-                style={{ backgroundColor: club.backgroundColor }}
+                className="rounded-[10px] p-6 lg:p-8 xl:p-12"
+                style={{ backgroundColor: activity.backgroundColor }}
               >
-                {/* Header with Title and Price */}
-                <div className="flex items-start justify-between mb-4 lg:mb-6">
-                  <h3
-                    className="text-2xl lg:text-3xl xl:text-4xl font-[900]"
-                    style={{ color: club.titleColor }}
-                  >
-                    {club.title}
-                  </h3>
-                  <span
-                    className="text-xl lg:text-2xl xl:text-3xl font-bold"
-                    style={{ color: club.titleColor }}
-                  >
-                    {club.price}
-                  </span>
+                <div className="lg:flex lg:items-center relative">
+                  {/* Content - Takes remaining width after 148px gap and icon */}
+                  <div className="lg:flex-1 lg:pr-[148px]">
+                    <h3 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-[#252650] mb-4 lg:mb-6">
+                      {activity.title}
+                    </h3>
+                    <p className="text-sm lg:text-base xl:text-lg leading-relaxed text-[#515151] mb-6 lg:mb-8">
+                      {activity.description}
+                    </p>
+                    <div className="relative">
+                      <button
+                        onClick={() => openModal(activity)}
+                        className="text-white cursor-pointer font-medium text-sm lg:text-base px-6 py-3 lg:px-8 lg:py-4 rounded-[10px] hover:opacity-90 transition-opacity duration-300"
+                        style={{ backgroundColor: activity.buttonColor }}
+                      >
+                        Advance Booking
+                      </button>
+
+                      {/* Mobile Icon - Absolutely positioned next to button */}
+                      <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 lg:hidden">
+                        <div className="w-20 h-20 flex items-center justify-center">
+                          <img
+                            src={activity.iconSrc}
+                            alt={`${activity.title} icon`}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop Icon - Fixed width on right */}
+                  <div className="hidden lg:flex lg:w-48 lg:h-48 lg:items-center lg:justify-center lg:flex-shrink-0">
+                    <img
+                      src={activity.iconSrc}
+                      alt={`${activity.title} icon`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                 </div>
-
-                {/* Description */}
-                <p className="text-sm lg:text-base leading-relaxed text-[#515151] mb-4 lg:mb-6">
-                  {club.description}
-                </p>
-
-                {/* Time */}
-                <p className="text-sm lg:text-base font-medium text-[#252650] mb-6 lg:mb-8">
-                  {club.time}
-                </p>
-
-                {/* Book Now Button */}
-                <button
-                  onClick={() => openModal(club)}
-                  className="text-white cursor-pointer font-medium text-sm lg:text-base px-6 py-3 lg:px-8 lg:py-4 rounded-[10px] hover:opacity-90 transition-opacity duration-300"
-                  style={{ backgroundColor: club.buttonColor }}
-                >
-                  Book Now
-                </button>
               </div>
             ))}
           </div>
@@ -353,7 +357,7 @@ const BookClubs: React.FC = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between p-6 border-b">
                 <h3 className="text-2xl font-bold" style={{ color: "#F6353B" }}>
-                  Book {selectedClub?.title}
+                  Book {selectedActivity?.title}
                 </h3>
                 <button
                   onClick={closeModal}
@@ -408,7 +412,7 @@ const BookClubs: React.FC = () => {
                   <div className="bg-gray-50 rounded-lg p-4 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Price per day:</span>
-                      <span>£8.00</span>
+                      <span>{selectedActivity?.price}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Selected days:</span>
@@ -425,16 +429,17 @@ const BookClubs: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Club Details */}
+                  {/* Activity Details */}
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-800 mb-2">
-                      Club Details
+                      Activity Details
                     </h4>
                     <p className="text-sm text-gray-600 mb-1">
-                      <strong>Time:</strong> {selectedClub?.time}
+                      <strong>Activity:</strong> {selectedActivity?.title}
                     </p>
                     <p className="text-sm text-gray-600">
-                      <strong>Description:</strong> {selectedClub?.description}
+                      <strong>Description:</strong>{" "}
+                      {selectedActivity?.description}
                     </p>
                   </div>
                 </div>
@@ -471,4 +476,4 @@ const BookClubs: React.FC = () => {
   );
 };
 
-export default BookClubs;
+export default CoomingSoon;
