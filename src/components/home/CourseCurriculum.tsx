@@ -80,8 +80,8 @@ const CourseCurriculumSection: React.FC = () => {
             Our Curriculum
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Every day is different at Spring Lane Nursery – here's how we
-            support your child's learning and development through the Early
+            Every day is different at Spring Lane Nursery – here&apos;s how we
+            support your child&apos;s learning and development through the Early
             Years Foundation Stage (EYFS).
           </p>
         </div>
