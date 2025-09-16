@@ -215,17 +215,17 @@ function generateJobApplicationEmailTemplate(
           display: inline-block;
           margin-top: 8px;
         }
-        .details-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 25px;
+       .details-grid {
           margin: 25px 0;
         }
+
         .detail-section {
           background: white;
           border: 2px solid #2C97A9;
           border-radius: 10px;
           padding: 20px;
+          flex: 1;
+          min-width: 280px;
         }
         .detail-section h4 {
           color: #2C97A9;
@@ -344,9 +344,6 @@ function generateJobApplicationEmailTemplate(
 
           <div class="applicant-card">
             <div class="applicant-header">
-              <div class="applicant-avatar">${data.fullName
-                .charAt(0)
-                .toUpperCase()}</div>
               <div class="applicant-info">
                 <h3>${data.fullName}</h3>
                 <p>📧 ${data.emailAddress}</p>
@@ -358,7 +355,7 @@ function generateJobApplicationEmailTemplate(
 
           <div class="details-grid">
             <div class="detail-section">
-              <h4>👤 Personal Information</h4>
+              <h4>Application details</h4>
               <div class="detail-row">
                 <span class="detail-label">Date of Birth:</span>
                 <span class="detail-value">${new Date(
@@ -375,61 +372,33 @@ function generateJobApplicationEmailTemplate(
                 <span class="detail-label">Address:</span>
                 <span class="detail-value">${data.fullHomeAddress}</span>
               </div>
-            </div>
-
-            <div class="detail-section">
-              <h4>🛡️ Work Authorization</h4>
               <div class="detail-row">
                 <span class="detail-label">Right to Work UK:</span>
                 <span class="detail-value">
-                  <span class="status-indicator">
-                    <span class="status-dot" style="background: ${
-                      data.rightToWorkUK.toLowerCase() === "yes"
-                        ? "#28a745"
-                        : "#dc3545"
-                    }"></span>
-                    ${data.rightToWorkUK.toUpperCase()}
-                  </span>
+                  ${data.rightToWorkUK.toUpperCase()}
                 </span>
               </div>
-              <div class="detail-row">
+
+               <div class="detail-row">
                 <span class="detail-label">DBS Certificate:</span>
                 <span class="detail-value">
-                  <span class="status-indicator">
-                    <span class="status-dot" style="background: ${
-                      data.currentDBSCertificate.toLowerCase() === "yes"
-                        ? "#28a745"
-                        : "#dc3545"
-                    }"></span>
-                    ${data.currentDBSCertificate.toUpperCase()}
-                  </span>
+                  ${data.currentDBSCertificate.toUpperCase()}
                 </span>
               </div>
-              ${
-                data.dbsCertificateNumber
-                  ? `
+               ${
+                 data.dbsCertificateNumber
+                   ? `
               <div class="detail-row">
                 <span class="detail-label">DBS Number:</span>
                 <span class="detail-value">${data.dbsCertificateNumber}</span>
               </div>
               `
-                  : ""
-              }
-            </div>
-
-            <div class="detail-section">
-              <h4>🔍 Background Check</h4>
-              <div class="detail-row">
+                   : ""
+               }
+                <div class="detail-row">
                 <span class="detail-label">Criminal Convictions:</span>
                 <span class="detail-value">
-                  <span class="status-indicator">
-                    <span class="status-dot" style="background: ${
-                      data.criminalConvictions.toLowerCase() === "no"
-                        ? "#28a745"
-                        : "#ffc107"
-                    }"></span>
-                    ${data.criminalConvictions.toUpperCase()}
-                  </span>
+                  ${data.criminalConvictions.toUpperCase()}
                 </span>
               </div>
               ${
@@ -442,6 +411,8 @@ function generateJobApplicationEmailTemplate(
               `
                   : ""
               }
+              
+              
             </div>
           </div>
 
@@ -490,13 +461,6 @@ function generateJobApplicationEmailTemplate(
           <div class="timestamp-card">
             <strong>📅 Application Submitted:</strong>
             ${currentDate} at ${currentTime}
-          </div>
-
-          <div class="action-buttons">
-            <a href="mailto:${
-              data.emailAddress
-            }" class="btn btn-primary">📧 Contact Applicant</a>
-            <a href="#" class="btn btn-secondary">📋 Review Application</a>
           </div>
         </div>
 
@@ -761,15 +725,6 @@ function generateJobApplicationEmailTemplate(
             </ul>
           </div>
 
-          <div class="contact-card">
-            <h3>📞 Questions about your application?</h3>
-            <p><strong>HR Department</strong></p>
-            <p>📧 [Your HR Email]</p>
-            <p>📞 [Your Phone Number]</p>
-            <p><strong>Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM</p>
-            <p><small>Please quote reference: ${applicationRef}</small></p>
-          </div>
-
           <p>We're committed to creating an inclusive and supportive work environment where every team member can thrive. Thank you for considering us as your next career opportunity!</p>
         </div>
 
@@ -868,7 +823,6 @@ interface JobApplicationRequest {
   references: string;
   whyWorkHere: string;
   declaration: boolean;
-  signature: string;
   date: string;
 }
 
@@ -900,14 +854,14 @@ function validateJobApplication(data: ValidationData): {
     "references",
     "whyWorkHere",
     "declaration",
-    "signature",
     "date",
   ];
 
   requiredFields.forEach((field) => {
     if (
       !data[field] ||
-      (typeof data[field] === "string" && (data[field] as string).trim().length === 0)
+      (typeof data[field] === "string" &&
+        (data[field] as string).trim().length === 0)
     ) {
       const fieldLabel = field
         .replace(/([A-Z])/g, " $1")
@@ -927,12 +881,20 @@ function validateJobApplication(data: ValidationData): {
 
   // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (data.emailAddress && typeof data.emailAddress === "string" && !emailRegex.test(data.emailAddress)) {
+  if (
+    data.emailAddress &&
+    typeof data.emailAddress === "string" &&
+    !emailRegex.test(data.emailAddress)
+  ) {
     errors.push("Please enter a valid email address");
   }
 
   // Phone number validation - removed unused phoneRegex variable
-  if (data.phoneNumber && typeof data.phoneNumber === "string" && data.phoneNumber.trim()) {
+  if (
+    data.phoneNumber &&
+    typeof data.phoneNumber === "string" &&
+    data.phoneNumber.trim()
+  ) {
     const cleanedPhone = data.phoneNumber.replace(/\s|-|\(|\)/g, "");
     const digitRegex = /^[\+]?[\d]{7,15}$/;
 
@@ -964,17 +926,17 @@ function validateJobApplication(data: ValidationData): {
   }
 
   // National Insurance Number format validation (basic UK format)
-  const niRegex =
-    /^[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z]\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]$/i;
-  if (
-    data.nationalInsuranceNumber &&
-    typeof data.nationalInsuranceNumber === "string" &&
-    !niRegex.test(data.nationalInsuranceNumber.replace(/\s/g, ""))
-  ) {
-    errors.push(
-      "Please enter a valid National Insurance Number (e.g., AB123456C)"
-    );
-  }
+  // const niRegex =
+  //   /^[A-CEGHJ-PR-TW-Z][A-CEGHJ-NPR-TW-Z]\s?\d{2}\s?\d{2}\s?\d{2}\s?[A-D]$/i;
+  // if (
+  //   data.nationalInsuranceNumber &&
+  //   typeof data.nationalInsuranceNumber === "string" &&
+  //   !niRegex.test(data.nationalInsuranceNumber.replace(/\s/g, ""))
+  // ) {
+  //   errors.push(
+  //     "Please enter a valid National Insurance Number (e.g., AB123456C)"
+  //   );
+  // }
 
   // Right to work validation
   if (
@@ -1004,19 +966,35 @@ function validateJobApplication(data: ValidationData): {
   }
 
   // Text length validations
-  if (data.qualifications && typeof data.qualifications === "string" && data.qualifications.length > 2000) {
+  if (
+    data.qualifications &&
+    typeof data.qualifications === "string" &&
+    data.qualifications.length > 2000
+  ) {
     errors.push("Qualifications section must be less than 2000 characters");
   }
 
-  if (data.employmentHistory && typeof data.employmentHistory === "string" && data.employmentHistory.length > 3000) {
+  if (
+    data.employmentHistory &&
+    typeof data.employmentHistory === "string" &&
+    data.employmentHistory.length > 3000
+  ) {
     errors.push("Employment history must be less than 3000 characters");
   }
 
-  if (data.references && typeof data.references === "string" && data.references.length > 2000) {
+  if (
+    data.references &&
+    typeof data.references === "string" &&
+    data.references.length > 2000
+  ) {
     errors.push("References section must be less than 2000 characters");
   }
 
-  if (data.whyWorkHere && typeof data.whyWorkHere === "string" && data.whyWorkHere.length > 1500) {
+  if (
+    data.whyWorkHere &&
+    typeof data.whyWorkHere === "string" &&
+    data.whyWorkHere.length > 1500
+  ) {
     errors.push("Why work here section must be less than 1500 characters");
   }
 
@@ -1114,7 +1092,6 @@ export async function POST(request: NextRequest) {
 
       // Declaration
       declaration: body.declaration,
-      signature: body.signature.trim(),
       applicationDate: new Date(body.date),
 
       // System fields
@@ -1164,7 +1141,6 @@ export async function POST(request: NextRequest) {
       references: body.references.trim(),
       whyWorkHere: body.whyWorkHere.trim(),
       declaration: body.declaration,
-      signature: body.signature.trim(),
       date: body.date,
     };
 

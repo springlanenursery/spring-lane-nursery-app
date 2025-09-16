@@ -6,12 +6,16 @@ interface ApplicationModalProps {
   isOpen: boolean;
   onClose: () => void;
   jobTitle: string;
+  showSuccess: (title: string, message: string) => void;
+  showError: (title: string, message: string, errors?: string[]) => void;
 }
 
 const ApplicationModal: React.FC<ApplicationModalProps> = ({
   isOpen,
   onClose,
   jobTitle,
+  showSuccess,
+  showError,
 }) => {
   const [formData, setFormData] = useState({
     positionApplyingFor: jobTitle,
@@ -33,17 +37,15 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
     references: "",
     whyWorkHere: "",
     declaration: false,
-    signature: "",
     date: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const { showSuccess, showError, StatusModalComponent } = useStatusModal();
 
   // Check if form is valid for submission
   const isFormValid = () => {
     return (
-      formData.declaration && 
+      formData.declaration &&
       formData.fullName.trim() &&
       formData.dateOfBirth &&
       formData.nationalInsuranceNumber.trim() &&
@@ -54,7 +56,6 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
       formData.employmentHistory.trim() &&
       formData.references.trim() &&
       formData.whyWorkHere.trim() &&
-      formData.signature.trim() &&
       formData.date
     );
   };
@@ -126,33 +127,14 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
           references: "",
           whyWorkHere: "",
           declaration: false,
-          signature: "",
           date: "",
         });
 
         showSuccess(
           "Application Submitted Successfully!",
-          data.message,
-          data.data
-            ? [
-                `Reference: ${data.data.applicationReference}`,
-                `Position: ${data.data.position}`,
-                `Status: ${data.data.status}`,
-                `Submitted: ${new Date(
-                  data.data.submittedAt
-                ).toLocaleString()}`,
-                "",
-                "Next Steps:",
-                ...data.data.nextSteps,
-              ]
-            : [],
-          {
-            text: "Apply for Another Position",
-            onClick: () => {
-              // You could implement job listing navigation here
-              window.open("/careers", "_blank");
-            },
-          }
+          `Thank you ${formData.fullName.trim()}! Your application for ${
+            formData.positionApplyingFor
+          } has been successfully submitted.`
         );
       } else {
         showError(
@@ -405,8 +387,9 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-3">
                   Do you have any criminal convictions, cautions, reprimands, or
-                  warnings that are not &apos;protected&apos; under the Rehabilitation of
-                  Offenders Act 1974? If yes, please provide details:
+                  warnings that are not &apos;protected&apos; under the
+                  Rehabilitation of Offenders Act 1974? If yes, please provide
+                  details:
                 </label>
                 <div className="flex space-x-4 mb-4">
                   <button
@@ -579,22 +562,6 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    Signature:
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="signature"
-                      value={formData.signature}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:border-[#2C97A9] outline-none"
-                      placeholder="Sign here"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
                     Date:
                   </label>
                   <input
@@ -666,7 +633,6 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
           </div>
         </div>
       </div>
-      <StatusModalComponent />
     </>
   );
 };

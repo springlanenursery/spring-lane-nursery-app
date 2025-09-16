@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ApplicationModal from "./ApplicationModal";
+import { useStatusModal } from "../common/StatusModal";
 
 interface JobDetailsProps {
   jobTitle: string;
@@ -9,6 +10,7 @@ interface JobDetailsProps {
 
 const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { showSuccess, showError, StatusModalComponent } = useStatusModal();
 
   // Job data for different positions
   const jobData = {
@@ -372,7 +374,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
 
           {/* Sidebar - Apply Card */}
           <div className="lg:col-span-1">
-            <div className="bg-[#252650] rounded-2xl p-6 text-white sticky top-8">
+            <div className="bg-[#252650] rounded-2xl p-6 text-white sticky top-30">
               <h3 className="text-xl font-semibold mb-6">Apply for the job</h3>
 
               <div className="space-y-4 mb-6">
@@ -432,7 +434,11 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         jobTitle={jobTitle}
+        showSuccess={showSuccess}
+        showError={showError}
       />
+
+      <StatusModalComponent />
     </div>
   );
 };
