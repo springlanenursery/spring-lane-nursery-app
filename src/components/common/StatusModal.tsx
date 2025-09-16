@@ -132,7 +132,7 @@ const StatusModal: React.FC<StatusModalProps> = ({
             
             <button
               onClick={onClose}
-              className="w-full border-2 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-gray-600 border-gray-300 hover:bg-gray-50"
+              className="w-full cursor-pointer border-2 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 text-gray-600 border-gray-300 hover:bg-gray-50"
             >
               Close
             </button>
