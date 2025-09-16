@@ -7,7 +7,6 @@ import DownloadForms from "@/components/forms/DownloadForms";
 const Forms = () => {
   return (
     <div>
-      <Navbar />
       <Header />
       <DownloadForms/>
       <Footer />

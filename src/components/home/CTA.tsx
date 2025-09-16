@@ -337,10 +337,7 @@ const CTA: React.FC = () => {
                 ).toLocaleString()}`,
               ]
             : [],
-          {
-            text: "Send Another Message",
-            onClick: () => setShowContactModal(true),
-          }
+         
         );
       } else {
         showError(

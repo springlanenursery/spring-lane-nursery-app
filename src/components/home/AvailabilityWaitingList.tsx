@@ -12,32 +12,38 @@ interface FormData {
 // International phone number formatting function
 const formatPhoneNumber = (value: string): string => {
   if (!value) return value;
-  
+
   // Allow + at the beginning and numbers
-  let cleaned = value.replace(/[^\d+]/g, '');
-  
+  let cleaned = value.replace(/[^\d+]/g, "");
+
   // If it starts with +, preserve it
-  if (value.startsWith('+')) {
+  if (value.startsWith("+")) {
     // Limit to 16 characters total (+ plus 15 digits max)
-    cleaned = '+' + cleaned.substring(1).slice(0, 15);
+    cleaned = "+" + cleaned.substring(1).slice(0, 15);
   } else {
     // Limit to 15 digits for regular numbers
     cleaned = cleaned.slice(0, 15);
   }
-  
+
   // Basic formatting: add spaces every 3-4 digits for readability
   // This works for most international numbers
-  if (cleaned.startsWith('+')) {
+  if (cleaned.startsWith("+")) {
     const digits = cleaned.substring(1);
     if (digits.length > 6) {
-      return `${cleaned.substring(0, 4)} ${digits.substring(3, 6)} ${digits.substring(6)}`;
+      return `${cleaned.substring(0, 4)} ${digits.substring(
+        3,
+        6
+      )} ${digits.substring(6)}`;
     } else if (digits.length > 3) {
       return `${cleaned.substring(0, 4)} ${digits.substring(3)}`;
     }
     return cleaned;
   } else {
     if (cleaned.length > 6) {
-      return `${cleaned.substring(0, 3)} ${cleaned.substring(3, 6)} ${cleaned.substring(6)}`;
+      return `${cleaned.substring(0, 3)} ${cleaned.substring(
+        3,
+        6
+      )} ${cleaned.substring(6)}`;
     } else if (cleaned.length > 3) {
       return `${cleaned.substring(0, 3)} ${cleaned.substring(3)}`;
     }
@@ -48,13 +54,13 @@ const formatPhoneNumber = (value: string): string => {
 // International phone validation
 const validateInternationalPhone = (phone: string): boolean => {
   // Remove all non-numeric characters except + at the beginning
-  const cleanPhone = phone.replace(/[^\d+]/g, '');
-  
+  const cleanPhone = phone.replace(/[^\d+]/g, "");
+
   // Basic international phone validation
   // Must be between 7-15 digits (ITU-T E.164 standard)
   // Can optionally start with +
   const phoneRegex = /^\+?[\d]{7,15}$/;
-  
+
   return phoneRegex.test(cleanPhone);
 };
 
@@ -125,7 +131,6 @@ const ModalForm = React.memo(
     type: "availability" | "waitlist";
     isLoading: boolean;
   }) => {
-
     // Handle phone number input with formatting
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const formattedValue = formatPhoneNumber(e.target.value);
@@ -135,31 +140,36 @@ const ModalForm = React.memo(
     // Allow + symbol for international numbers
     const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       // Allow: backspace, delete, tab, escape, enter, space (for formatting)
-      if ([8, 9, 27, 13, 46, 32].indexOf(e.keyCode) !== -1 ||
-          // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-          (e.keyCode === 65 && e.ctrlKey === true) ||
-          (e.keyCode === 67 && e.ctrlKey === true) ||
-          (e.keyCode === 86 && e.ctrlKey === true) ||
-          (e.keyCode === 88 && e.ctrlKey === true) ||
-          // Allow: home, end, left, right arrows
-          (e.keyCode >= 35 && e.keyCode <= 39)) {
+      if (
+        [8, 9, 27, 13, 46, 32].indexOf(e.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (e.keyCode === 65 && e.ctrlKey === true) ||
+        (e.keyCode === 67 && e.ctrlKey === true) ||
+        (e.keyCode === 86 && e.ctrlKey === true) ||
+        (e.keyCode === 88 && e.ctrlKey === true) ||
+        // Allow: home, end, left, right arrows
+        (e.keyCode >= 35 && e.keyCode <= 39)
+      ) {
         return;
       }
-      
+
       // Allow + symbol only at the beginning
-      if (e.key === '+') {
+      if (e.key === "+") {
         const input = e.currentTarget;
         const cursorPosition = input.selectionStart || 0;
-        if (cursorPosition === 0 && !input.value.includes('+')) {
+        if (cursorPosition === 0 && !input.value.includes("+")) {
           return; // Allow + at the beginning
         } else {
           e.preventDefault(); // Don't allow + elsewhere
           return;
         }
       }
-      
+
       // Ensure that it is a number and stop other characters
-      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+      if (
+        (e.shiftKey || e.keyCode < 48 || e.keyCode > 57) &&
+        (e.keyCode < 96 || e.keyCode > 105)
+      ) {
         e.preventDefault();
       }
     };
@@ -316,11 +326,9 @@ const AvailabilityWaitingList = () => {
 
     // Validate phone number before submission
     if (!validateInternationalPhone(availabilityForm.phoneNumber)) {
-      showError(
-        "Invalid Phone Number",
-        "Please enter a valid phone number",
-        ["Examples: +1 234 567 8900, 123 456 7890, +44 20 7946 0958"]
-      );
+      showError("Invalid Phone Number", "Please enter a valid phone number", [
+        "Examples: +1 234 567 8900, 123 456 7890, +44 20 7946 0958",
+      ]);
       return;
     }
 
@@ -328,7 +336,10 @@ const AvailabilityWaitingList = () => {
 
     try {
       // Clean phone number for API submission (remove spaces)
-      const cleanedPhoneNumber = availabilityForm.phoneNumber.replace(/\s/g, '');
+      const cleanedPhoneNumber = availabilityForm.phoneNumber.replace(
+        /\s/g,
+        ""
+      );
 
       const response = await fetch("/api/availability/check", {
         method: "POST",
@@ -337,7 +348,7 @@ const AvailabilityWaitingList = () => {
         },
         body: JSON.stringify({
           ...availabilityForm,
-          phoneNumber: cleanedPhoneNumber
+          phoneNumber: cleanedPhoneNumber,
         }),
       });
 
@@ -361,11 +372,7 @@ const AvailabilityWaitingList = () => {
                   data.data.submittedAt
                 ).toLocaleString()}`,
               ]
-            : [],
-          {
-            text: "Check Another Request",
-            onClick: () => setShowAvailabilityModal(true),
-          }
+            : []
         );
       } else {
         showError(
@@ -391,11 +398,9 @@ const AvailabilityWaitingList = () => {
 
     // Validate phone number before submission
     if (!validateInternationalPhone(waitlistForm.phoneNumber)) {
-      showError(
-        "Invalid Phone Number",
-        "Please enter a valid phone number",
-        ["Examples: +1 234 567 8900, 123 456 7890, +44 20 7946 0958"]
-      );
+      showError("Invalid Phone Number", "Please enter a valid phone number", [
+        "Examples: +1 234 567 8900, 123 456 7890, +44 20 7946 0958",
+      ]);
       return;
     }
 
@@ -403,7 +408,7 @@ const AvailabilityWaitingList = () => {
 
     try {
       // Clean phone number for API submission (remove spaces)
-      const cleanedPhoneNumber = waitlistForm.phoneNumber.replace(/\s/g, '');
+      const cleanedPhoneNumber = waitlistForm.phoneNumber.replace(/\s/g, "");
 
       const response = await fetch("/api/waitlist/join", {
         method: "POST",
@@ -412,7 +417,7 @@ const AvailabilityWaitingList = () => {
         },
         body: JSON.stringify({
           ...waitlistForm,
-          phoneNumber: cleanedPhoneNumber
+          phoneNumber: cleanedPhoneNumber,
         }),
       });
 
@@ -422,29 +427,7 @@ const AvailabilityWaitingList = () => {
         setShowWaitlistModal(false);
         setWaitlistForm({ fullName: "", phoneNumber: "", childrenDetails: "" });
 
-        showSuccess(
-          "Welcome to the Waitlist!",
-          data.message,
-          data.data
-            ? [
-                `Your Position: #${data.data.position}`,
-                `Estimated Wait: ${data.data.estimatedWaitTime}`,
-                `Joined: ${new Date(data.data.submittedAt).toLocaleString()}`,
-              ]
-            : [],
-          {
-            text: "Check Waitlist Status",
-            onClick: () => {
-              // You could implement a waitlist status check here
-              window.open(
-                `/waitlist-status?phone=${encodeURIComponent(
-                  cleanedPhoneNumber
-                )}`,
-                "_blank"
-              );
-            },
-          }
-        );
+        showSuccess("Welcome to the Waitlist!", data.message);
       } else {
         showError(
           "Failed to Join Waitlist",

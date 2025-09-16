@@ -54,10 +54,12 @@ function validateWaitlistRequest(data: UnvalidatedWaitlistData): {
     );
   }
 
-  // Phone number format validation (basic)
   if (data.phoneNumber && typeof data.phoneNumber === "string") {
-    const phoneRegex = /^[\+]?[1-9][\d]{3,14}$/;
-    if (!phoneRegex.test(data.phoneNumber.replace(/\s|-|\(|\)/g, ""))) {
+    // Very permissive - just check for reasonable length and contains digits
+    const phoneRegex = /^[\+\-\s\(\)\d]{7,20}$/;
+    const hasDigits = /\d/.test(data.phoneNumber);
+
+    if (!phoneRegex.test(data.phoneNumber) || !hasDigits) {
       errors.push("Please enter a valid phone number");
     }
   }
@@ -96,15 +98,6 @@ async function sendWaitlistEmail(
     Subject: `New Waitlist Registration - Position #${position}`,
     HtmlBody: emailTemplate.adminHtml,
     TextBody: emailTemplate.adminText,
-  };
-
-  // Send confirmation email to user
-  const userEmailPayload = {
-    From: fromEmail,
-    To: fromEmail, // Fallback - you might want to add an email field to the form
-    Subject: `Welcome to Our Waitlist - Position #${position}`,
-    HtmlBody: emailTemplate.userHtml,
-    TextBody: emailTemplate.userText,
   };
 
   try {
@@ -356,22 +349,14 @@ function generateWaitlistEmailTemplate(
         <div class="header">
           <h1>📋 New Waitlist Registration</h1>
           <p>A family has joined your waitlist</p>
-          <div class="position-badge">Position #${position}</div>
         </div>
         
         <div class="content">
-          <div class="info-alert">
-            📊 Waitlist Management: Family added at position ${position} with estimated wait time of ${estimatedWaitTime}
-          </div>
 
           <div class="family-card">
             <div class="family-header">
-              <div class="family-avatar">${data.fullName
-                .charAt(0)
-                .toUpperCase()}</div>
               <div class="family-info">
-                <h3>${data.fullName}</h3>
-                <p>Waitlist Position #${position}</p>
+               Full name: <h3>${data.fullName}</h3>
               </div>
             </div>
             
@@ -384,19 +369,6 @@ function generateWaitlistEmailTemplate(
             <div class="detail-row">
               <span class="detail-label">⏰ Wait Time:</span>
               <span class="detail-value">${estimatedWaitTime}</span>
-            </div>
-          </div>
-
-          <div class="position-stats">
-            <div class="stat-card">
-              <span class="stat-number">#${position}</span>
-              <span class="stat-label">Position</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">${
-                estimatedWaitTime.split("-")[0]
-              }</span>
-              <span class="stat-label">Est. Wait</span>
             </div>
           </div>
 
@@ -419,9 +391,6 @@ function generateWaitlistEmailTemplate(
             ${currentDate} at ${currentTime}
           </div>
 
-          <div class="action-reminder">
-            💡 Remember to update families as positions change and spots become available
-          </div>
         </div>
 
         <div class="footer">
