@@ -142,7 +142,7 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
             {/* Child's Details */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child's Details
+                Child&apos;s Details
               </h3>
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-2">
@@ -223,7 +223,7 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
               </h3>
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  How would you describe your child's personality?
+                  How would you describe your child&apos;s personality?
                 </label>
                 <textarea
                   name="personality"
@@ -642,7 +642,7 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
 
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Any concerns you'd like to discuss with us?
+                  Any concerns you&apos;d like to discuss with us?
                 </label>
                 <textarea
                   name="concerns"

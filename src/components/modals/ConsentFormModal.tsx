@@ -184,7 +184,7 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
                     className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
                   />
                   <span className="text-sm text-[#252650]">
-                    Use of child's photo on nursery displays
+                    Use of child&apos;s photo on nursery displays
                   </span>
                 </label>
 
@@ -197,7 +197,7 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
                     className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
                   />
                   <span className="text-sm text-[#252650]">
-                    Use of child's photo in online learning journal (e.g., Tapestry)
+                    Use of child&apos;s photo in online learning journal (e.g., Tapestry)
                   </span>
                 </label>
 

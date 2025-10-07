@@ -136,7 +136,7 @@ const ChangeOfDetailsModal: React.FC<ChangeOfDetailsModalProps> = ({
             {/* Child's Details */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child's Details
+                Child&apos;s Details
               </h3>
               <div>
                 <label className="block text-sm font-semibold text-[#252650] mb-2">
@@ -237,7 +237,7 @@ const ChangeOfDetailsModal: React.FC<ChangeOfDetailsModalProps> = ({
               </h3>
               <p className="text-sm text-[#666666]">
                 I confirm that the above change(s) are accurate and should be
-                updated on my child's records.
+                updated on my child&apos;s records.
               </p>
 
               <div>

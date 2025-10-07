@@ -525,7 +525,7 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
                   />
                   <span className="text-sm text-[#252650]">
                     I will provide all medication in the original container with
-                    the child's name and prescription label.
+                    the child&apos;s name and prescription label.
                   </span>
                 </label>
               </div>
