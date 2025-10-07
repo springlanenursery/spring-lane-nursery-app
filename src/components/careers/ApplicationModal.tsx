@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useStatusModal } from "../common/StatusModal";
 
 interface ApplicationModalProps {
   isOpen: boolean;

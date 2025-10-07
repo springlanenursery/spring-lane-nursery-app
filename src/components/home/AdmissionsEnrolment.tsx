@@ -142,10 +142,12 @@ const AdmissionsEnrolment = () => {
       buttonColor: "#2AA631",
       buttonText: "Forms",
       items: [
-        "Registration forms",
-        "Funding applications",
-        "Medical information",
-        "Emergency contacts",
+        "Application & Registration Form",
+        "Funding Declaration Form",
+        "Medical Form & Healthcare Plan",
+        "About Me Form",
+        "Consent Form",
+        "Change of Details Form",
       ],
     },
   ];
