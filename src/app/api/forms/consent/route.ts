@@ -1,6 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface ConsentFormData {
+  childFullName: string;
+  childDOB: string;
+  parentName: string;
+  date: string;
+  localWalks: boolean;
+  photoDisplays: boolean;
+  photoLearningJournal: boolean;
+  groupPhotos: boolean;
+  emergencyMedical: boolean;
+  sunCream: boolean;
+  facePainting: boolean;
+  toothbrushing: boolean;
+  studentObservations: boolean;
+  petsAnimals: boolean;
+  firstAidPlasters: boolean;
+  additionalComments?: string;
+}
+
+interface ConsentFormDocument extends ConsentFormData {
+  consentReference: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface ConsentItem {
+  key: keyof ConsentFormData;
+  label: string;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +46,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendConsentEmail(data: any, consentRef: string) {
+async function sendConsentEmail(
+  data: ConsentFormData,
+  consentRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -28,22 +62,28 @@ async function sendConsentEmail(data: any, consentRef: string) {
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
-  const consentItems = [
-    { key: 'localWalks', label: 'Local walks and short outings' },
-    { key: 'photoDisplays', label: 'Use of child\'s photo on nursery displays' },
-    { key: 'photoLearningJournal', label: 'Use of child\'s photo in online learning journal' },
-    { key: 'groupPhotos', label: 'Group photos' },
-    { key: 'emergencyMedical', label: 'Emergency medical treatment' },
-    { key: 'sunCream', label: 'Application of sun cream' },
-    { key: 'facePainting', label: 'Face painting' },
-    { key: 'toothbrushing', label: 'Toothbrushing at nursery' },
-    { key: 'studentObservations', label: 'Observations by students/staff in training' },
-    { key: 'petsAnimals', label: 'Contact with pets or animals' },
-    { key: 'firstAidPlasters', label: 'Use of plasters or bandages' },
+  const consentItems: ConsentItem[] = [
+    { key: "localWalks", label: "Local walks and short outings" },
+    { key: "photoDisplays", label: "Use of child's photo on nursery displays" },
+    {
+      key: "photoLearningJournal",
+      label: "Use of child's photo in online learning journal",
+    },
+    { key: "groupPhotos", label: "Group photos" },
+    { key: "emergencyMedical", label: "Emergency medical treatment" },
+    { key: "sunCream", label: "Application of sun cream" },
+    { key: "facePainting", label: "Face painting" },
+    { key: "toothbrushing", label: "Toothbrushing at nursery" },
+    {
+      key: "studentObservations",
+      label: "Observations by students/staff in training",
+    },
+    { key: "petsAnimals", label: "Contact with pets or animals" },
+    { key: "firstAidPlasters", label: "Use of plasters or bandages" },
   ];
 
-  const grantedConsents = consentItems.filter(item => data[item.key]);
-  const deniedConsents = consentItems.filter(item => !data[item.key]);
+  const grantedConsents = consentItems.filter((item) => data[item.key]);
+  const deniedConsents = consentItems.filter((item) => !data[item.key]);
 
   const adminHtml = `
     <!DOCTYPE html>
@@ -72,36 +112,57 @@ async function sendConsentEmail(data: any, consentRef: string) {
         <div class="content">
           <div class="section">
             <h3>Child Details</h3>
-            <div class="field"><strong>Full Name:</strong> ${data.childFullName}</div>
-            <div class="field"><strong>Date of Birth:</strong> ${new Date(data.childDOB).toLocaleDateString()}</div>
+            <div class="field"><strong>Full Name:</strong> ${
+              data.childFullName
+            }</div>
+            <div class="field"><strong>Date of Birth:</strong> ${new Date(
+              data.childDOB
+            ).toLocaleDateString()}</div>
           </div>
 
           <div class="section">
             <h3>Consents Granted ✓</h3>
-            ${grantedConsents.length > 0 ? grantedConsents.map(item => 
-              `<div class="field granted">✓ ${item.label}</div>`
-            ).join('') : '<p>No specific consents granted</p>'}
+            ${
+              grantedConsents.length > 0
+                ? grantedConsents
+                    .map(
+                      (item) =>
+                        `<div class="field granted">✓ ${item.label}</div>`
+                    )
+                    .join("")
+                : "<p>No specific consents granted</p>"
+            }
           </div>
 
-          ${deniedConsents.length > 0 ? `
+          ${
+            deniedConsents.length > 0
+              ? `
           <div class="section">
             <h3>Consents NOT Granted ✗</h3>
-            ${deniedConsents.map(item => 
-              `<div class="field denied">✗ ${item.label}</div>`
-            ).join('')}
+            ${deniedConsents
+              .map((item) => `<div class="field denied">✗ ${item.label}</div>`)
+              .join("")}
           </div>
-          ` : ''}
+          `
+              : ""
+          }
 
-          ${data.additionalComments ? `
+          ${
+            data.additionalComments
+              ? `
           <div class="section">
             <h3>Additional Comments</h3>
             <p>${data.additionalComments}</p>
           </div>
-          ` : ''}
+          `
+              : ""
+          }
 
           <div class="section">
             <p><strong>Submitted by:</strong> ${data.parentName}</p>
-            <p><strong>Date:</strong> ${new Date(data.date).toLocaleDateString()}</p>
+            <p><strong>Date:</strong> ${new Date(
+              data.date
+            ).toLocaleDateString()}</p>
           </div>
 
           <p style="margin-top: 30px;">Submitted: ${currentDate} at ${currentTime}</p>
@@ -204,17 +265,17 @@ async function sendConsentEmail(data: any, consentRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as ConsentFormData;
 
     const db = await connectToDatabase();
-    const collection = db.collection("consent_forms");
+    const collection = db.collection<ConsentFormDocument>("consent_forms");
 
     const consentRef = `CONSENT-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    const consentForm = {
+    const consentForm: ConsentFormDocument = {
       consentReference: consentRef,
       ...body,
       status: "active",

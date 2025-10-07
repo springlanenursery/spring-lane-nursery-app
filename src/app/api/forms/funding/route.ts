@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface FundingFormData {
+  childFullName: string;
+  childDOB: string;
+  homeAddress: string;
+  postcode: string;
+  parentFullName: string;
+  nationalInsuranceNumber: string;
+  employmentStatus: string;
+  thirtyHourCode?: string;
+  fundingTypes: string[];
+}
+
+interface FundingFormDocument extends FundingFormData {
+  fundingReference: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +34,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendFundingEmail(data: any, fundingRef: string) {
+async function sendFundingEmail(
+  data: FundingFormData,
+  fundingRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -196,17 +218,19 @@ async function sendFundingEmail(data: any, fundingRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as FundingFormData;
 
     const db = await connectToDatabase();
-    const collection = db.collection("funding_declarations");
+    const collection = db.collection<FundingFormDocument>(
+      "funding_declarations"
+    );
 
     const fundingRef = `FUND-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    const fundingDeclaration = {
+    const fundingDeclaration: FundingFormDocument = {
       fundingReference: fundingRef,
       ...body,
       status: "pending_verification",

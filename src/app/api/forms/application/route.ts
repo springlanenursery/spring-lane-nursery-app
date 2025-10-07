@@ -1,6 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface ApplicationFormData {
+  childFullName: string;
+  childDOB: string;
+  childNHS?: string;
+  childGender?: string;
+  homeAddress: string;
+  postcode: string;
+  parent1Name: string;
+  parent1Relationship: string;
+  parent1Email: string;
+  parent1Phone: string;
+  parent1ParentalResponsibility: string;
+  parent2Name?: string;
+  parent2Relationship?: string;
+  parent2Email?: string;
+  parent2Phone?: string;
+  emergencyContact1: string;
+  emergencyContact2: string;
+  gpName: string;
+  immunisations: string;
+  allergies?: string;
+  dietaryNeeds?: string;
+  startDate: string;
+  daysAttending: string[];
+  sessionType: string;
+  fundedHours: string;
+}
+
+interface ApplicationDocument extends ApplicationFormData {
+  applicationReference: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +50,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendApplicationEmail(data: any, applicationRef: string) {
+async function sendApplicationEmail(
+  data: ApplicationFormData,
+  applicationRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -28,7 +66,6 @@ async function sendApplicationEmail(data: any, applicationRef: string) {
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
-  // Admin Email HTML
   const adminHtml = `
     <!DOCTYPE html>
     <html>
@@ -166,7 +203,6 @@ async function sendApplicationEmail(data: any, applicationRef: string) {
     </html>
   `;
 
-  // Parent Confirmation Email
   const parentHtml = `
     <!DOCTYPE html>
     <html>
@@ -226,7 +262,6 @@ async function sendApplicationEmail(data: any, applicationRef: string) {
   `;
 
   try {
-    // Send admin email
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -242,7 +277,6 @@ async function sendApplicationEmail(data: any, applicationRef: string) {
       }),
     });
 
-    // Send parent confirmation
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -266,20 +300,17 @@ async function sendApplicationEmail(data: any, applicationRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as ApplicationFormData;
 
-    // Connect to database
     const db = await connectToDatabase();
-    const collection = db.collection("applications");
+    const collection = db.collection<ApplicationDocument>("applications");
 
-    // Generate reference number
     const applicationRef = `APP-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    // Create application record
-    const application = {
+    const application: ApplicationDocument = {
       applicationReference: applicationRef,
       ...body,
       status: "submitted",
@@ -289,7 +320,6 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(application);
 
-    // Send email notifications
     sendApplicationEmail(body, applicationRef).catch((error) => {
       console.error("Failed to send application email:", error);
     });

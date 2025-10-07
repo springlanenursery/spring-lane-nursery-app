@@ -1,6 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface MedicalFormData {
+  childFullName: string;
+  childDOB: string;
+  homeAddress: string;
+  postcode: string;
+  gpName: string;
+  gpAddress: string;
+  healthVisitor?: string;
+  hasMedicalConditions: "Yes" | "No";
+  medicalConditionsDetails?: string;
+  hasAllergies: "Yes" | "No";
+  allergiesDetails?: string;
+  onLongTermMedication: "Yes" | "No";
+  longTermMedicationDetails?: string;
+  medicationName?: string;
+  medicationDosage?: string;
+  medicationFrequency?: string;
+  medicationStorage?: string;
+  medicationStartDate?: string;
+  medicationEndDate?: string;
+  parentName: string;
+}
+
+interface MedicalFormDocument extends MedicalFormData {
+  medicalReference: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +45,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendMedicalEmail(data: any, medicalRef: string) {
+async function sendMedicalEmail(
+  data: MedicalFormData,
+  medicalRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -257,17 +290,17 @@ async function sendMedicalEmail(data: any, medicalRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as MedicalFormData;
 
     const db = await connectToDatabase();
-    const collection = db.collection("medical_forms");
+    const collection = db.collection<MedicalFormDocument>("medical_forms");
 
     const medicalRef = `MED-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    const medicalForm = {
+    const medicalForm: MedicalFormDocument = {
       medicalReference: medicalRef,
       ...body,
       status: "active",

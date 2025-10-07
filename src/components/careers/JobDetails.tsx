@@ -68,7 +68,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
         "Opportunities to grow with a thriving and expanding setting",
         "Small, homely environment allowing for meaningful relationships with staff and families",
       ],
-      email: "ah.polock23@gmail.com", // You may want to update this with the actual application email
+      email: "info@springlanenursery.co.uk", // You may want to update this with the actual application email
       deadline: "Open until filled",
     },
     "Nursery Assistant": {
@@ -115,7 +115,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
         "Small, close-knit team environment with individualised care approach",
         "Opportunities to work as a key person to a small group of children",
       ],
-      email: "ah.polock23@gmail.com", // You may want to update this with the actual application email
+      email: "info@springlanenursery.co.uk", // You may want to update this with the actual application email
       deadline: "Rolling applications - early applications encouraged",
     },
     "Early Years Teacher": {
@@ -162,7 +162,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
         "Opportunities to grow and shape practice in a small, creative setting",
         "Small setting allowing for personalised attention and strong relationships",
       ],
-      email: "ah.polock23@gmail.com", // You may want to update this with the actual application email
+      email: "info@springlanenursery.co.uk", // You may want to update this with the actual application email
       deadline: "Rolling applications - early applications encouraged",
     },
     "Room Leader": {
@@ -212,7 +212,7 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
         "Small, homely nursery environment with strong bonds",
         "Close-knit team working in a friendly and supportive environment",
       ],
-      email: "ah.polock23@gmail.com", // You may want to update this with the actual application email
+      email: "info@springlanenursery.co.uk", // You may want to update this with the actual application email
       deadline: "Rolling applications - early applications encouraged",
     },
   };

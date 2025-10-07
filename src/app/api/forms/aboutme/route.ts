@@ -1,6 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface AboutMeFormData {
+  childFullName: string;
+  childDOB: string;
+  parentName: string;
+  preferredName?: string;
+  languagesSpoken?: string;
+  siblings?: string;
+  personality?: string;
+  emotionalExpression?: string;
+  fearsOrDislikes?: string;
+  feedsThemselves?: string;
+  preferredFoods?: string;
+  foodsToAvoid?: string;
+  usesCutlery?: string;
+  takesNaps?: string;
+  napTime?: string;
+  comfortItem?: string;
+  sleepRoutine?: string;
+  toiletTrained?: string;
+  toiletUse: string[];
+  toiletingRoutines?: string;
+  favouriteToys?: string;
+  favouriteSongs?: string;
+  whatMakesHappy?: string;
+  parentalHopes?: string;
+  concerns?: string;
+}
+
+interface AboutMeDocument extends AboutMeFormData {
+  aboutMeReference: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +50,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendAboutMeEmail(data: any, aboutMeRef: string) {
+async function sendAboutMeEmail(
+  data: AboutMeFormData,
+  aboutMeRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -252,7 +290,6 @@ async function sendAboutMeEmail(data: any, aboutMeRef: string) {
             <h3>What This Helps Us Do</h3>
             <ul>
               <li>Understand your child's unique personality and needs</li>
-              <li>Understand your child's unique personality and needs</li>
               <li>Create a personalized settling-in plan</li>
               <li>Support your child's routines and preferences</li>
               <li>Build strong relationships from day one</li>
@@ -308,17 +345,17 @@ async function sendAboutMeEmail(data: any, aboutMeRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as AboutMeFormData;
 
     const db = await connectToDatabase();
-    const collection = db.collection("aboutme_forms");
+    const collection = db.collection<AboutMeDocument>("aboutme_forms");
 
     const aboutMeRef = `ABOUTME-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    const aboutMeForm = {
+    const aboutMeForm: AboutMeDocument = {
       aboutMeReference: aboutMeRef,
       ...body,
       status: "completed",

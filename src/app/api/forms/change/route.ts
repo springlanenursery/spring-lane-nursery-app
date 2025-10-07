@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 
+interface ChangeDetailsFormData {
+  childFullName: string;
+  childDOB: string;
+  parentName: string;
+  date: string;
+  changeTypes: string[];
+  newInformation: string;
+  effectiveFrom: string;
+}
+
+interface ChangeDetailsDocument extends ChangeDetailsFormData {
+  changeReference: string;
+  status: string;
+  processedAt: Date | null;
+  processedBy: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -15,7 +34,10 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
-async function sendChangeEmail(data: any, changeRef: string) {
+async function sendChangeEmail(
+  data: ChangeDetailsFormData,
+  changeRef: string
+): Promise<void> {
   const postmarkToken = process.env.POSTMARK_SERVER_TOKEN;
   const fromEmail = process.env.FROM_EMAIL || "noreply@yourdomain.com";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@yourdomain.com";
@@ -203,17 +225,17 @@ async function sendChangeEmail(data: any, changeRef: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as ChangeDetailsFormData;
 
     const db = await connectToDatabase();
-    const collection = db.collection("change_details");
+    const collection = db.collection<ChangeDetailsDocument>("change_details");
 
     const changeRef = `CHANGE-${Date.now()}-${Math.random()
       .toString(36)
       .substr(2, 4)
       .toUpperCase()}`;
 
-    const changeRecord = {
+    const changeRecord: ChangeDetailsDocument = {
       changeReference: changeRef,
       ...body,
       status: "pending",

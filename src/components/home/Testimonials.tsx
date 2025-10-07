@@ -8,21 +8,21 @@ const Testimonials: React.FC = () => {
   const testimonials = [
     {
       id: 1,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      text: "The facilities are fantastic - you can see a lot of care has gone into creating this space",
       name: "Kate Brown",
       image: "/assets/testimonial-1.png",
       quoteColor: "#F95921", // Orange
     },
     {
       id: 2,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      text: "It's exciting to see such a nurturing environment being created for children locally",
       name: "Kate Brown",
       image: "/assets/testimonial-2.png",
       quoteColor: "#2C97A9", // Teal
     },
     {
       id: 3,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      text: "We're really impressed with the vision for the nursery and can't wait for our child to start",
       name: "Kate Brown",
       image: "/assets/testimonial-3.png",
       quoteColor: "#FFB800", // Yellow
