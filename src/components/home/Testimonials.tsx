@@ -9,22 +9,22 @@ const Testimonials: React.FC = () => {
     {
       id: 1,
       text: "The facilities are fantastic - you can see a lot of care has gone into creating this space",
-      name: "Kate Brown",
-      image: "/assets/testimonial-1.png",
+      name: "Debbie Franklin",
+      image: "/assets/profile-1.png",
       quoteColor: "#F95921", // Orange
     },
     {
       id: 2,
       text: "It's exciting to see such a nurturing environment being created for children locally",
-      name: "Kate Brown",
-      image: "/assets/testimonial-2.png",
+      name: "Samira Ali",
+      image: "/assets/profile-3.png",
       quoteColor: "#2C97A9", // Teal
     },
     {
       id: 3,
       text: "We're really impressed with the vision for the nursery and can't wait for our child to start",
-      name: "Kate Brown",
-      image: "/assets/testimonial-3.png",
+      name: "Jodie Smith",
+      image: "/assets/profile-4.png",
       quoteColor: "#FFB800", // Yellow
     },
   ];
