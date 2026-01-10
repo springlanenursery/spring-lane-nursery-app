@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
                     height={24}
                   />
                 </div>
-                <p className="text-white">07769 639328</p>
+                <a href="tel:+447769639328" className="text-white hover:underline">07769 639 328</a>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5">
@@ -255,7 +255,7 @@ const Footer: React.FC = () => {
                     <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                   </svg>
                 </div>
-                <p className="text-white"> 0203 561 8257</p>
+                <a href="tel:+447769639328" className="text-white hover:underline">07769 639 328</a>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5">
