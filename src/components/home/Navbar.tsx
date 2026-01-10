@@ -248,7 +248,7 @@ const Navbar: React.FC = () => {
                     height={20}
                     className="w-4 h-4 lg:w-5 lg:h-5"
                   />
-                  <span>07769 639328</span>
+                  <a href="tel:+447769639328" className="hover:underline">07769 639 328</a>
                 </div>
               </div>
             </div>
@@ -354,7 +354,7 @@ const Navbar: React.FC = () => {
                   height={20}
                   className="w-4 h-4"
                 />
-                <span>07769 639328</span>
+                <a href="tel:+447769639328" className="hover:underline">07769 639 328</a>
               </div>
             </div>
           </div>
