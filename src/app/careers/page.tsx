@@ -44,7 +44,7 @@ export default function Careers() {
       },
     },
     employmentType: "FULL_TIME",
-    workHours: "Monday to Friday, 7:00am - 6:00pm",
+    workHours: "Monday to Friday, 7:30am - 6:30pm",
     jobLocationType: "ONSITE",
     applicantLocationRequirements: {
       "@type": "Country",

@@ -20,7 +20,7 @@ const ScrollingInfoSection: React.FC = () => {
           className="text-white"
         />
       ),
-      text: "Mon-Fri: 7:00am – 6:00pm",
+      text: "Mon-Fri: 7:30am – 6:30pm",
     },
     {
       id: "2",

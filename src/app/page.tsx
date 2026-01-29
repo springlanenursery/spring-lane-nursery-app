@@ -23,7 +23,7 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Home",
   description:
-    "Exceptional early years childcare in Croydon for ages 0-5. Ofsted registered, EYFS curriculum, government funding accepted. Flexible sessions 6:30am-7pm. Book your tour today!",
+    "Exceptional early years childcare in Croydon for ages 0-5. Ofsted registered, EYFS curriculum, government funding accepted. Flexible sessions 6:30am-7:30pm. Book your tour today!",
 };
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
       latitude: 51.3878,
       longitude: -0.0841,
     },
-    telephone: "+44-7769-639328",
+    telephone: "+44-7804-549139",
     email: "info@springlanenursery.co.uk",
     openingHoursSpecification: [
       {
@@ -65,7 +65,7 @@ export default function Home() {
           "Friday",
         ],
         opens: "06:30",
-        closes: "19:00",
+        closes: "19:30",
       },
     ],
     priceRange: "££",
@@ -89,7 +89,7 @@ export default function Home() {
           itemOffered: {
             "@type": "Service",
             name: "Full Day Care",
-            description: "Full day childcare from 7:00am to 6:00pm",
+            description: "Full day childcare from 7:30am to 6:30pm",
             offers: {
               "@type": "Offer",
               price: "75.00",
@@ -102,7 +102,7 @@ export default function Home() {
           itemOffered: {
             "@type": "Service",
             name: "Morning Half Day",
-            description: "Morning session from 7:00am to 1:00pm",
+            description: "Morning session from 7:30am to 1:00pm",
             offers: {
               "@type": "Offer",
               price: "45.00",
@@ -115,7 +115,7 @@ export default function Home() {
           itemOffered: {
             "@type": "Service",
             name: "Afternoon Half Day",
-            description: "Afternoon session from 1:00pm to 6:00pm",
+            description: "Afternoon session from 1:00pm to 6:30pm",
             offers: {
               "@type": "Offer",
               price: "45.00",
@@ -128,7 +128,7 @@ export default function Home() {
           itemOffered: {
             "@type": "Service",
             name: "Breakfast Club",
-            description: "Early morning care from 6:30am to 7:00am",
+            description: "Early morning care from 6:30am to 7:30am",
             offers: {
               "@type": "Offer",
               price: "8.00",
@@ -141,7 +141,7 @@ export default function Home() {
           itemOffered: {
             "@type": "Service",
             name: "After Hours Club",
-            description: "Extended care from 6:00pm to 7:00pm",
+            description: "Extended care from 6:30pm to 7:30pm",
             offers: {
               "@type": "Offer",
               price: "8.00",
@@ -169,7 +169,7 @@ export default function Home() {
       postalCode: "SE25 4SP",
       addressCountry: "GB",
     },
-    telephone: "+44-7769-639328",
+    telephone: "+44-7804-549139",
     email: "info@springlanenursery.co.uk",
     hasCredential: {
       "@type": "EducationalOccupationalCredential",
@@ -190,7 +190,7 @@ export default function Home() {
     image: "https://www.springlanenursery.co.uk/assets/nursery-exterior.jpg",
     "@id": "https://www.springlanenursery.co.uk",
     url: "https://www.springlanenursery.co.uk",
-    telephone: "+44-7769-639328",
+    telephone: "+44-7804-549139",
     priceRange: "££",
     address: {
       "@type": "PostalAddress",
@@ -216,7 +216,7 @@ export default function Home() {
           "Friday",
         ],
         opens: "06:30",
-        closes: "19:00",
+        closes: "19:30",
       },
     ],
     aggregateRating: {
@@ -277,7 +277,7 @@ export default function Home() {
         name: "What are your opening hours?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Our core hours are 7:00am to 6:00pm, Monday to Friday. We also offer a Breakfast Club from 6:30am to 7:00am and After Hours Club from 6:00pm to 7:00pm.",
+          text: "Our core hours are 7:30am to 6:30pm, Monday to Friday. We also offer a Breakfast Club from 6:30am to 7:30am and After Hours Club from 6:30pm to 7:30pm.",
         },
       },
       {
@@ -293,7 +293,7 @@ export default function Home() {
         name: "What is your daily rate?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "A full day (7:00am-6:00pm) is £75. Half days are £45. Breakfast Club and After Hours Club are £8 each. Fees are before any government funding deductions.",
+          text: "A full day (7:30am-6:30pm) is £75. Half days are £45. Breakfast Club and After Hours Club are £8 each. Fees are before any government funding deductions.",
         },
       },
       {

@@ -640,7 +640,7 @@ function generateWaitlistEmailTemplate(
             <h3>📞 Questions or Updates?</h3>
             <p class="phone">[Your Phone Number]</p>
             <p><strong>Email:</strong> [Your Email]</p>
-            <p><strong>Hours:</strong> Monday - Friday, 7:00 AM - 6:00 PM</p>
+            <p><strong>Hours:</strong> Monday - Friday, 7:30 AM - 6:30 PM</p>
             <p><small>Please mention your waitlist position when calling</small></p>
           </div>
 
