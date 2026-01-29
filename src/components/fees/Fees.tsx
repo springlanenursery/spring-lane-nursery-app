@@ -24,7 +24,7 @@ const Fees: React.FC = () => {
           <div className="bg-[#FC4C171A] rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">Standard Core Hours</h3>
-              <p className="text-2xl font-bold text-[#FC4C17]">7:00am - 6:00pm</p>
+              <p className="text-2xl font-bold text-[#FC4C17]">7:30am - 6:30pm</p>
             </div>
           </div>
 
@@ -32,7 +32,7 @@ const Fees: React.FC = () => {
           <div className="bg-[#2C97A91A] rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">Breakfast Club (Optional add-on)</h3>
-              <p className="text-2xl font-bold text-[#252650]">6:30am - 7:00pm</p>
+              <p className="text-2xl font-bold text-[#252650]">6:30am - 7:30am</p>
             </div>
           </div>
 
@@ -40,7 +40,7 @@ const Fees: React.FC = () => {
           <div className="bg-[#2AA6311A] rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">After Hours Club (Optional add-on)</h3>
-              <p className="text-2xl font-bold text-[#2AA631]">6:00pm - 7:00pm</p>
+              <p className="text-2xl font-bold text-[#2AA631]">6:30pm - 7:30pm</p>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#252650]">£75.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per day</p>
-                <p className="text-xs text-[#252650]">7:00am - 6:00pm</p>
+                <p className="text-xs text-[#252650]">7:30am - 6:30pm</p>
               </div>
             </div>
           </div>
@@ -83,7 +83,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#F6353B]">£45.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">7:00am - 1:00pm</p>
+                <p className="text-xs text-[#252650]">7:30am - 1:00pm</p>
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#F9AE15]">£45.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">1:00pm - 6:00pm</p>
+                <p className="text-xs text-[#252650]">1:00pm - 6:30pm</p>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#2AA631]">£8.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Add on</p>
-                <p className="text-xs text-[#252650]">6:30am - 7:00am</p>
+                <p className="text-xs text-[#252650]">6:30am - 7:30am</p>
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#2C97A9]">£8.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Add on</p>
-                <p className="text-xs text-[#252650]">6:00pm - 7:00pm</p>
+                <p className="text-xs text-[#252650]">6:30pm - 7:30pm</p>
               </div>
             </div>
           </div>

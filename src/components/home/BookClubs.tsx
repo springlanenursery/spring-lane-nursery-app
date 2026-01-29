@@ -143,7 +143,7 @@ const BookClubs: React.FC = () => {
       price: "£8.00",
       description:
         "Our After School Club provides a safe and supportive space for children at the end of the day. We offer a light snack and opportunities to wind down or take part in fun activities such as arts and crafts, reading, board games or outdoor play (weather permitting). It's a chance for children to relax, socialise with friends, and end the day in a positive and engaging way.",
-      time: "6:00PM - 7:00PM",
+      time: "6:30PM - 7:30PM",
       backgroundColor: "#F9AE151A",
       titleColor: "#F9AE15",
       buttonColor: "#F9AE15",

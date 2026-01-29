@@ -349,7 +349,7 @@ function generateEmailTemplate(data: AvailabilityRequest) {
             <h3>📞 Need immediate assistance?</h3>
             <p><strong>Phone:</strong> [Your Phone Number]</p>
             <p><strong>Email:</strong> [Your Email]</p>
-            <p><strong>Hours:</strong> Monday - Friday, 7:00 AM - 6:00 PM</p>
+            <p><strong>Hours:</strong> Monday - Friday, 7:30 AM - 6:30 PM</p>
           </div>
 
           <p>We understand that choosing the right nursery for your child is one of the most important decisions you'll make. We're here to support you through this process and look forward to potentially welcoming your family to our nursery community.</p>
