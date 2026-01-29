@@ -3,8 +3,8 @@ import Image from "next/image";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#252650] text-white relative">
-      <div className="max-w-[1280px] mx-auto px-6 py-12 ">
+    <footer className="bg-[#252650] text-white relative w-full">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         {/* Desktop Layout */}
         <div className="hidden lg:flex lg:justify-between lg:items-start">
           {/* Left Section - Logo and Description */}
@@ -105,23 +105,27 @@ const Footer: React.FC = () => {
                 <div className="w-5 h-5">
                   <Image
                     src="/assets/call.svg"
-                    alt="WhatsApp"
+                    alt="Phone"
                     width={25}
                     height={24}
                   />
                 </div>
-                <a href="tel:+447804549139" className="text-white hover:underline">07804 549 139</a>
+                <div>
+                  <a href="tel:02035618257" className="text-white hover:underline">0203 561 8257</a>
+                  <span className="text-white/60 mx-2">|</span>
+                  <a href="tel:07804549139" className="text-white hover:underline">07804 549 139</a>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5">
                   <Image
                     src="/assets/email.svg"
-                    alt="WhatsApp"
+                    alt="Email"
                     width={25}
                     height={24}
                   />
                 </div>
-                <p className="text-white">info@springlanenursery.co.uk</p>
+                <a href="mailto:info@springlanenursery.co.uk" className="text-white hover:underline">info@springlanenursery.co.uk</a>
               </div>
             </div>
           </div>
@@ -241,7 +245,7 @@ const Footer: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white">25 Spring Lane</p>
+                  <p className="text-white">23 Spring Lane</p>
                   <p className="text-white">Croydon SE25 4SP</p>
                 </div>
               </div>
@@ -255,7 +259,11 @@ const Footer: React.FC = () => {
                     <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                   </svg>
                 </div>
-                <a href="tel:+447804549139" className="text-white hover:underline">07804 549 139</a>
+                <div>
+                  <a href="tel:02035618257" className="text-white hover:underline">0203 561 8257</a>
+                  <span className="text-white/60 mx-2">|</span>
+                  <a href="tel:07804549139" className="text-white hover:underline">07804 549 139</a>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5">
@@ -267,7 +275,7 @@ const Footer: React.FC = () => {
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                   </svg>
                 </div>
-                <p className="text-white">info@springlanenursery.co.uk</p>
+                <a href="mailto:info@springlanenursery.co.uk" className="text-white hover:underline">info@springlanenursery.co.uk</a>
               </div>
             </div>
           </div>
@@ -301,7 +309,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
             <div className="flex items-center">
               <p className="text-white text-sm">
-                © 2077. All rights reserved spring lane nursery
+                © 2025 Spring Lane Nursery. All rights reserved.
               </p>
             </div>
             <div className="flex space-x-6">
