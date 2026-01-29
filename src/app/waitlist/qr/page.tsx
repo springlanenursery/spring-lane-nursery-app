@@ -61,9 +61,9 @@ export default function WaitlistQRPage() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/assets/logo.png"
+              src="/assets/nav-logo.svg"
               alt="Spring Lane Nursery"
-              width={48}
+              width={150}
               height={48}
               className="h-12 w-auto"
             />
@@ -82,11 +82,11 @@ export default function WaitlistQRPage() {
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block text-center mb-8">
           <Image
-            src="/assets/logo.png"
+            src="/assets/nav-logo.svg"
             alt="Spring Lane Nursery"
-            width={120}
-            height={120}
-            className="h-24 w-auto mx-auto mb-4"
+            width={200}
+            height={80}
+            className="h-16 w-auto mx-auto mb-4"
           />
         </div>
 
@@ -171,7 +171,7 @@ export default function WaitlistQRPage() {
             <div className="text-center text-sm text-slate-600">
               <p className="font-medium">Spring Lane Nursery</p>
               <p>23 Spring Lane, Croydon SE25 4SP</p>
-              <p>Tel: 0203 561 8257</p>
+              <p>Tel: 0203 561 8257 | Mobile: 07804 549 139</p>
             </div>
           </div>
         </div>

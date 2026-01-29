@@ -153,9 +153,9 @@ export default function WaitlistPage() {
           <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/assets/logo.png"
+                src="/assets/nav-logo.svg"
                 alt="Spring Lane Nursery"
-                width={48}
+                width={150}
                 height={48}
                 className="h-12 w-auto"
               />
@@ -251,6 +251,19 @@ export default function WaitlistPage() {
               </Link>
             </div>
           </div>
+
+          {/* Footer with contact info */}
+          <div className="mt-8 text-center">
+            <p className="text-slate-600">
+              <Link href="tel:02035618257" className="text-teal-600 font-medium hover:underline">
+                0203 561 8257
+              </Link>
+              {" | "}
+              <Link href="tel:07804549139" className="text-teal-600 font-medium hover:underline">
+                07804 549 139
+              </Link>
+            </p>
+          </div>
         </main>
       </div>
     );
@@ -264,9 +277,9 @@ export default function WaitlistPage() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/assets/logo.png"
+              src="/assets/nav-logo.svg"
               alt="Spring Lane Nursery"
-              width={48}
+              width={150}
               height={48}
               className="h-12 w-auto"
             />
@@ -406,9 +419,13 @@ export default function WaitlistPage() {
         {/* Contact Info */}
         <div className="mt-8 text-center">
           <p className="text-slate-600">
-            Have questions?{" "}
+            Have questions? Call us on{" "}
             <Link href="tel:02035618257" className="text-teal-600 font-medium hover:underline">
-              Call us on 0203 561 8257
+              0203 561 8257
+            </Link>
+            {" "}or{" "}
+            <Link href="tel:07804549139" className="text-teal-600 font-medium hover:underline">
+              07804 549 139
             </Link>
           </p>
         </div>
