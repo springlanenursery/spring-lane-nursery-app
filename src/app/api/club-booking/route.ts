@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
 import Stripe from "stripe";
 
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-09-30.clover",
-});
+// Lazy-load Stripe to avoid build-time initialization errors
+let stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+      apiVersion: "2025-09-30.clover",
+    });
+  }
+  return stripe;
+}
 
 // MongoDB connection
 let cachedDb: Db | null = null;
@@ -634,7 +641,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Create Stripe PaymentIntent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await getStripe().paymentIntents.create({
       amount: bookingRequest.totalAmount * 100, // Convert to pence
       currency: "gbp",
       receipt_email: bookingRequest.parentEmail,
