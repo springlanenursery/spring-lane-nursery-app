@@ -2,16 +2,30 @@
 
 import React, { useState, useCallback } from "react";
 import Image from "next/image";
-import { User, Phone, Baby, ClipboardList, Users } from "lucide-react";
+import { User, Baby, Users, Calendar, Clock, Mail } from "lucide-react";
 import { useStatusModal } from "../common/StatusModal";
 import { FormModal, FormModalFooter } from "@/components/ui/form-modal";
 import { FormSection, FormCard } from "@/components/ui/form-section";
 import { FormField } from "@/components/ui/form-field";
 
-interface FormData {
+interface AvailabilityFormData {
   fullName: string;
   phoneNumber: string;
   childrenDetails: string;
+}
+
+interface WaitlistFormData {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  childName: string;
+  childDOB: string;
+  childGender: string;
+  preferredStartDate: string;
+  daysRequired: string[];
+  sessionType: string;
+  siblingAtNursery: string;
+  specialRequirements: string;
 }
 
 // International phone number formatting function
@@ -65,16 +79,24 @@ const AvailabilityWaitingList = () => {
   const { showSuccess, showError, StatusModalComponent } = useStatusModal();
 
   // Form data state
-  const [availabilityForm, setAvailabilityForm] = useState<FormData>({
+  const [availabilityForm, setAvailabilityForm] = useState<AvailabilityFormData>({
     fullName: "",
     phoneNumber: "",
     childrenDetails: "",
   });
 
-  const [waitlistForm, setWaitlistForm] = useState<FormData>({
+  const [waitlistForm, setWaitlistForm] = useState<WaitlistFormData>({
     fullName: "",
     phoneNumber: "",
-    childrenDetails: "",
+    email: "",
+    childName: "",
+    childDOB: "",
+    childGender: "",
+    preferredStartDate: "",
+    daysRequired: [],
+    sessionType: "",
+    siblingAtNursery: "",
+    specialRequirements: "",
   });
 
   const features = [
@@ -100,7 +122,7 @@ const AvailabilityWaitingList = () => {
   );
 
   const handleWaitlistInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
       if (name === "phoneNumber") {
         setWaitlistForm((prev) => ({
@@ -113,6 +135,15 @@ const AvailabilityWaitingList = () => {
     },
     []
   );
+
+  const toggleDay = useCallback((day: string) => {
+    setWaitlistForm((prev) => ({
+      ...prev,
+      daysRequired: prev.daysRequired.includes(day)
+        ? prev.daysRequired.filter((d) => d !== day)
+        : [...prev.daysRequired, day],
+    }));
+  }, []);
 
   const handleAvailabilitySubmit = async () => {
     // Validate required fields
@@ -200,11 +231,42 @@ const AvailabilityWaitingList = () => {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(waitlistForm.email)) {
+      showError("Invalid Email", "Please enter a valid email address", []);
+      return;
+    }
+
+    // Validate child name
+    if (!waitlistForm.childName.trim()) {
+      showError("Missing Information", "Please enter your child's name", []);
+      return;
+    }
+
+    // Validate child DOB
+    if (!waitlistForm.childDOB) {
+      showError("Missing Information", "Please enter your child's date of birth", []);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       // Clean phone number for API submission (remove spaces)
       const cleanedPhoneNumber = waitlistForm.phoneNumber.replace(/\s/g, "");
+
+      // Format child details for backwards compatibility with API
+      const childrenDetails = `
+Child Name: ${waitlistForm.childName}
+Date of Birth: ${waitlistForm.childDOB}
+Gender: ${waitlistForm.childGender || "Not specified"}
+Preferred Start Date: ${waitlistForm.preferredStartDate || "Flexible"}
+Days Required: ${waitlistForm.daysRequired.length > 0 ? waitlistForm.daysRequired.join(", ") : "Not specified"}
+Session Type: ${waitlistForm.sessionType || "Not specified"}
+Sibling at Nursery: ${waitlistForm.siblingAtNursery || "Not specified"}
+Special Requirements: ${waitlistForm.specialRequirements || "None"}
+      `.trim();
 
       const response = await fetch("/api/waitlist/join", {
         method: "POST",
@@ -212,8 +274,10 @@ const AvailabilityWaitingList = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...waitlistForm,
+          fullName: waitlistForm.fullName,
           phoneNumber: cleanedPhoneNumber,
+          email: waitlistForm.email,
+          childrenDetails: childrenDetails,
         }),
       });
 
@@ -221,7 +285,19 @@ const AvailabilityWaitingList = () => {
 
       if (data.success) {
         setShowWaitlistModal(false);
-        setWaitlistForm({ fullName: "", phoneNumber: "", childrenDetails: "" });
+        setWaitlistForm({
+          fullName: "",
+          phoneNumber: "",
+          email: "",
+          childName: "",
+          childDOB: "",
+          childGender: "",
+          preferredStartDate: "",
+          daysRequired: [],
+          sessionType: "",
+          siblingAtNursery: "",
+          specialRequirements: "",
+        });
 
         showSuccess("Welcome to the Waitlist!", data.message);
       } else {
@@ -416,6 +492,7 @@ const AvailabilityWaitingList = () => {
           }
         >
           <div className="space-y-6">
+            {/* Parent Details */}
             <FormCard>
               <FormSection
                 title="Your Details"
@@ -442,23 +519,163 @@ const AvailabilityWaitingList = () => {
                 <p className="text-xs text-slate-500 -mt-2">
                   International format supported: +44 7123 456789
                 </p>
+                <FormField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={waitlistForm.email}
+                  onChange={handleWaitlistInputChange}
+                  placeholder="your@email.com"
+                  required
+                />
               </FormSection>
             </FormCard>
 
+            {/* Child Details */}
             <FormCard>
               <FormSection
-                title="Children Details"
-                description="Tell us about your child/children"
+                title="Child Details"
+                description="Tell us about your child"
                 icon={<Baby className="w-5 h-5" />}
               >
                 <FormField
-                  label="About Your Children"
-                  name="childrenDetails"
-                  type="textarea"
-                  value={waitlistForm.childrenDetails}
+                  label="Child's Name"
+                  name="childName"
+                  value={waitlistForm.childName}
                   onChange={handleWaitlistInputChange}
-                  placeholder="Please provide details about your children (ages, any special requirements, preferred start date, etc.)"
-                  rows={4}
+                  placeholder="Enter child's full name"
+                  required
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    label="Date of Birth"
+                    name="childDOB"
+                    type="date"
+                    value={waitlistForm.childDOB}
+                    onChange={handleWaitlistInputChange}
+                    required
+                  />
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Gender
+                    </label>
+                    <select
+                      name="childGender"
+                      value={waitlistForm.childGender}
+                      onChange={handleWaitlistInputChange}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-sm"
+                    >
+                      <option value="">Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+              </FormSection>
+            </FormCard>
+
+            {/* Attendance Preferences */}
+            <FormCard>
+              <FormSection
+                title="Attendance Preferences"
+                description="When would you like your child to attend?"
+                icon={<Calendar className="w-5 h-5" />}
+              >
+                <FormField
+                  label="Preferred Start Date"
+                  name="preferredStartDate"
+                  type="date"
+                  value={waitlistForm.preferredStartDate}
+                  onChange={handleWaitlistInputChange}
+                />
+
+                {/* Days Required - Multi-select buttons */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Days Required
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => toggleDay(day)}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                          waitlistForm.daysRequired.includes(day)
+                            ? "bg-teal-600 text-white"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {day.substring(0, 3)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Session Type */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Session Type
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["Full Day", "Morning Only", "Afternoon Only"].map((session) => (
+                      <button
+                        key={session}
+                        type="button"
+                        onClick={() => setWaitlistForm((prev) => ({ ...prev, sessionType: session }))}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          waitlistForm.sessionType === session
+                            ? "bg-teal-600 text-white"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {session}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sibling at Nursery */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Do you have a sibling already at Spring Lane Nursery?
+                  </label>
+                  <div className="flex gap-3">
+                    {["Yes", "No"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setWaitlistForm((prev) => ({ ...prev, siblingAtNursery: option }))}
+                        className={`px-6 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          waitlistForm.siblingAtNursery === option
+                            ? "bg-teal-600 text-white"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </FormSection>
+            </FormCard>
+
+            {/* Additional Information */}
+            <FormCard>
+              <FormSection
+                title="Additional Information"
+                description="Any other details we should know"
+                icon={<Clock className="w-5 h-5" />}
+              >
+                <FormField
+                  label="Special Requirements or Notes"
+                  name="specialRequirements"
+                  type="textarea"
+                  value={waitlistForm.specialRequirements}
+                  onChange={handleWaitlistInputChange}
+                  placeholder="Any allergies, medical conditions, dietary requirements, or other information we should know about..."
+                  rows={3}
                 />
               </FormSection>
             </FormCard>

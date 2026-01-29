@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { User, Baby, Users, CheckCircle, ArrowLeft, Phone } from "lucide-react";
+import { User, Baby, Users, CheckCircle, ArrowLeft, Phone, Calendar, Clock } from "lucide-react";
 import { useStatusModal } from "@/components/common/StatusModal";
 import { FormSection, FormCard } from "@/components/ui/form-section";
 import { FormField } from "@/components/ui/form-field";
@@ -11,7 +11,15 @@ import { FormField } from "@/components/ui/form-field";
 interface FormData {
   fullName: string;
   phoneNumber: string;
-  childrenDetails: string;
+  email: string;
+  childName: string;
+  childDOB: string;
+  childGender: string;
+  preferredStartDate: string;
+  daysRequired: string[];
+  sessionType: string;
+  siblingAtNursery: string;
+  specialRequirements: string;
 }
 
 // International phone number formatting function
@@ -65,11 +73,19 @@ export default function WaitlistPage() {
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     phoneNumber: "",
-    childrenDetails: "",
+    email: "",
+    childName: "",
+    childDOB: "",
+    childGender: "",
+    preferredStartDate: "",
+    daysRequired: [],
+    sessionType: "",
+    siblingAtNursery: "",
+    specialRequirements: "",
   });
 
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       const { name, value } = e.target;
       if (name === "phoneNumber") {
         setFormData((prev) => ({
@@ -83,6 +99,23 @@ export default function WaitlistPage() {
     []
   );
 
+  const handleDayToggle = (day: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      daysRequired: prev.daysRequired.includes(day)
+        ? prev.daysRequired.filter((d) => d !== day)
+        : [...prev.daysRequired, day],
+    }));
+  };
+
+  const handleSessionTypeChange = (type: string) => {
+    setFormData((prev) => ({ ...prev, sessionType: type }));
+  };
+
+  const handleSiblingChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, siblingAtNursery: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -92,11 +125,20 @@ export default function WaitlistPage() {
       return;
     }
 
-    // Validate phone number before submission
     if (!validateInternationalPhone(formData.phoneNumber)) {
       showError("Invalid Phone Number", "Please enter a valid phone number", [
         "Examples: +44 7123 456789, 07123 456789",
       ]);
+      return;
+    }
+
+    if (!formData.childName.trim()) {
+      showError("Missing Information", "Please enter your child's name", []);
+      return;
+    }
+
+    if (!formData.childDOB) {
+      showError("Missing Information", "Please enter your child's date of birth", []);
       return;
     }
 
@@ -105,14 +147,28 @@ export default function WaitlistPage() {
     try {
       const cleanedPhoneNumber = formData.phoneNumber.replace(/\s/g, "");
 
+      // Format data for API (combine child details into childrenDetails for backwards compatibility)
+      const childrenDetails = `
+Child Name: ${formData.childName}
+Date of Birth: ${formData.childDOB}
+Gender: ${formData.childGender || "Not specified"}
+Preferred Start Date: ${formData.preferredStartDate || "Flexible"}
+Days Required: ${formData.daysRequired.length > 0 ? formData.daysRequired.join(", ") : "Flexible"}
+Session Type: ${formData.sessionType || "Not specified"}
+Sibling at Nursery: ${formData.siblingAtNursery || "No"}
+Special Requirements: ${formData.specialRequirements || "None"}
+      `.trim();
+
       const response = await fetch("/api/waitlist/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          fullName: formData.fullName,
           phoneNumber: cleanedPhoneNumber,
+          email: formData.email,
+          childrenDetails: childrenDetails,
         }),
       });
 
@@ -318,6 +374,7 @@ export default function WaitlistPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {/* Parent/Guardian Details */}
             <FormCard>
               <FormSection
                 title="Your Details"
@@ -332,35 +389,173 @@ export default function WaitlistPage() {
                   placeholder="Enter your full name"
                   required
                 />
-                <FormField
-                  label="Phone Number"
-                  name="phoneNumber"
-                  type="tel"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
-                  placeholder="e.g., +44 7123 456789"
-                  required
-                />
-                <p className="text-xs text-slate-500 -mt-2">
-                  International format supported: +44 7123 456789
-                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <FormField
+                      label="Phone Number"
+                      name="phoneNumber"
+                      type="tel"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      placeholder="e.g., +44 7123 456789"
+                      required
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      International format supported
+                    </p>
+                  </div>
+                  <FormField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="your.email@example.com"
+                  />
+                </div>
               </FormSection>
             </FormCard>
 
+            {/* Child Details */}
             <FormCard>
               <FormSection
-                title="Children Details"
-                description="Tell us about your child/children"
+                title="Child Details"
+                description="Tell us about your child"
                 icon={<Baby className="w-5 h-5" />}
               >
                 <FormField
-                  label="About Your Children"
-                  name="childrenDetails"
-                  type="textarea"
-                  value={formData.childrenDetails}
+                  label="Child's Full Name"
+                  name="childName"
+                  value={formData.childName}
                   onChange={handleInputChange}
-                  placeholder="Please provide details about your children (ages, any special requirements, preferred start date, etc.)"
-                  rows={4}
+                  placeholder="Enter child's full name"
+                  required
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    label="Date of Birth"
+                    name="childDOB"
+                    type="date"
+                    value={formData.childDOB}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Gender</label>
+                    <select
+                      name="childGender"
+                      value={formData.childGender}
+                      onChange={handleInputChange}
+                      className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="">Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+              </FormSection>
+            </FormCard>
+
+            {/* Attendance Preferences */}
+            <FormCard>
+              <FormSection
+                title="Attendance Preferences"
+                description="Your preferred schedule"
+                icon={<Calendar className="w-5 h-5" />}
+              >
+                <FormField
+                  label="Preferred Start Date"
+                  name="preferredStartDate"
+                  type="date"
+                  value={formData.preferredStartDate}
+                  onChange={handleInputChange}
+                />
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    Days Required
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => handleDayToggle(day)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          formData.daysRequired.includes(day)
+                            ? "bg-teal-600 text-white shadow-md"
+                            : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                        }`}
+                      >
+                        {day.slice(0, 3)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    Session Type
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["Full Day", "Morning", "Afternoon"].map((type) => (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => handleSessionTypeChange(type)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          formData.sessionType === type
+                            ? "bg-teal-600 text-white shadow-md"
+                            : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">
+                    Do you have a sibling already at Spring Lane Nursery?
+                  </label>
+                  <div className="flex gap-3">
+                    {["Yes", "No"].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => handleSiblingChange(option)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          formData.siblingAtNursery === option
+                            ? "bg-teal-600 text-white shadow-md"
+                            : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </FormSection>
+            </FormCard>
+
+            {/* Additional Information */}
+            <FormCard>
+              <FormSection
+                title="Additional Information"
+                description="Any special requirements or notes"
+                icon={<Clock className="w-5 h-5" />}
+              >
+                <FormField
+                  label="Special Requirements or Notes"
+                  name="specialRequirements"
+                  type="textarea"
+                  value={formData.specialRequirements}
+                  onChange={handleInputChange}
+                  placeholder="Any allergies, medical conditions, dietary requirements, or other information we should know about"
+                  rows={3}
                 />
               </FormSection>
             </FormCard>
