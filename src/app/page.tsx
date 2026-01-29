@@ -367,8 +367,10 @@ export default function Home() {
         }}
       />
 
-      <main className="max-w-[1440px] mx-auto font-sans">
-        <Navbar />
+      <main className="w-full font-sans overflow-x-hidden">
+        <div className="max-w-[1440px] mx-auto">
+          <Navbar />
+        </div>
         <div id="hero">
           <Hero />
         </div>
