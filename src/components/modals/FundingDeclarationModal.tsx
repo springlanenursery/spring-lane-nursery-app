@@ -1,5 +1,21 @@
 "use client";
+
 import React, { useState } from "react";
+import {
+  Baby,
+  MapPin,
+  User,
+  Briefcase,
+  Clock,
+  CheckSquare,
+  PenLine,
+  CreditCard,
+  FileCheck,
+} from "lucide-react";
+import { FormModal, FormModalFooter } from "@/components/ui/form-modal";
+import { FormSection, FormCard } from "@/components/ui/form-section";
+import { FormField } from "@/components/ui/form-field";
+import { ConsentToggle, ConsentGroup } from "@/components/ui/consent-toggle";
 
 interface FundingDeclarationModalProps {
   onClose: () => void;
@@ -18,6 +34,7 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
     homeAddress: "",
     postcode: "",
     parentFullName: "",
+    parentEmail: "",
     nationalInsuranceNumber: "",
     employmentStatus: "",
     thirtyHourCode: "",
@@ -34,13 +51,12 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleToggleChange = (name: string, checked: boolean) => {
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   const handleRadioChange = (fieldName: string, value: string) => {
@@ -56,9 +72,7 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (
       !formData.confirmAccuracy ||
       !formData.confirmNotifyChanges ||
@@ -78,9 +92,7 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
     try {
       const response = await fetch("/api/forms/funding", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -90,7 +102,7 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
         onClose();
         showSuccess(
           "Funding Declaration Submitted Successfully!",
-          `Thank you ${formData.parentFullName}! Your funding declaration for ${formData.childFullName} has been submitted. Reference: ${data.data.fundingReference}`
+          `Thank you ${formData.parentFullName}! Your funding declaration for ${formData.childFullName} has been submitted. A confirmation email with your reference number (${data.data.fundingReference}) and funding details has been sent to your email address.`
         );
       } else {
         showError(
@@ -111,387 +123,284 @@ const FundingDeclarationModal: React.FC<FundingDeclarationModalProps> = ({
     }
   };
 
+  const RadioButton = ({ field, value, currentValue }: { field: string; value: string; currentValue: string }) => (
+    <button
+      type="button"
+      onClick={() => handleRadioChange(field, value)}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        currentValue === value
+          ? "bg-teal-600 text-white shadow-md"
+          : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+      }`}
+    >
+      {value}
+    </button>
+  );
+
+  const fundingOptions = [
+    { label: "15 hours universal (3 & 4 year olds)", icon: <Clock className="w-5 h-5" /> },
+    { label: "30 hours extended funding (eligible 3 & 4 year olds)", icon: <Clock className="w-5 h-5" /> },
+    { label: "15 hours for eligible 2-year-olds", icon: <Clock className="w-5 h-5" /> },
+    { label: "15 hours for 9-month-olds (from Sept 2025)", icon: <Clock className="w-5 h-5" /> },
+  ];
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#252650]">
-            Funding Declaration Form
-          </h2>
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="w-8 h-8 flex cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+    <FormModal
+      title="Funding Declaration Form"
+      subtitle="Apply for government-funded childcare hours"
+      isOpen={true}
+      onClose={onClose}
+      isLoading={isLoading}
+      maxWidth="3xl"
+      footer={
+        <FormModalFooter
+          onCancel={onClose}
+          onSubmit={handleSubmit}
+          submitLabel="Submit Funding Declaration"
+          isLoading={isLoading}
+        />
+      }
+    >
+      <div className="space-y-6">
+        {/* Child Details */}
+        <FormCard>
+          <FormSection
+            title="Child Details"
+            description="Information about your child"
+            icon={<Baby className="w-5 h-5" />}
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Full Name"
+                name="childFullName"
+                value={formData.childFullName}
+                onChange={handleInputChange}
+                placeholder="Enter child's full name"
+                required
               />
-            </svg>
-          </button>
-        </div>
+              <FormField
+                label="Date of Birth"
+                name="childDOB"
+                type="date"
+                value={formData.childDOB}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </FormSection>
+        </FormCard>
 
-        {/* Form Content - Scrollable */}
-        <div className="overflow-y-auto flex-1 rounded-b-2xl">
-          <div className="p-6 space-y-6">
-            {/* Child Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child Details
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="childFullName"
-                  value={formData.childFullName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter child's full name"
-                  required
-                />
-              </div>
+        {/* Address */}
+        <FormCard>
+          <FormSection
+            title="Home Address"
+            description="Your child's residential address"
+            icon={<MapPin className="w-5 h-5" />}
+          >
+            <FormField
+              label="Home Address"
+              name="homeAddress"
+              type="textarea"
+              value={formData.homeAddress}
+              onChange={handleInputChange}
+              placeholder="Enter full home address"
+              required
+              rows={2}
+            />
+            <FormField
+              label="Postcode"
+              name="postcode"
+              value={formData.postcode}
+              onChange={handleInputChange}
+              placeholder="Enter postcode"
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
 
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date of Birth <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="childDOB"
-                  value={formData.childDOB}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Home Address <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="homeAddress"
-                  value={formData.homeAddress}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Enter full home address"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Postcode <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="postcode"
-                  value={formData.postcode}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter postcode"
-                  required
-                />
+        {/* Parent/Carer Details */}
+        <FormCard>
+          <FormSection
+            title="Parent / Carer Details"
+            description="Your contact and employment information"
+            icon={<User className="w-5 h-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Full Name"
+                name="parentFullName"
+                value={formData.parentFullName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+              />
+              <FormField
+                label="Email Address"
+                name="parentEmail"
+                type="email"
+                value={formData.parentEmail}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <FormField
+              label="National Insurance Number"
+              name="nationalInsuranceNumber"
+              value={formData.nationalInsuranceNumber}
+              onChange={handleInputChange}
+              placeholder="e.g., AB123456C"
+              required
+            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Employment Status <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {["Employed", "Self-Employed", "Unemployed", "Student"].map((status) => (
+                  <RadioButton
+                    key={status}
+                    field="employmentStatus"
+                    value={status}
+                    currentValue={formData.employmentStatus}
+                  />
+                ))}
               </div>
             </div>
+            <FormField
+              label="30-Hour Code (if applicable)"
+              name="thirtyHourCode"
+              value={formData.thirtyHourCode}
+              onChange={handleInputChange}
+              placeholder="Enter your 30-hour code"
+            />
+          </FormSection>
+        </FormCard>
 
-            {/* Parent/Carer Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Parent / Carer Details
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="parentFullName"
-                  value={formData.parentFullName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  National Insurance Number{" "}
-                  <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="nationalInsuranceNumber"
-                  value={formData.nationalInsuranceNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="e.g., AB123456C"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Employment Status <span className="text-red-500">*</span>
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {["Employed", "Self-Employed", "Unemployed", "Student"].map(
-                    (status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() =>
-                          handleRadioChange("employmentStatus", status)
-                        }
-                        className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                          formData.employmentStatus === status
-                            ? "bg-[#252650] text-white"
-                            : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        {status}
-                      </button>
-                    )
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  30-Hour Code (if applicable)
-                </label>
-                <input
-                  type="text"
-                  name="thirtyHourCode"
-                  value={formData.thirtyHourCode}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter your 30-hour code"
-                />
-              </div>
-            </div>
-
-            {/* Funding Type */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Funding Type (Tick all that apply)
-              </h3>
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.fundingTypes.includes(
-                      "15 hours universal (3 & 4 year olds)"
-                    )}
-                    onChange={() =>
-                      handleFundingTypeChange(
-                        "15 hours universal (3 & 4 year olds)"
-                      )
-                    }
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    15 hours universal (3 & 4 year olds)
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.fundingTypes.includes(
-                      "30 hours extended funding (eligible 3 & 4 year olds)"
-                    )}
-                    onChange={() =>
-                      handleFundingTypeChange(
-                        "30 hours extended funding (eligible 3 & 4 year olds)"
-                      )
-                    }
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    30 hours extended funding (eligible 3 & 4 year olds){" "}
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.fundingTypes.includes(
-                      "15 hours for eligible 2-year-olds"
-                    )}
-                    onChange={() =>
-                      handleFundingTypeChange(
-                        "15 hours for eligible 2-year-olds"
-                      )
-                    }
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    15 hours for eligible 2-year-olds
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    checked={formData.fundingTypes.includes(
-                      "15 hours for 9-month-olds (from Sept 2025)"
-                    )}
-                    onChange={() =>
-                      handleFundingTypeChange(
-                        "15 hours for 9-month-olds (from Sept 2025)"
-                      )
-                    }
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    15 hours for 9-month-olds (from Sept 2025)
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Declaration & Consent */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Declaration & Consent
-              </h3>
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="confirmAccuracy"
-                    checked={formData.confirmAccuracy}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I confirm the information provided is true and accurate.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="confirmNotifyChanges"
-                    checked={formData.confirmNotifyChanges}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I agree to notify the nursery if my eligibility status
-                    changes. <span className="text-red-500">*</span>
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="confirmCheckEligibility"
-                    checked={formData.confirmCheckEligibility}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I give permission for the nursery to check my funding
-                    eligibility with the Local Authority or HMRC.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="confirmAdditionalCharges"
-                    checked={formData.confirmAdditionalCharges}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I understand that any additional hours or services beyond
-                    the funded entitlement will be charged separately.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className={`w-full py-4 px-6 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                isLoading
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-[#2C97A9] text-white hover:bg-[#258899] cursor-pointer"
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+        {/* Funding Type */}
+        <FormCard>
+          <FormSection
+            title="Funding Type"
+            description="Select all that apply to your child"
+            icon={<CreditCard className="w-5 h-5" />}
+          >
+            <div className="space-y-3">
+              {fundingOptions.map((option) => (
+                <div
+                  key={option.label}
+                  onClick={() => handleFundingTypeChange(option.label)}
+                  className={`flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+                    formData.fundingTypes.includes(option.label)
+                      ? "bg-teal-50 border-teal-200"
+                      : "bg-white border-slate-200 hover:border-teal-300 hover:bg-slate-50"
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                      formData.fundingTypes.includes(option.label)
+                        ? "bg-teal-600 border-teal-600"
+                        : "border-slate-300"
+                    }`}
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Submitting...</span>
-                </>
-              ) : (
-                <span>Submit Funding Declaration</span>
-              )}
-            </button>
-          </div>
-        </div>
+                    {formData.fundingTypes.includes(option.label) && (
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <div
+                    className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                      formData.fundingTypes.includes(option.label)
+                        ? "bg-teal-100 text-teal-600"
+                        : "bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {option.icon}
+                  </div>
+                  <span
+                    className={`text-sm font-medium ${
+                      formData.fundingTypes.includes(option.label)
+                        ? "text-teal-900"
+                        : "text-slate-700"
+                    }`}
+                  >
+                    {option.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </FormSection>
+        </FormCard>
+
+        {/* Declaration & Consent */}
+        <FormCard>
+          <FormSection
+            title="Declaration & Consent"
+            description="Please confirm all statements to proceed"
+            icon={<FileCheck className="w-5 h-5" />}
+          >
+            <ConsentGroup
+              title="Required Declarations"
+              description="All confirmations are mandatory"
+              icon={<CheckSquare className="w-4 h-4" />}
+            >
+              <ConsentToggle
+                name="confirmAccuracy"
+                label="Information Accuracy"
+                description="I confirm the information provided is true and accurate"
+                checked={formData.confirmAccuracy}
+                onChange={handleToggleChange}
+                icon={<CheckSquare className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="confirmNotifyChanges"
+                label="Notify Changes"
+                description="I agree to notify the nursery if my eligibility status changes"
+                checked={formData.confirmNotifyChanges}
+                onChange={handleToggleChange}
+                icon={<CheckSquare className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="confirmCheckEligibility"
+                label="Eligibility Check"
+                description="I give permission for the nursery to check my funding eligibility with the Local Authority or HMRC"
+                checked={formData.confirmCheckEligibility}
+                onChange={handleToggleChange}
+                icon={<CheckSquare className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="confirmAdditionalCharges"
+                label="Additional Charges"
+                description="I understand that any additional hours or services beyond the funded entitlement will be charged separately"
+                checked={formData.confirmAdditionalCharges}
+                onChange={handleToggleChange}
+                icon={<CreditCard className="w-5 h-5" />}
+              />
+            </ConsentGroup>
+          </FormSection>
+        </FormCard>
+
+        {/* Signature */}
+        <FormCard>
+          <FormSection
+            title="Signature"
+            description="Complete your declaration"
+            icon={<PenLine className="w-5 h-5" />}
+          >
+            <FormField
+              label="Date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
       </div>
-    </div>
+    </FormModal>
   );
 };
 

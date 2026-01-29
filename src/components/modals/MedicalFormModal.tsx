@@ -1,5 +1,23 @@
 "use client";
+
 import React, { useState } from "react";
+import {
+  Baby,
+  MapPin,
+  Stethoscope,
+  AlertTriangle,
+  Pill,
+  Shield,
+  PenLine,
+  Phone,
+  Ambulance,
+  Heart,
+  Building2,
+} from "lucide-react";
+import { FormModal, FormModalFooter } from "@/components/ui/form-modal";
+import { FormSection, FormCard } from "@/components/ui/form-section";
+import { FormField } from "@/components/ui/form-field";
+import { ConsentToggle, ConsentGroup } from "@/components/ui/consent-toggle";
 
 interface MedicalFormModalProps {
   onClose: () => void;
@@ -39,6 +57,7 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
     emergencyContactConsent: false,
     hospitalAccompanyConsent: false,
     parentName: "",
+    parentEmail: "",
     date: "",
   });
 
@@ -47,22 +66,19 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleToggleChange = (name: string, checked: boolean) => {
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
   const handleRadioChange = (fieldName: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (
       !formData.emergencyFirstAid ||
       !formData.emergencyServicesConsent ||
@@ -82,9 +98,7 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
     try {
       const response = await fetch("/api/forms/medical", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -94,7 +108,7 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
         onClose();
         showSuccess(
           "Medical Form Submitted Successfully!",
-          `Thank you! Medical information for ${formData.childFullName} has been submitted. Reference: ${data.data.medicalReference}`
+          `Thank you! Medical information for ${formData.childFullName} has been submitted. A confirmation email with your reference number (${data.data.medicalReference}) has been sent to your email address.`
         );
       } else {
         showError(
@@ -115,566 +129,378 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
     }
   };
 
+  const RadioButton = ({ field, value, currentValue }: { field: string; value: string; currentValue: string }) => (
+    <button
+      type="button"
+      onClick={() => handleRadioChange(field, value)}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        currentValue === value
+          ? "bg-teal-600 text-white shadow-md"
+          : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+      }`}
+    >
+      {value}
+    </button>
+  );
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#252650]">
-            Medical Form & Healthcare Plan
-          </h2>
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="w-8 h-8 flex cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+    <FormModal
+      title="Medical Form & Healthcare Plan"
+      subtitle="Important health information for your child's care"
+      isOpen={true}
+      onClose={onClose}
+      isLoading={isLoading}
+      maxWidth="3xl"
+      footer={
+        <FormModalFooter
+          onCancel={onClose}
+          onSubmit={handleSubmit}
+          submitLabel="Submit Medical Form"
+          isLoading={isLoading}
+        />
+      }
+    >
+      <div className="space-y-6">
+        {/* Child Details */}
+        <FormCard>
+          <FormSection
+            title="Child Details"
+            description="Basic information about your child"
+            icon={<Baby className="w-5 h-5" />}
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Full Name"
+                name="childFullName"
+                value={formData.childFullName}
+                onChange={handleInputChange}
+                placeholder="Enter child's full name"
+                required
               />
-            </svg>
-          </button>
-        </div>
+              <FormField
+                label="Date of Birth"
+                name="childDOB"
+                type="date"
+                value={formData.childDOB}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </FormSection>
+        </FormCard>
 
-        {/* Form Content - Scrollable */}
-        <div className="overflow-y-auto flex-1 rounded-b-2xl">
-          <div className="p-6 space-y-6">
-            {/* Child Details */}
+        {/* Address */}
+        <FormCard>
+          <FormSection
+            title="Home Address"
+            description="Your child's residential address"
+            icon={<MapPin className="w-5 h-5" />}
+          >
+            <FormField
+              label="Home Address"
+              name="homeAddress"
+              type="textarea"
+              value={formData.homeAddress}
+              onChange={handleInputChange}
+              placeholder="Enter full home address"
+              required
+              rows={2}
+            />
+            <FormField
+              label="Postcode"
+              name="postcode"
+              value={formData.postcode}
+              onChange={handleInputChange}
+              placeholder="Enter postcode"
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* GP Details */}
+        <FormCard>
+          <FormSection
+            title="GP & Healthcare Provider"
+            description="Your child's healthcare providers"
+            icon={<Stethoscope className="w-5 h-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="GP Name"
+                name="gpName"
+                value={formData.gpName}
+                onChange={handleInputChange}
+                placeholder="Enter GP name"
+                required
+              />
+              <FormField
+                label="Health Visitor (if applicable)"
+                name="healthVisitor"
+                value={formData.healthVisitor}
+                onChange={handleInputChange}
+                placeholder="Enter health visitor name"
+              />
+            </div>
+            <FormField
+              label="GP Address & Phone"
+              name="gpAddress"
+              type="textarea"
+              value={formData.gpAddress}
+              onChange={handleInputChange}
+              placeholder="Enter GP address and phone number"
+              required
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Health Conditions */}
+        <FormCard>
+          <FormSection
+            title="Health Conditions / Medical Needs"
+            description="Important health information"
+            icon={<AlertTriangle className="w-5 h-5" />}
+          >
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child Details
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Full Name <span className="text-red-500">*</span>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Does your child have any medical conditions? <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  name="childFullName"
-                  value={formData.childFullName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter child's full name"
-                  required
-                />
+                <div className="flex gap-3">
+                  <RadioButton field="hasMedicalConditions" value="Yes" currentValue={formData.hasMedicalConditions} />
+                  <RadioButton field="hasMedicalConditions" value="No" currentValue={formData.hasMedicalConditions} />
+                </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date of Birth <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="childDOB"
-                  value={formData.childDOB}
+              {formData.hasMedicalConditions === "Yes" && (
+                <FormField
+                  label="Medical Conditions Details"
+                  name="medicalConditionsDetails"
+                  type="textarea"
+                  value={formData.medicalConditionsDetails}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Home Address <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="homeAddress"
-                  value={formData.homeAddress}
-                  onChange={handleInputChange}
+                  placeholder="Describe medical conditions"
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Enter full home address"
-                  required
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Postcode <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="postcode"
-                  value={formData.postcode}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter postcode"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  GP Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="gpName"
-                  value={formData.gpName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter GP name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  GP Address & Phone <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="gpAddress"
-                  value={formData.gpAddress}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Enter GP address and phone number"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Health Visitor (if applicable)
-                </label>
-                <input
-                  type="text"
-                  name="healthVisitor"
-                  value={formData.healthVisitor}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter health visitor name"
-                />
-              </div>
-            </div>
-
-            {/* Health Conditions / Medical Needs */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Health Conditions / Medical Needs
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Does your child have any medical conditions?{" "}
-                  <span className="text-red-500">*</span>
-                </label>
-                <div className="flex space-x-4 mb-4">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleRadioChange("hasMedicalConditions", "Yes")
-                    }
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.hasMedicalConditions === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleRadioChange("hasMedicalConditions", "No")
-                    }
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.hasMedicalConditions === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-
-                {formData.hasMedicalConditions === "Yes" && (
-                  <div>
-                    <label className="block text-sm font-semibold text-[#252650] mb-2">
-                      If yes, please specify
-                    </label>
-                    <textarea
-                      name="medicalConditionsDetails"
-                      value={formData.medicalConditionsDetails}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                      placeholder="Describe medical conditions"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Does your child have any allergies or intolerances?{" "}
-                  <span className="text-red-500">*</span>
-                </label>
-                <div className="flex space-x-4 mb-4">
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("hasAllergies", "Yes")}
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.hasAllergies === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("hasAllergies", "No")}
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.hasAllergies === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-
-                {formData.hasAllergies === "Yes" && (
-                  <div>
-                    <label className="block text-sm font-semibold text-[#252650] mb-2">
-                      If yes, list allergens and symptoms
-                    </label>
-                    <textarea
-                      name="allergiesDetails"
-                      value={formData.allergiesDetails}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                      placeholder="List allergies and symptoms"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Is your child on any long-term medication?{" "}
-                  <span className="text-red-500">*</span>
-                </label>
-                <div className="flex space-x-4 mb-4">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleRadioChange("onLongTermMedication", "Yes")
-                    }
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.onLongTermMedication === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleRadioChange("onLongTermMedication", "No")
-                    }
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.onLongTermMedication === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-
-                {formData.onLongTermMedication === "Yes" && (
-                  <div>
-                    <label className="block text-sm font-semibold text-[#252650] mb-2">
-                      If yes, name and dosage
-                    </label>
-                    <textarea
-                      name="longTermMedicationDetails"
-                      value={formData.longTermMedicationDetails}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                      placeholder="Medication name and dosage"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Medication Administration Consent */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Medication Administration Consent
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Name of Medication
-                </label>
-                <input
-                  type="text"
-                  name="medicationName"
-                  value={formData.medicationName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter medication name"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    Dosage
-                  </label>
-                  <input
-                    type="text"
-                    name="medicationDosage"
-                    value={formData.medicationDosage}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                    placeholder="e.g., 5ml"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    Frequency / Timing
-                  </label>
-                  <input
-                    type="text"
-                    name="medicationFrequency"
-                    value={formData.medicationFrequency}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                    placeholder="e.g., twice daily"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Storage Instructions
-                </label>
-                <input
-                  type="text"
-                  name="medicationStorage"
-                  value={formData.medicationStorage}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="e.g., Refrigerate, room temperature"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    Start Date
-                  </label>
-                  <input
-                    type="date"
-                    name="medicationStartDate"
-                    value={formData.medicationStartDate}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    End Date
-                  </label>
-                  <input
-                    type="date"
-                    name="medicationEndDate"
-                    value={formData.medicationEndDate}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="medicationAdminConsent"
-                    checked={formData.medicationAdminConsent}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I give permission for nursery staff to administer this
-                    medication according to the above instructions.
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="medicationContainerConsent"
-                    checked={formData.medicationContainerConsent}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    I will provide all medication in the original container with
-                    the child&apos;s name and prescription label.
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            {/* Emergency Action Plan */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Emergency Action Plan
-              </h3>
-              <p className="text-sm text-[#666666] mb-4">
-                In the event of a medical emergency, I authorise the nursery to:
-              </p>
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="emergencyFirstAid"
-                    checked={formData.emergencyFirstAid}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Administer appropriate first aid.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-               </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="emergencyServicesConsent"
-                    checked={formData.emergencyServicesConsent}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Call emergency services (999) if required.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="emergencyContactConsent"
-                    checked={formData.emergencyContactConsent}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Contact me or my emergency contacts immediately.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="hospitalAccompanyConsent"
-                    checked={formData.hospitalAccompanyConsent}
-                    onChange={handleInputChange}
-                    required
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Accompany my child to the hospital if necessary and share
-                    medical records with professionals.{" "}
-                    <span className="text-red-500">*</span>
-                  </span>
-                </label>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Parent / Carer Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="parentName"
-                  value={formData.parentName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className={`w-full py-4 px-6 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                isLoading
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-[#F6353B] text-white hover:bg-[#e02f35] cursor-pointer"
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Submitting...</span>
-                </>
-              ) : (
-                <span>Submit Medical Form</span>
               )}
-            </button>
-          </div>
-        </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Does your child have any allergies or intolerances? <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-3">
+                  <RadioButton field="hasAllergies" value="Yes" currentValue={formData.hasAllergies} />
+                  <RadioButton field="hasAllergies" value="No" currentValue={formData.hasAllergies} />
+                </div>
+              </div>
+              {formData.hasAllergies === "Yes" && (
+                <FormField
+                  label="Allergies Details"
+                  name="allergiesDetails"
+                  type="textarea"
+                  value={formData.allergiesDetails}
+                  onChange={handleInputChange}
+                  placeholder="List allergens and symptoms"
+                  rows={3}
+                />
+              )}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Is your child on any long-term medication? <span className="text-red-500">*</span>
+                </label>
+                <div className="flex gap-3">
+                  <RadioButton field="onLongTermMedication" value="Yes" currentValue={formData.onLongTermMedication} />
+                  <RadioButton field="onLongTermMedication" value="No" currentValue={formData.onLongTermMedication} />
+                </div>
+              </div>
+              {formData.onLongTermMedication === "Yes" && (
+                <FormField
+                  label="Long-term Medication Details"
+                  name="longTermMedicationDetails"
+                  type="textarea"
+                  value={formData.longTermMedicationDetails}
+                  onChange={handleInputChange}
+                  placeholder="Medication name and dosage"
+                  rows={3}
+                />
+              )}
+            </div>
+          </FormSection>
+        </FormCard>
+
+        {/* Medication Administration */}
+        <FormCard>
+          <FormSection
+            title="Medication Administration Consent"
+            description="If your child needs medication during nursery hours"
+            icon={<Pill className="w-5 h-5" />}
+          >
+            <FormField
+              label="Name of Medication"
+              name="medicationName"
+              value={formData.medicationName}
+              onChange={handleInputChange}
+              placeholder="Enter medication name"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Dosage"
+                name="medicationDosage"
+                value={formData.medicationDosage}
+                onChange={handleInputChange}
+                placeholder="e.g., 5ml"
+              />
+              <FormField
+                label="Frequency / Timing"
+                name="medicationFrequency"
+                value={formData.medicationFrequency}
+                onChange={handleInputChange}
+                placeholder="e.g., twice daily"
+              />
+            </div>
+            <FormField
+              label="Storage Instructions"
+              name="medicationStorage"
+              value={formData.medicationStorage}
+              onChange={handleInputChange}
+              placeholder="e.g., Refrigerate, room temperature"
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Start Date"
+                name="medicationStartDate"
+                type="date"
+                value={formData.medicationStartDate}
+                onChange={handleInputChange}
+              />
+              <FormField
+                label="End Date"
+                name="medicationEndDate"
+                type="date"
+                value={formData.medicationEndDate}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <ConsentGroup
+              title="Medication Consent"
+              description="Permission for medication administration"
+              icon={<Pill className="w-4 h-4" />}
+            >
+              <ConsentToggle
+                name="medicationAdminConsent"
+                label="Medication Administration"
+                description="I give permission for nursery staff to administer this medication"
+                checked={formData.medicationAdminConsent}
+                onChange={handleToggleChange}
+                icon={<Pill className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="medicationContainerConsent"
+                label="Original Container"
+                description="I will provide medication in the original container with the child's name"
+                checked={formData.medicationContainerConsent}
+                onChange={handleToggleChange}
+                icon={<Building2 className="w-5 h-5" />}
+              />
+            </ConsentGroup>
+          </FormSection>
+        </FormCard>
+
+        {/* Emergency Action Plan */}
+        <FormCard>
+          <FormSection
+            title="Emergency Action Plan"
+            description="Consent for emergency medical situations"
+            icon={<Shield className="w-5 h-5" />}
+          >
+            <div className="bg-amber-50 rounded-lg p-4 mb-4 border border-amber-200">
+              <p className="text-sm text-amber-800">
+                In the event of a medical emergency, I authorise the nursery to take the following actions:
+              </p>
+            </div>
+
+            <ConsentGroup
+              title="Emergency Permissions"
+              description="All consents are required"
+              icon={<Ambulance className="w-4 h-4" />}
+            >
+              <ConsentToggle
+                name="emergencyFirstAid"
+                label="First Aid"
+                description="Administer appropriate first aid (Required)"
+                checked={formData.emergencyFirstAid}
+                onChange={handleToggleChange}
+                icon={<Heart className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="emergencyServicesConsent"
+                label="Emergency Services"
+                description="Call emergency services (999) if required (Required)"
+                checked={formData.emergencyServicesConsent}
+                onChange={handleToggleChange}
+                icon={<Ambulance className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="emergencyContactConsent"
+                label="Contact Parents"
+                description="Contact me or my emergency contacts immediately (Required)"
+                checked={formData.emergencyContactConsent}
+                onChange={handleToggleChange}
+                icon={<Phone className="w-5 h-5" />}
+              />
+              <ConsentToggle
+                name="hospitalAccompanyConsent"
+                label="Hospital Accompaniment"
+                description="Accompany my child to hospital and share medical records (Required)"
+                checked={formData.hospitalAccompanyConsent}
+                onChange={handleToggleChange}
+                icon={<Building2 className="w-5 h-5" />}
+              />
+            </ConsentGroup>
+          </FormSection>
+        </FormCard>
+
+        {/* Declaration */}
+        <FormCard>
+          <FormSection
+            title="Declaration"
+            description="Confirm your submission"
+            icon={<PenLine className="w-5 h-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Parent / Carer Name"
+                name="parentName"
+                value={formData.parentName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+              />
+              <FormField
+                label="Email Address"
+                name="parentEmail"
+                type="email"
+                value={formData.parentEmail}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <FormField
+              label="Date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
       </div>
-    </div>
+    </FormModal>
   );
 };
 

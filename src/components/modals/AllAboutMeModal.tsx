@@ -1,5 +1,23 @@
 "use client";
+
 import React, { useState } from "react";
+import {
+  User,
+  Baby,
+  Heart,
+  Utensils,
+  Moon,
+  Bath,
+  Star,
+  Globe,
+  Target,
+  PenLine,
+  MessageCircle,
+  Users,
+} from "lucide-react";
+import { FormModal, FormModalFooter } from "@/components/ui/form-modal";
+import { FormSection, FormCard } from "@/components/ui/form-section";
+import { FormField } from "@/components/ui/form-field";
 
 interface AllAboutMeModalProps {
   onClose: () => void;
@@ -42,6 +60,7 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
     parentalHopes: "",
     concerns: "",
     parentName: "",
+    parentEmail: "",
     date: "",
   });
 
@@ -67,16 +86,13 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
       const response = await fetch("/api/forms/aboutme", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -86,7 +102,7 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
         onClose();
         showSuccess(
           "All About Me Form Submitted Successfully!",
-          `Thank you! Information about ${formData.childFullName} has been submitted. Reference: ${data.data.aboutMeReference}`
+          `Thank you! Information about ${formData.childFullName} has been submitted. A confirmation email with your reference number (${data.data.aboutMeReference}) has been sent to your email address.`
         );
       } else {
         showError(
@@ -107,632 +123,413 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#252650]">
-            All About Me Form
-          </h2>
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="w-8 h-8 flex cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+  const RadioButton = ({ field, value, currentValue }: { field: string; value: string; currentValue: string }) => (
+    <button
+      type="button"
+      onClick={() => handleRadioChange(field, value)}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        currentValue === value
+          ? "bg-teal-600 text-white shadow-md"
+          : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+      }`}
+    >
+      {value}
+    </button>
+  );
 
-        {/* Form Content - Scrollable */}
-        <div className="overflow-y-auto flex-1 rounded-b-2xl">
-          <div className="p-6 space-y-6">
-            {/* Child's Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child&apos;s Details
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="childFullName"
-                  value={formData.childFullName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter child's full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date of Birth <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="childDOB"
-                  value={formData.childDOB}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Preferred Name/Nickname
-                </label>
-                <input
-                  type="text"
-                  name="preferredName"
-                  value={formData.preferredName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="What does your child like to be called?"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Languages Spoken at Home
-                </label>
-                <input
-                  type="text"
-                  name="languagesSpoken"
-                  value={formData.languagesSpoken}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="e.g., English, Spanish"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Siblings (names & ages)
-                </label>
-                <textarea
-                  name="siblings"
-                  value={formData.siblings}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List siblings"
-                />
-              </div>
-            </div>
-
-            {/* Personality & Behaviour */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Personality & Behaviour
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  How would you describe your child&apos;s personality?
-                </label>
-                <textarea
-                  name="personality"
-                  value={formData.personality}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="e.g., outgoing, shy, energetic, calm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  How does your child express emotions (e.g., happiness,
-                  frustration)?
-                </label>
-                <textarea
-                  name="emotionalExpression"
-                  value={formData.emotionalExpression}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Describe how your child shows emotions"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Any particular fears or dislikes?
-                </label>
-                <textarea
-                  name="fearsOrDislikes"
-                  value={formData.fearsOrDislikes}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="e.g., loud noises, certain textures"
-                />
-              </div>
-            </div>
-
-            {/* Eating & Drinking */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Eating & Drinking
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Does your child feed themselves?
-                </label>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("feedsThemselves", "Yes")}
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.feedsThemselves === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("feedsThemselves", "No")}
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.feedsThemselves === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Preferred foods
-                </label>
-                <textarea
-                  name="preferredFoods"
-                  value={formData.preferredFoods}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List your child's favorite foods"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Foods to avoid
-                </label>
-                <textarea
-                  name="foodsToAvoid"
-                  value={formData.foodsToAvoid}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List any foods to avoid"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Do they use cutlery?
-                </label>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("usesCutlery", "Yes")}
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.usesCutlery === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("usesCutlery", "No")}
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.usesCutlery === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Allergies or intolerances
-                </label>
-                <textarea
-                  name="allergiesOrIntolerances"
-                  value={formData.allergiesOrIntolerances}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List any allergies or intolerances"
-                />
-              </div>
-            </div>
-
-            {/* Sleeping & Comfort */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Sleeping & Comfort
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Does your child nap?
-                </label>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("takesNaps", "Yes")}
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.takesNaps === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("takesNaps", "No")}
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.takesNaps === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-
-              {formData.takesNaps === "Yes" && (
-                <div>
-                  <label className="block text-sm font-semibold text-[#252650] mb-2">
-                    Usual nap time and duration
-                  </label>
-                  <input
-                    type="text"
-                    name="napTime"
-                    value={formData.napTime}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                    placeholder="e.g., 1:00 PM for 2 hours"
-                  />
-                </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Comfort item (e.g., teddy, blanket)
-                </label>
-                <input
-                  type="text"
-                  name="comfortItem"
-                  value={formData.comfortItem}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Describe comfort item"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Sleep routine (any tips to help settle?)
-                </label>
-                <textarea
-                  name="sleepRoutine"
-                  value={formData.sleepRoutine}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Describe sleep routine"
-                />
-              </div>
-            </div>
-
-            {/* Toileting */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Toileting
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Is your child toilet trained?
-                </label>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("toiletTrained", "Yes")}
-                    className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                      formData.toiletTrained === "Yes"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRadioChange("toiletTrained", "No")}
-                    className={`px-4 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-colors ${
-                      formData.toiletTrained === "No"
-                        ? "bg-[#252650] text-white"
-                        : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    No
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-3">
-                  Do they use:
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {["Potty", "Toilet", "Pull-ups", "Nappies"].map((use) => (
-                    <button
-                      key={use}
-                      type="button"
-                      onClick={() => handleToiletUseChange(use)}
-                      className={`px-4 py-2 cursor-pointer rounded-lg text-sm font-semibold transition-colors ${
-                        formData.toiletUse.includes(use)
-                          ? "bg-[#2C97A9] text-white"
-                          : "bg-white text-[#252650] border border-gray-300 hover:bg-gray-50"
-                      }`}
-                    >
-                      {use}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Any routines or support needed?
-                </label>
-                <textarea
-                  name="toiletingRoutines"
-                  value={formData.toiletingRoutines}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Describe any toileting routines"
-                />
-              </div>
-            </div>
-
-            {/* Likes & Interests */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Likes & Interests
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Favourite toys/activities
-                </label>
-                <textarea
-                  name="favouriteToys"
-                  value={formData.favouriteToys}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="What does your child love to play with?"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Favourite songs/books/shows
-                </label>
-                <textarea
-                  name="favouriteSongs"
-                  value={formData.favouriteSongs}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List favorite entertainment"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Dislikes or triggers
-                </label>
-                <textarea
-                  name="dislikes"
-                  value={formData.dislikes}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="What should we avoid?"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  What makes them feel happy or comforted?
-                </label>
-                <textarea
-                  name="whatMakesHappy"
-                  value={formData.whatMakesHappy}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="How can we comfort your child?"
-                />
-              </div>
-            </div>
-
-            {/* Family & Cultural Background */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Family & Cultural Background
-              </h3>
-              <div>
-               <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Cultural or religious needs we should be aware of
-                </label>
-                <textarea
-                  name="culturalNeeds"
-                  value={formData.culturalNeeds}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Any cultural or religious considerations"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Festivals or events your family celebrates
-                </label>
-                <textarea
-                  name="festivalsAndEvents"
-                  value={formData.festivalsAndEvents}
-                  onChange={handleInputChange}
-                  rows={2}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="List festivals and celebrations"
-                />
-              </div>
-            </div>
-
-            {/* Parental Hopes & Goals */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Parental Hopes & Goals
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  What would you like your child to gain from nursery?
-                </label>
-                <textarea
-                  name="parentalHopes"
-                  value={formData.parentalHopes}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Share your hopes and goals"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Any concerns you&apos;d like to discuss with us?
-                </label>
-                <textarea
-                  name="concerns"
-                  value={formData.concerns}
-                  onChange={handleInputChange}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Share any concerns"
-                />
-              </div>
-            </div>
-
-            {/* Declaration */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Declaration
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Parent / Carer Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="parentName"
-                  value={formData.parentName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className={`w-full py-4 px-6 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                isLoading
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-[#2AA631] text-white hover:bg-[#259528] cursor-pointer"
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Submitting...</span>
-                </>
-              ) : (
-                <span>Submit All About Me Form</span>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+  const MultiSelectButton = ({ items, selected, onToggle }: { items: string[]; selected: string[]; onToggle: (item: string) => void }) => (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <button
+          key={item}
+          type="button"
+          onClick={() => onToggle(item)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            selected.includes(item)
+              ? "bg-teal-600 text-white shadow-md"
+              : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+          }`}
+        >
+          {item}
+        </button>
+      ))}
     </div>
+  );
+
+  return (
+    <FormModal
+      title="All About Me Form"
+      subtitle="Help us understand your child better to provide the best care"
+      isOpen={true}
+      onClose={onClose}
+      isLoading={isLoading}
+      maxWidth="3xl"
+      footer={
+        <FormModalFooter
+          onCancel={onClose}
+          onSubmit={handleSubmit}
+          submitLabel="Submit All About Me Form"
+          isLoading={isLoading}
+        />
+      }
+    >
+      <div className="space-y-6">
+        {/* Child's Details */}
+        <FormCard>
+          <FormSection
+            title="Child's Details"
+            description="Basic information about your child"
+            icon={<Baby className="w-5 h-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Full Name"
+                name="childFullName"
+                value={formData.childFullName}
+                onChange={handleInputChange}
+                placeholder="Enter child's full name"
+                required
+              />
+              <FormField
+                label="Date of Birth"
+                name="childDOB"
+                type="date"
+                value={formData.childDOB}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <FormField
+              label="Preferred Name/Nickname"
+              name="preferredName"
+              value={formData.preferredName}
+              onChange={handleInputChange}
+              placeholder="What does your child like to be called?"
+            />
+            <FormField
+              label="Languages Spoken at Home"
+              name="languagesSpoken"
+              value={formData.languagesSpoken}
+              onChange={handleInputChange}
+              placeholder="e.g., English, Spanish"
+            />
+            <FormField
+              label="Siblings (names & ages)"
+              name="siblings"
+              type="textarea"
+              value={formData.siblings}
+              onChange={handleInputChange}
+              placeholder="List siblings"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Personality & Behaviour */}
+        <FormCard>
+          <FormSection
+            title="Personality & Behaviour"
+            description="Help us understand your child's temperament"
+            icon={<Heart className="w-5 h-5" />}
+          >
+            <FormField
+              label="How would you describe your child's personality?"
+              name="personality"
+              type="textarea"
+              value={formData.personality}
+              onChange={handleInputChange}
+              placeholder="e.g., outgoing, shy, energetic, calm"
+              rows={3}
+            />
+            <FormField
+              label="How does your child express emotions?"
+              name="emotionalExpression"
+              type="textarea"
+              value={formData.emotionalExpression}
+              onChange={handleInputChange}
+              placeholder="Describe how your child shows happiness, frustration, etc."
+              rows={3}
+            />
+            <FormField
+              label="Any particular fears or dislikes?"
+              name="fearsOrDislikes"
+              type="textarea"
+              value={formData.fearsOrDislikes}
+              onChange={handleInputChange}
+              placeholder="e.g., loud noises, certain textures"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Eating & Drinking */}
+        <FormCard>
+          <FormSection
+            title="Eating & Drinking"
+            description="Your child's food preferences and habits"
+            icon={<Utensils className="w-5 h-5" />}
+          >
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Does your child feed themselves?</label>
+              <div className="flex gap-3">
+                <RadioButton field="feedsThemselves" value="Yes" currentValue={formData.feedsThemselves} />
+                <RadioButton field="feedsThemselves" value="No" currentValue={formData.feedsThemselves} />
+              </div>
+            </div>
+            <FormField
+              label="Preferred foods"
+              name="preferredFoods"
+              type="textarea"
+              value={formData.preferredFoods}
+              onChange={handleInputChange}
+              placeholder="List your child's favorite foods"
+              rows={2}
+            />
+            <FormField
+              label="Foods to avoid"
+              name="foodsToAvoid"
+              type="textarea"
+              value={formData.foodsToAvoid}
+              onChange={handleInputChange}
+              placeholder="List any foods to avoid"
+              rows={2}
+            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Do they use cutlery?</label>
+              <div className="flex gap-3">
+                <RadioButton field="usesCutlery" value="Yes" currentValue={formData.usesCutlery} />
+                <RadioButton field="usesCutlery" value="No" currentValue={formData.usesCutlery} />
+              </div>
+            </div>
+            <FormField
+              label="Allergies or intolerances"
+              name="allergiesOrIntolerances"
+              type="textarea"
+              value={formData.allergiesOrIntolerances}
+              onChange={handleInputChange}
+              placeholder="List any allergies or intolerances"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Sleeping & Comfort */}
+        <FormCard>
+          <FormSection
+            title="Sleeping & Comfort"
+            description="Sleep habits and comfort needs"
+            icon={<Moon className="w-5 h-5" />}
+          >
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Does your child nap?</label>
+              <div className="flex gap-3">
+                <RadioButton field="takesNaps" value="Yes" currentValue={formData.takesNaps} />
+                <RadioButton field="takesNaps" value="No" currentValue={formData.takesNaps} />
+              </div>
+            </div>
+            {formData.takesNaps === "Yes" && (
+              <FormField
+                label="Usual nap time and duration"
+                name="napTime"
+                value={formData.napTime}
+                onChange={handleInputChange}
+                placeholder="e.g., 1:00 PM for 2 hours"
+              />
+            )}
+            <FormField
+              label="Comfort item (e.g., teddy, blanket)"
+              name="comfortItem"
+              value={formData.comfortItem}
+              onChange={handleInputChange}
+              placeholder="Describe comfort item"
+            />
+            <FormField
+              label="Sleep routine (any tips to help settle?)"
+              name="sleepRoutine"
+              type="textarea"
+              value={formData.sleepRoutine}
+              onChange={handleInputChange}
+              placeholder="Describe sleep routine"
+              rows={3}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Toileting */}
+        <FormCard>
+          <FormSection
+            title="Toileting"
+            description="Your child's toileting habits"
+            icon={<Bath className="w-5 h-5" />}
+          >
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Is your child toilet trained?</label>
+              <div className="flex gap-3">
+                <RadioButton field="toiletTrained" value="Yes" currentValue={formData.toiletTrained} />
+                <RadioButton field="toiletTrained" value="No" currentValue={formData.toiletTrained} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Do they use:</label>
+              <MultiSelectButton
+                items={["Potty", "Toilet", "Pull-ups", "Nappies"]}
+                selected={formData.toiletUse}
+                onToggle={handleToiletUseChange}
+              />
+            </div>
+            <FormField
+              label="Any routines or support needed?"
+              name="toiletingRoutines"
+              type="textarea"
+              value={formData.toiletingRoutines}
+              onChange={handleInputChange}
+              placeholder="Describe any toileting routines"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Likes & Interests */}
+        <FormCard>
+          <FormSection
+            title="Likes & Interests"
+            description="What makes your child happy"
+            icon={<Star className="w-5 h-5" />}
+          >
+            <FormField
+              label="Favourite toys/activities"
+              name="favouriteToys"
+              type="textarea"
+              value={formData.favouriteToys}
+              onChange={handleInputChange}
+              placeholder="What does your child love to play with?"
+              rows={2}
+            />
+            <FormField
+              label="Favourite songs/books/shows"
+              name="favouriteSongs"
+              type="textarea"
+              value={formData.favouriteSongs}
+              onChange={handleInputChange}
+              placeholder="List favorite entertainment"
+              rows={2}
+            />
+            <FormField
+              label="Dislikes or triggers"
+              name="dislikes"
+              type="textarea"
+              value={formData.dislikes}
+              onChange={handleInputChange}
+              placeholder="What should we avoid?"
+              rows={2}
+            />
+            <FormField
+              label="What makes them feel happy or comforted?"
+              name="whatMakesHappy"
+              type="textarea"
+              value={formData.whatMakesHappy}
+              onChange={handleInputChange}
+              placeholder="How can we comfort your child?"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Family & Cultural Background */}
+        <FormCard>
+          <FormSection
+            title="Family & Cultural Background"
+            description="Cultural considerations and celebrations"
+            icon={<Globe className="w-5 h-5" />}
+          >
+            <FormField
+              label="Cultural or religious needs we should be aware of"
+              name="culturalNeeds"
+              type="textarea"
+              value={formData.culturalNeeds}
+              onChange={handleInputChange}
+              placeholder="Any cultural or religious considerations"
+              rows={2}
+            />
+            <FormField
+              label="Festivals or events your family celebrates"
+              name="festivalsAndEvents"
+              type="textarea"
+              value={formData.festivalsAndEvents}
+              onChange={handleInputChange}
+              placeholder="List festivals and celebrations"
+              rows={2}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Parental Hopes & Goals */}
+        <FormCard>
+          <FormSection
+            title="Parental Hopes & Goals"
+            description="Your expectations for your child's nursery experience"
+            icon={<Target className="w-5 h-5" />}
+          >
+            <FormField
+              label="What would you like your child to gain from nursery?"
+              name="parentalHopes"
+              type="textarea"
+              value={formData.parentalHopes}
+              onChange={handleInputChange}
+              placeholder="Share your hopes and goals"
+              rows={3}
+            />
+            <FormField
+              label="Any concerns you'd like to discuss with us?"
+              name="concerns"
+              type="textarea"
+              value={formData.concerns}
+              onChange={handleInputChange}
+              placeholder="Share any concerns"
+              rows={3}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Declaration */}
+        <FormCard>
+          <FormSection
+            title="Declaration"
+            description="Confirm your submission"
+            icon={<PenLine className="w-5 h-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Parent / Carer Name"
+                name="parentName"
+                value={formData.parentName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+              />
+              <FormField
+                label="Email Address"
+                name="parentEmail"
+                type="email"
+                value={formData.parentEmail}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <FormField
+              label="Date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
+      </div>
+    </FormModal>
   );
 };
 

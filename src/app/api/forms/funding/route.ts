@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
+import { generateFundingDeclarationPDF } from "@/lib/pdf-generator";
+import {
+  generateAdminEmailHtml,
+  generateAdminEmailText,
+  generateUserEmailHtml,
+  generateUserEmailText,
+} from "@/lib/email-templates";
 
 interface FundingFormData {
   childFullName: string;
@@ -7,6 +14,7 @@ interface FundingFormData {
   homeAddress: string;
   postcode: string;
   parentFullName: string;
+  parentEmail: string;
   nationalInsuranceNumber: string;
   employmentStatus: string;
   thirtyHourCode?: string;
@@ -34,6 +42,7 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
+
 async function sendFundingEmail(
   data: FundingFormData,
   fundingRef: string
@@ -47,139 +56,74 @@ async function sendFundingEmail(
     return;
   }
 
-  const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString();
-
-  const adminHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 700px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #2C97A9 0%, #3dabc5 100%); color: white; padding: 30px; text-align: center; }
-        .content { padding: 30px; }
-        .section { margin: 20px 0; }
-        .section h3 { color: #2C97A9; border-bottom: 2px solid #2C97A9; padding-bottom: 10px; }
-        .field { margin: 10px 0; }
-        .label { font-weight: bold; color: #555; }
-        .value { color: #333; }
-        .footer { background: #343a40; color: white; padding: 20px; text-align: center; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>New Funding Declaration</h1>
-          <p>Reference: ${fundingRef}</p>
-        </div>
-        <div class="content">
-          <div class="section">
-            <h3>Child Details</h3>
-            <div class="field"><span class="label">Full Name:</span> <span class="value">${
-              data.childFullName
-            }</span></div>
-            <div class="field"><span class="label">Date of Birth:</span> <span class="value">${new Date(
-              data.childDOB
-            ).toLocaleDateString()}</span></div>
-            <div class="field"><span class="label">Address:</span> <span class="value">${
-              data.homeAddress
-            }</span></div>
-            <div class="field"><span class="label">Postcode:</span> <span class="value">${
-              data.postcode
-            }</span></div>
-          </div>
-
-          <div class="section">
-            <h3>Parent/Carer Details</h3>
-            <div class="field"><span class="label">Full Name:</span> <span class="value">${
-              data.parentFullName
-            }</span></div>
-            <div class="field"><span class="label">National Insurance:</span> <span class="value">${
-              data.nationalInsuranceNumber
-            }</span></div>
-            <div class="field"><span class="label">Employment Status:</span> <span class="value">${
-              data.employmentStatus
-            }</span></div>
-            ${
-              data.thirtyHourCode
-                ? `<div class="field"><span class="label">30-Hour Code:</span> <span class="value">${data.thirtyHourCode}</span></div>`
-                : ""
-            }
-          </div>
-
-          <div class="section">
-            <h3>Funding Types</h3>
-            <ul>
-              ${data.fundingTypes
-                .map((type: string) => `<li>${type}</li>`)
-                .join("")}
-            </ul>
-          </div>
-
-          <p style="margin-top: 30px;">Submitted: ${currentDate} at ${currentTime}</p>
-        </div>
-        <div class="footer">
-          <p><strong>Spring Lane Nursery</strong></p>
-          <p>Funding Reference: ${fundingRef}</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  const parentHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #2C97A9 0%, #3dabc5 100%); color: white; padding: 40px 30px; text-align: center; }
-        .content { padding: 40px 30px; }
-        .success { background: #28a745; color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0; }
-        .reference { background: #2C97A9; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; }
-        .info-box { background: #f8f9fa; border-left: 4px solid #2C97A9; padding: 15px; margin: 15px 0; }
-        .footer { background: #343a40; color: white; padding: 30px; text-align: center; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Funding Declaration Received</h1>
-        </div>
-        <div class="content">
-          <div class="success">
-            <h2>✓ Successfully Submitted</h2>
-            <p>Your funding declaration for ${data.childFullName} has been received</p>
-          </div>
-
-          <div class="reference">
-            <p><strong>Reference Number</strong></p>
-            <h2>${fundingRef}</h2>
-          </div>
-
-          <div class="info-box">
-            <h3>Next Steps</h3>
-            <ul>
-              <li>We will verify your eligibility with the Local Authority</li>
-              <li>You will be notified within 5-7 business days</li>
-              <li>Remember to reconfirm eligibility every 3 months</li>
-              <li>Notify us immediately if your circumstances change</li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer">
-          <p><strong>Spring Lane Nursery</strong></p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
   try {
+    // Generate PDF
+    const pdfBuffer = await generateFundingDeclarationPDF(data, fundingRef);
+    const pdfBase64 = pdfBuffer.toString("base64");
+
+    // Generate admin email
+    const adminHtml = generateAdminEmailHtml({
+      formType: "Funding Declaration",
+      reference: fundingRef,
+      primaryName: data.childFullName,
+      additionalInfo: {
+        "Date of Birth": new Date(data.childDOB).toLocaleDateString("en-GB"),
+        "Parent/Carer": data.parentFullName,
+        "Employment Status": data.employmentStatus,
+        "Funding Types": data.fundingTypes.join(", "),
+        "30-Hour Code": data.thirtyHourCode || "Not applicable",
+      },
+      
+    });
+
+    const adminText = generateAdminEmailText({
+      formType: "Funding Declaration",
+      reference: fundingRef,
+      primaryName: data.childFullName,
+      additionalInfo: {
+        "Parent/Carer": data.parentFullName,
+        "Funding Types": data.fundingTypes.join(", "),
+      },
+    });
+
+    // Generate parent email
+    const nextSteps = [
+      "We will verify your eligibility with the Local Authority",
+      "You will be notified within 5-7 business days",
+      "Notify us immediately if your circumstances change",
+    ];
+
+    if (data.thirtyHourCode) {
+      nextSteps.push(
+        "Remember to reconfirm your 30-hour eligibility code every 3 months"
+      );
+    }
+
+    const parentHtml = generateUserEmailHtml({
+      recipientName: data.parentFullName.split(" ")[0],
+      formType: "Funding Declaration",
+      reference: fundingRef,
+      subjectName: data.childFullName,
+      nextSteps,
+      
+      customMessage: `Thank you for completing the funding declaration for ${data.childFullName}. We will verify your eligibility with the Local Authority.`,
+      reminder: data.thirtyHourCode
+        ? "If claiming 30 hours free childcare, remember to reconfirm your eligibility code every 3 months to avoid losing your funded hours."
+        : undefined,
+    });
+
+    const parentText = generateUserEmailText({
+      recipientName: data.parentFullName.split(" ")[0],
+      formType: "Funding Declaration",
+      reference: fundingRef,
+      subjectName: data.childFullName,
+      nextSteps,
+      reminder: data.thirtyHourCode
+        ? "Remember to reconfirm your 30-hour eligibility code every 3 months."
+        : undefined,
+    });
+
+    // Send admin email with PDF
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -190,11 +134,20 @@ async function sendFundingEmail(
       body: JSON.stringify({
         From: fromEmail,
         To: adminEmail,
-        Subject: `New Funding Declaration - ${data.childFullName} - ${fundingRef}`,
+        Subject: `Funding Declaration - ${data.childFullName} - ${fundingRef}`,
         HtmlBody: adminHtml,
+        TextBody: adminText,
+        Attachments: [
+          {
+            Name: `Funding_Declaration_${fundingRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
+    // Send parent email with PDF
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -204,13 +157,21 @@ async function sendFundingEmail(
       },
       body: JSON.stringify({
         From: fromEmail,
-        To: data.parentFullName,
-        Subject: `Funding Declaration Received - ${data.childFullName}`,
+        To: data.parentEmail,
+        Subject: `Funding Declaration Received - ${data.childFullName} - ${fundingRef}`,
         HtmlBody: parentHtml,
+        TextBody: parentText,
+        Attachments: [
+          {
+            Name: `Your_Funding_Declaration_${fundingRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
-    console.log("Funding emails sent successfully");
+    console.log("Funding emails with PDF sent successfully");
   } catch (error) {
     console.error("Error sending funding email:", error);
   }

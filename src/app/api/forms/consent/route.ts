@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MongoClient, Db } from "mongodb";
+import { generateConsentFormPDF } from "@/lib/pdf-generator";
+import {
+  generateAdminEmailHtml,
+  generateAdminEmailText,
+  generateUserEmailHtml,
+  generateUserEmailText,
+} from "@/lib/email-templates";
 
 interface ConsentFormData {
   childFullName: string;
   childDOB: string;
   parentName: string;
+  parentEmail: string;
   date: string;
   localWalks: boolean;
   photoDisplays: boolean;
@@ -27,11 +35,6 @@ interface ConsentFormDocument extends ConsentFormData {
   updatedAt: Date;
 }
 
-interface ConsentItem {
-  key: keyof ConsentFormData;
-  label: string;
-}
-
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(): Promise<Db> {
@@ -46,6 +49,7 @@ async function connectToDatabase(): Promise<Db> {
   return db;
 }
 
+
 async function sendConsentEmail(
   data: ConsentFormData,
   consentRef: string
@@ -59,174 +63,87 @@ async function sendConsentEmail(
     return;
   }
 
-  const currentDate = new Date().toLocaleDateString();
-  const currentTime = new Date().toLocaleTimeString();
-
-  const consentItems: ConsentItem[] = [
-    { key: "localWalks", label: "Local walks and short outings" },
-    { key: "photoDisplays", label: "Use of child's photo on nursery displays" },
-    {
-      key: "photoLearningJournal",
-      label: "Use of child's photo in online learning journal",
-    },
-    { key: "groupPhotos", label: "Group photos" },
-    { key: "emergencyMedical", label: "Emergency medical treatment" },
-    { key: "sunCream", label: "Application of sun cream" },
-    { key: "facePainting", label: "Face painting" },
-    { key: "toothbrushing", label: "Toothbrushing at nursery" },
-    {
-      key: "studentObservations",
-      label: "Observations by students/staff in training",
-    },
-    { key: "petsAnimals", label: "Contact with pets or animals" },
-    { key: "firstAidPlasters", label: "Use of plasters or bandages" },
-  ];
-
-  const grantedConsents = consentItems.filter((item) => data[item.key]);
-  const deniedConsents = consentItems.filter((item) => !data[item.key]);
-
-  const adminHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 700px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #F9AE15 0%, #ffc107 100%); color: white; padding: 30px; text-align: center; }
-        .content { padding: 30px; }
-        .section { margin: 20px 0; }
-        .section h3 { color: #F9AE15; border-bottom: 2px solid #F9AE15; padding-bottom: 10px; }
-        .granted { color: #28a745; }
-        .denied { color: #dc3545; }
-        .field { margin: 10px 0; padding-left: 20px; }
-        .footer { background: #343a40; color: white; padding: 20px; text-align: center; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>New Consent Form</h1>
-          <p>Reference: ${consentRef}</p>
-        </div>
-        <div class="content">
-          <div class="section">
-            <h3>Child Details</h3>
-            <div class="field"><strong>Full Name:</strong> ${
-              data.childFullName
-            }</div>
-            <div class="field"><strong>Date of Birth:</strong> ${new Date(
-              data.childDOB
-            ).toLocaleDateString()}</div>
-          </div>
-
-          <div class="section">
-            <h3>Consents Granted ✓</h3>
-            ${
-              grantedConsents.length > 0
-                ? grantedConsents
-                    .map(
-                      (item) =>
-                        `<div class="field granted">✓ ${item.label}</div>`
-                    )
-                    .join("")
-                : "<p>No specific consents granted</p>"
-            }
-          </div>
-
-          ${
-            deniedConsents.length > 0
-              ? `
-          <div class="section">
-            <h3>Consents NOT Granted ✗</h3>
-            ${deniedConsents
-              .map((item) => `<div class="field denied">✗ ${item.label}</div>`)
-              .join("")}
-          </div>
-          `
-              : ""
-          }
-
-          ${
-            data.additionalComments
-              ? `
-          <div class="section">
-            <h3>Additional Comments</h3>
-            <p>${data.additionalComments}</p>
-          </div>
-          `
-              : ""
-          }
-
-          <div class="section">
-            <p><strong>Submitted by:</strong> ${data.parentName}</p>
-            <p><strong>Date:</strong> ${new Date(
-              data.date
-            ).toLocaleDateString()}</p>
-          </div>
-
-          <p style="margin-top: 30px;">Submitted: ${currentDate} at ${currentTime}</p>
-        </div>
-        <div class="footer">
-          <p><strong>Spring Lane Nursery</strong></p>
-          <p>Consent Reference: ${consentRef}</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  const parentHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; }
-        .header { background: linear-gradient(135deg, #F9AE15 0%, #ffc107 100%); color: white; padding: 40px 30px; text-align: center; }
-        .content { padding: 40px 30px; }
-        .success { background: #28a745; color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0; }
-        .reference { background: #F9AE15; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; }
-        .info-box { background: #f8f9fa; border-left: 4px solid #F9AE15; padding: 15px; margin: 15px 0; }
-        .footer { background: #343a40; color: white; padding: 30px; text-align: center; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>Consent Form Received</h1>
-        </div>
-        <div class="content">
-          <div class="success">
-            <h2>✓ Successfully Submitted</h2>
-            <p>Consent form for ${data.childFullName} has been received</p>
-          </div>
-
-          <div class="reference">
-            <p><strong>Reference Number</strong></p>
-            <h2>${consentRef}</h2>
-          </div>
-
-          <div class="info-box">
-            <h3>Your Consent Preferences</h3>
-            <p>We have recorded your consent preferences and will respect them at all times.</p>
-            <ul>
-              <li>You can update these preferences at any time</li>
-              <li>We will always ask before any new activities</li>
-              <li>Your child's safety and wellbeing is our priority</li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer">
-          <p><strong>Spring Lane Nursery</strong></p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
   try {
+    // Generate PDF
+    const pdfBuffer = await generateConsentFormPDF(data, consentRef);
+    const pdfBase64 = pdfBuffer.toString("base64");
+
+    // Count consents
+    const consentKeys = [
+      "localWalks",
+      "photoDisplays",
+      "photoLearningJournal",
+      "groupPhotos",
+      "emergencyMedical",
+      "sunCream",
+      "facePainting",
+      "toothbrushing",
+      "studentObservations",
+      "petsAnimals",
+      "firstAidPlasters",
+    ] as const;
+
+    const grantedCount = consentKeys.filter(
+      (key) => data[key] === true
+    ).length;
+    const deniedCount = consentKeys.length - grantedCount;
+
+    // Generate admin email
+    const adminHtml = generateAdminEmailHtml({
+      formType: "Consent Form",
+      reference: consentRef,
+      primaryName: data.childFullName,
+      additionalInfo: {
+        "Date of Birth": new Date(data.childDOB).toLocaleDateString("en-GB"),
+        "Submitted by": data.parentName,
+        "Consents Granted": `${grantedCount} of ${consentKeys.length}`,
+        "Consents Denied": deniedCount > 0 ? `${deniedCount}` : "None",
+      },
+      
+      alertMessage:
+        deniedCount > 0
+          ? `Note: ${deniedCount} consent(s) have NOT been granted - please review PDF`
+          : undefined,
+    });
+
+    const adminText = generateAdminEmailText({
+      formType: "Consent Form",
+      reference: consentRef,
+      primaryName: data.childFullName,
+      additionalInfo: {
+        "Consents Granted": `${grantedCount} of ${consentKeys.length}`,
+      },
+    });
+
+    // Generate parent email
+    const parentHtml = generateUserEmailHtml({
+      recipientName: data.parentName.split(" ")[0],
+      formType: "Consent Form",
+      reference: consentRef,
+      subjectName: data.childFullName,
+      nextSteps: [
+        "We have recorded your consent preferences",
+        "All staff will be informed and will respect your choices",
+        "You can update these preferences at any time",
+        "We will always ask before any new activities",
+      ],
+      
+      customMessage: `Thank you for completing the consent form for ${data.childFullName}. We have recorded your preferences regarding activities, photography, outings, and medical treatment.`,
+    });
+
+    const parentText = generateUserEmailText({
+      recipientName: data.parentName.split(" ")[0],
+      formType: "Consent Form",
+      reference: consentRef,
+      subjectName: data.childFullName,
+      nextSteps: [
+        "We have recorded your consent preferences",
+        "All staff will be informed and will respect your choices",
+        "You can update these preferences at any time",
+      ],
+    });
+
+    // Send admin email with PDF
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -237,11 +154,20 @@ async function sendConsentEmail(
       body: JSON.stringify({
         From: fromEmail,
         To: adminEmail,
-        Subject: `New Consent Form - ${data.childFullName} - ${consentRef}`,
+        Subject: `Consent Form - ${data.childFullName} - ${consentRef}`,
         HtmlBody: adminHtml,
+        TextBody: adminText,
+        Attachments: [
+          {
+            Name: `Consent_Form_${consentRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
+    // Send parent email with PDF
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -251,13 +177,21 @@ async function sendConsentEmail(
       },
       body: JSON.stringify({
         From: fromEmail,
-        To: data.parentName,
-        Subject: `Consent Form Received - ${data.childFullName}`,
+        To: data.parentEmail,
+        Subject: `Consent Form Received - ${data.childFullName} - ${consentRef}`,
         HtmlBody: parentHtml,
+        TextBody: parentText,
+        Attachments: [
+          {
+            Name: `Your_Consent_Form_${consentRef}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
-    console.log("Consent emails sent successfully");
+    console.log("Consent emails with PDF sent successfully");
   } catch (error) {
     console.error("Error sending consent email:", error);
   }

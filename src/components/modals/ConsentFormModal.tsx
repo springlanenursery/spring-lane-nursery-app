@@ -1,5 +1,28 @@
 "use client";
+
 import React, { useState } from "react";
+import {
+  User,
+  Camera,
+  Heart,
+  Sparkles,
+  Shield,
+  PenLine,
+  MapPin,
+  BookOpen,
+  Users,
+  Stethoscope,
+  Sun,
+  Palette,
+  GraduationCap,
+  PawPrint,
+  Bandage,
+} from "lucide-react";
+import { FormModal, FormModalFooter } from "@/components/ui/form-modal";
+import { FormSection, FormCard } from "@/components/ui/form-section";
+import { FormField } from "@/components/ui/form-field";
+import { ConsentToggle, ConsentGroup } from "@/components/ui/consent-toggle";
+import { Separator } from "@/components/ui/separator";
 
 interface ConsentFormModalProps {
   onClose: () => void;
@@ -28,6 +51,7 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
     firstAidPlasters: false,
     additionalComments: "",
     parentName: "",
+    parentEmail: "",
     date: "",
   });
 
@@ -36,17 +60,15 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleToggleChange = (name: string, checked: boolean) => {
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
@@ -64,7 +86,7 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
         onClose();
         showSuccess(
           "Consent Form Submitted Successfully!",
-          `Thank you! Consent form for ${formData.childFullName} has been submitted. Reference: ${data.data.consentReference}`
+          `Thank you! Consent form for ${formData.childFullName} has been submitted. A confirmation email with your reference number (${data.data.consentReference}) has been sent to your email address.`
         );
       } else {
         showError(
@@ -85,332 +107,314 @@ const ConsentFormModal: React.FC<ConsentFormModalProps> = ({
     }
   };
 
+  const selectAllInGroup = (keys: string[], value: boolean) => {
+    const updates = keys.reduce((acc, key) => ({ ...acc, [key]: value }), {});
+    setFormData((prev) => ({ ...prev, ...updates }));
+  };
+
+  const photoKeys = ["photoDisplays", "photoLearningJournal", "groupPhotos"];
+  const activityKeys = ["localWalks", "sunCream", "facePainting", "toothbrushing", "petsAnimals"];
+  const careKeys = ["emergencyMedical", "firstAidPlasters", "studentObservations"];
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#252650]">
-            Consent Form
-          </h2>
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="w-8 h-8 flex cursor-pointer items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+    <FormModal
+      title="Consent Form"
+      subtitle="Please review and provide consent for your child's activities at nursery"
+      isOpen={true}
+      onClose={onClose}
+      isLoading={isLoading}
+      maxWidth="3xl"
+      footer={
+        <FormModalFooter
+          onCancel={onClose}
+          onSubmit={handleSubmit}
+          submitLabel="Submit Consent Form"
+          isLoading={isLoading}
+        />
+      }
+    >
+      <div className="space-y-6">
+        {/* Child Details Card */}
+        <FormCard>
+          <FormSection
+            title="Child Details"
+            description="Enter your child's information"
+            icon={<User className="w-5 h-5" />}
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Child's Full Name"
+                name="childFullName"
+                value={formData.childFullName}
+                onChange={handleInputChange}
+                placeholder="Enter child's full name"
+                required
               />
-            </svg>
-          </button>
-        </div>
-
-        {/* Form Content - Scrollable */}
-        <div className="overflow-y-auto flex-1 rounded-b-2xl">
-          <div className="p-6 space-y-6">
-            {/* Child Details */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Child Details
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="childFullName"
-                  value={formData.childFullName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter child's full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date of Birth <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="childDOB"
-                  value={formData.childDOB}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
+              <FormField
+                label="Date of Birth"
+                name="childDOB"
+                type="date"
+                value={formData.childDOB}
+                onChange={handleInputChange}
+                required
+              />
             </div>
+          </FormSection>
+        </FormCard>
 
-            {/* Consent Permissions */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Consent Permissions
-              </h3>
-              <p className="text-sm text-[#666666]">
-                Please tick (✓) the boxes to confirm consent for the following:
+        {/* Consent Permissions */}
+        <FormCard>
+          <FormSection
+            title="Consent Permissions"
+            description="Toggle the switches to give or withdraw consent for each activity"
+            icon={<Shield className="w-5 h-5" />}
+          >
+            <div className="space-y-6">
+              {/* Photography & Media Group */}
+              <ConsentGroup
+                title="Photography & Media"
+                description="How your child's image may be used"
+                icon={<Camera className="w-4 h-4" />}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-500">Quick actions:</span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(photoKeys, true)}
+                      className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+                    >
+                      Allow all
+                    </button>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(photoKeys, false)}
+                      className="text-xs text-slate-500 hover:text-slate-700 font-medium"
+                    >
+                      Deny all
+                    </button>
+                  </div>
+                </div>
+                <ConsentToggle
+                  name="photoDisplays"
+                  label="Nursery Displays"
+                  description="Photos displayed within the nursery premises"
+                  checked={formData.photoDisplays}
+                  onChange={handleToggleChange}
+                  icon={<Camera className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="photoLearningJournal"
+                  label="Online Learning Journal"
+                  description="Photos in digital learning platforms (e.g., Tapestry)"
+                  checked={formData.photoLearningJournal}
+                  onChange={handleToggleChange}
+                  icon={<BookOpen className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="groupPhotos"
+                  label="Group Photos"
+                  description="Photos where your child appears with other children"
+                  checked={formData.groupPhotos}
+                  onChange={handleToggleChange}
+                  icon={<Users className="w-5 h-5" />}
+                />
+              </ConsentGroup>
+
+              <Separator />
+
+              {/* Activities Group */}
+              <ConsentGroup
+                title="Activities & Outings"
+                description="Participation in various nursery activities"
+                icon={<Sparkles className="w-4 h-4" />}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-500">Quick actions:</span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(activityKeys, true)}
+                      className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+                    >
+                      Allow all
+                    </button>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(activityKeys, false)}
+                      className="text-xs text-slate-500 hover:text-slate-700 font-medium"
+                    >
+                      Deny all
+                    </button>
+                  </div>
+                </div>
+                <ConsentToggle
+                  name="localWalks"
+                  label="Local Walks & Outings"
+                  description="Short trips to nearby parks, library, or local area"
+                  checked={formData.localWalks}
+                  onChange={handleToggleChange}
+                  icon={<MapPin className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="sunCream"
+                  label="Sun Cream Application"
+                  description="Staff may apply sun protection during outdoor play"
+                  checked={formData.sunCream}
+                  onChange={handleToggleChange}
+                  icon={<Sun className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="facePainting"
+                  label="Face Painting"
+                  description="Participation in face painting during celebrations"
+                  checked={formData.facePainting}
+                  onChange={handleToggleChange}
+                  icon={<Palette className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="toothbrushing"
+                  label="Toothbrushing"
+                  description="Daily toothbrushing as part of nursery routine"
+                  checked={formData.toothbrushing}
+                  onChange={handleToggleChange}
+                  icon={<Sparkles className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="petsAnimals"
+                  label="Contact with Animals"
+                  description="Supervised interaction with pets or visiting animals"
+                  checked={formData.petsAnimals}
+                  onChange={handleToggleChange}
+                  icon={<PawPrint className="w-5 h-5" />}
+                />
+              </ConsentGroup>
+
+              <Separator />
+
+              {/* Health & Care Group */}
+              <ConsentGroup
+                title="Health & Care"
+                description="Medical and care-related permissions"
+                icon={<Heart className="w-4 h-4" />}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-500">Quick actions:</span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(careKeys, true)}
+                      className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+                    >
+                      Allow all
+                    </button>
+                    <span className="text-slate-300">|</span>
+                    <button
+                      type="button"
+                      onClick={() => selectAllInGroup(careKeys, false)}
+                      className="text-xs text-slate-500 hover:text-slate-700 font-medium"
+                    >
+                      Deny all
+                    </button>
+                  </div>
+                </div>
+                <ConsentToggle
+                  name="emergencyMedical"
+                  label="Emergency Medical Treatment"
+                  description="Allow emergency medical care if needed"
+                  checked={formData.emergencyMedical}
+                  onChange={handleToggleChange}
+                  icon={<Stethoscope className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="firstAidPlasters"
+                  label="First Aid & Plasters"
+                  description="Minor first aid treatment including plasters and bandages"
+                  checked={formData.firstAidPlasters}
+                  onChange={handleToggleChange}
+                  icon={<Bandage className="w-5 h-5" />}
+                />
+                <ConsentToggle
+                  name="studentObservations"
+                  label="Training Observations"
+                  description="Observation by childcare students or staff in training"
+                  checked={formData.studentObservations}
+                  onChange={handleToggleChange}
+                  icon={<GraduationCap className="w-5 h-5" />}
+                />
+              </ConsentGroup>
+            </div>
+          </FormSection>
+        </FormCard>
+
+        {/* Additional Comments */}
+        <FormCard>
+          <FormSection
+            title="Additional Comments"
+            description="Any specific conditions or clarifications"
+            icon={<PenLine className="w-5 h-5" />}
+          >
+            <FormField
+              label="Comments or Clarifications"
+              name="additionalComments"
+              type="textarea"
+              value={formData.additionalComments}
+              onChange={handleInputChange}
+              placeholder="Please list any permissions you DO NOT give or would like to clarify..."
+              rows={3}
+            />
+          </FormSection>
+        </FormCard>
+
+        {/* Declaration */}
+        <FormCard>
+          <FormSection
+            title="Declaration"
+            description="Please confirm your identity to complete the form"
+            icon={<Shield className="w-5 h-5" />}
+          >
+            <div className="bg-slate-50 rounded-lg p-4 mb-4">
+              <p className="text-sm text-slate-600">
+                I confirm that I have read and understood the above consent options and
+                give consent as indicated. I understand that I can update these
+                preferences at any time by contacting the nursery.
               </p>
-
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="localWalks"
-                    checked={formData.localWalks}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Local walks and short outings (e.g., park, library)
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="photoDisplays"
-                    checked={formData.photoDisplays}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Use of child&apos;s photo on nursery displays
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="photoLearningJournal"
-                    checked={formData.photoLearningJournal}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Use of child&apos;s photo in online learning journal (e.g., Tapestry)
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="groupPhotos"
-                    checked={formData.groupPhotos}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Group photos where my child may appear with others
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="emergencyMedical"
-                    checked={formData.emergencyMedical}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Emergency medical treatment
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="sunCream"
-                    checked={formData.sunCream}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Application of sun cream (provided by nursery or parent)
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="facePainting"
-                    checked={formData.facePainting}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Face painting for celebrations/events
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="toothbrushing"
-                    checked={formData.toothbrushing}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Toothbrushing at nursery (if applicable)
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="studentObservations"
-                    checked={formData.studentObservations}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Observations by childcare students or staff in training
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="petsAnimals"
-                    checked={formData.petsAnimals}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Contact with pets or animals during supervised activities
-                  </span>
-                </label>
-
-                <label className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="firstAidPlasters"
-                    checked={formData.firstAidPlasters}
-                    onChange={handleInputChange}
-                    className="w-5 h-5 text-[#2C97A9] border-gray-300 rounded focus:ring-[#2C97A9] mt-0.5"
-                  />
-                  <span className="text-sm text-[#252650]">
-                    Use of plasters or bandages for minor first aid
-                  </span>
-                </label>
-              </div>
             </div>
 
-            {/* Additional Comments */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Additional Comments
-              </h3>
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Please list any permissions you DO NOT give or would like to
-                  clarify:
-                </label>
-                <textarea
-                  name="additionalComments"
-                  value={formData.additionalComments}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none resize-none"
-                  placeholder="Add any additional comments or clarifications"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                label="Parent / Carer Name"
+                name="parentName"
+                value={formData.parentName}
+                onChange={handleInputChange}
+                placeholder="Enter your full name"
+                required
+              />
+              <FormField
+                label="Email Address"
+                name="parentEmail"
+                type="email"
+                value={formData.parentEmail}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                required
+              />
             </div>
-
-            {/* Declaration & Signature */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-[#252650] border-b pb-2">
-                Declaration
-              </h3>
-              <p className="text-sm text-[#666666]">
-                I confirm that I have read and understood the above and give
-                consent as indicated.
-              </p>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Parent / Carer Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="parentName"
-                  value={formData.parentName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-[#252650] mb-2">
-                  Date <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2C97A9] focus:border-[#2C97A9] outline-none"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className={`w-full py-4 px-6 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center space-x-2 ${
-                isLoading
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-[#F9AE15] text-white hover:bg-[#e09d0a] cursor-pointer"
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Submitting...</span>
-                </>
-              ) : (
-                <span>Submit Consent Form</span>
-              )}
-            </button>
-          </div>
-        </div>
+            <FormField
+              label="Date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              className="md:w-1/2"
+            />
+          </FormSection>
+        </FormCard>
       </div>
-    </div>
+    </FormModal>
   );
 };
 
