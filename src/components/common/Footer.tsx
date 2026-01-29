@@ -143,7 +143,7 @@ const Footer: React.FC = () => {
                 <span className="text-white">6.30am - 7.30am</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white">After-Hours Care</span>
+                <span className="text-white">After-School Club</span>
                 <span className="text-white">6.30pm - 7.30pm</span>
               </div>
               <div className="flex justify-between">
@@ -293,7 +293,7 @@ const Footer: React.FC = () => {
                 <span className="text-white">6.30am - 7.30am</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white">After-Hours Care</span>
+                <span className="text-white">After-School Club</span>
                 <span className="text-white">6.30pm - 7.30pm</span>
               </div>
               <div className="flex justify-between">
