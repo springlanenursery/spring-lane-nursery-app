@@ -221,13 +221,20 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
                 placeholder="Enter NHS number"
               />
             </div>
-            <FormField
-              label="Gender"
-              name="childGender"
-              value={formData.childGender}
-              onChange={handleInputChange}
-              placeholder="Enter gender"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Gender</label>
+              <select
+                name="childGender"
+                value={formData.childGender}
+                onChange={(e) => setFormData((prev) => ({ ...prev, childGender: e.target.value }))}
+                className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
           </FormSection>
         </FormCard>
 
