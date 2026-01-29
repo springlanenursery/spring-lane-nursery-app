@@ -25,6 +25,18 @@ interface MedicalFormModalProps {
   showError: (title: string, message: string, errors?: string[]) => void;
 }
 
+// Dropdown options
+const medicationStorageOptions = [
+  "Room temperature", "Refrigerate", "Keep away from light",
+  "Keep dry", "Cool dry place", "Other"
+];
+
+const medicationFrequencyOptions = [
+  "Once daily", "Twice daily", "Three times daily", "Four times daily",
+  "Every 4 hours", "Every 6 hours", "Every 8 hours",
+  "Before meals", "After meals", "With meals", "As needed", "Other"
+];
+
 const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
   onClose,
   showSuccess,
@@ -351,21 +363,39 @@ const MedicalFormModal: React.FC<MedicalFormModalProps> = ({
                 onChange={handleInputChange}
                 placeholder="e.g., 5ml"
               />
-              <FormField
-                label="Frequency / Timing"
-                name="medicationFrequency"
-                value={formData.medicationFrequency}
-                onChange={handleInputChange}
-                placeholder="e.g., twice daily"
-              />
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-slate-700">
+                  Frequency / Timing
+                </label>
+                <select
+                  name="medicationFrequency"
+                  value={formData.medicationFrequency}
+                  onChange={(e) => setFormData(prev => ({ ...prev, medicationFrequency: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-all text-sm"
+                >
+                  <option value="">Select frequency</option>
+                  {medicationFrequencyOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <FormField
-              label="Storage Instructions"
-              name="medicationStorage"
-              value={formData.medicationStorage}
-              onChange={handleInputChange}
-              placeholder="e.g., Refrigerate, room temperature"
-            />
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Storage Instructions
+              </label>
+              <select
+                name="medicationStorage"
+                value={formData.medicationStorage}
+                onChange={(e) => setFormData(prev => ({ ...prev, medicationStorage: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-all text-sm"
+              >
+                <option value="">Select storage type</option>
+                {medicationStorageOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 label="Start Date"

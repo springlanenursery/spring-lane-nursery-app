@@ -25,6 +25,22 @@ interface AllAboutMeModalProps {
   showError: (title: string, message: string, errors?: string[]) => void;
 }
 
+// Dropdown options
+const languageOptions = [
+  "English", "Polish", "Urdu", "Bengali", "Tamil", "Gujarati",
+  "Punjabi", "Spanish", "French", "Arabic", "Somali", "Portuguese", "Other"
+];
+
+const personalityOptions = [
+  "Outgoing", "Shy", "Energetic", "Calm", "Curious",
+  "Sensitive", "Independent", "Sociable", "Anxious", "Playful", "Cautious"
+];
+
+const comfortItemOptions = [
+  "Teddy/Soft toy", "Blanket", "Dummy/Pacifier", "Muslin",
+  "Favourite book", "Special clothing item", "None", "Other"
+];
+
 const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
   onClose,
   showSuccess,
@@ -34,9 +50,9 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
     childFullName: "",
     childDOB: "",
     preferredName: "",
-    languagesSpoken: "",
+    languagesSpoken: [] as string[],
     siblings: "",
-    personality: "",
+    personality: [] as string[],
     emotionalExpression: "",
     fearsOrDislikes: "",
     feedsThemselves: "",
@@ -83,6 +99,24 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
       toiletUse: prev.toiletUse.includes(use)
         ? prev.toiletUse.filter((u) => u !== use)
         : [...prev.toiletUse, use],
+    }));
+  };
+
+  const handleLanguageToggle = (lang: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      languagesSpoken: prev.languagesSpoken.includes(lang)
+        ? prev.languagesSpoken.filter((l) => l !== lang)
+        : [...prev.languagesSpoken, lang],
+    }));
+  };
+
+  const handlePersonalityToggle = (trait: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      personality: prev.personality.includes(trait)
+        ? prev.personality.filter((t) => t !== trait)
+        : [...prev.personality, trait],
     }));
   };
 
@@ -206,13 +240,25 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
               onChange={handleInputChange}
               placeholder="What does your child like to be called?"
             />
-            <FormField
-              label="Languages Spoken at Home"
-              name="languagesSpoken"
-              value={formData.languagesSpoken}
-              onChange={handleInputChange}
-              placeholder="e.g., English, Spanish"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Languages Spoken at Home</label>
+              <div className="flex flex-wrap gap-2">
+                {languageOptions.map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => handleLanguageToggle(lang)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      formData.languagesSpoken.includes(lang)
+                        ? "bg-teal-600 text-white shadow-md"
+                        : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
             <FormField
               label="Siblings (names & ages)"
               name="siblings"
@@ -232,15 +278,26 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
             description="Help us understand your child's temperament"
             icon={<Heart className="w-5 h-5" />}
           >
-            <FormField
-              label="How would you describe your child's personality?"
-              name="personality"
-              type="textarea"
-              value={formData.personality}
-              onChange={handleInputChange}
-              placeholder="e.g., outgoing, shy, energetic, calm"
-              rows={3}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">How would you describe your child&apos;s personality?</label>
+              <p className="text-xs text-slate-500">Select all that apply</p>
+              <div className="flex flex-wrap gap-2">
+                {personalityOptions.map((trait) => (
+                  <button
+                    key={trait}
+                    type="button"
+                    onClick={() => handlePersonalityToggle(trait)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      formData.personality.includes(trait)
+                        ? "bg-teal-600 text-white shadow-md"
+                        : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                    }`}
+                  >
+                    {trait}
+                  </button>
+                ))}
+              </div>
+            </div>
             <FormField
               label="How does your child express emotions?"
               name="emotionalExpression"
@@ -336,13 +393,20 @@ const AllAboutMeModal: React.FC<AllAboutMeModalProps> = ({
                 placeholder="e.g., 1:00 PM for 2 hours"
               />
             )}
-            <FormField
-              label="Comfort item (e.g., teddy, blanket)"
-              name="comfortItem"
-              value={formData.comfortItem}
-              onChange={handleInputChange}
-              placeholder="Describe comfort item"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Comfort item</label>
+              <select
+                name="comfortItem"
+                value={formData.comfortItem}
+                onChange={(e) => setFormData((prev) => ({ ...prev, comfortItem: e.target.value }))}
+                className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="">Select comfort item</option>
+                {comfortItemOptions.map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+            </div>
             <FormField
               label="Sleep routine (any tips to help settle?)"
               name="sleepRoutine"

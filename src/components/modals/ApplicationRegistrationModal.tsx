@@ -29,6 +29,36 @@ interface ApplicationRegistrationModalProps {
   showError: (title: string, message: string, errors?: string[]) => void;
 }
 
+// Dropdown options
+const relationshipOptions = [
+  "Mother", "Father", "Step-Mother", "Step-Father", "Guardian",
+  "Grandparent", "Foster Carer", "Other"
+];
+
+const ethnicityOptions = [
+  "White British", "White Irish", "White Other",
+  "Mixed - White & Black Caribbean", "Mixed - White & Black African",
+  "Mixed - White & Asian", "Mixed - Other",
+  "Asian - Indian", "Asian - Pakistani", "Asian - Bangladeshi", "Asian - Chinese", "Asian - Other",
+  "Black - African", "Black - Caribbean", "Black - Other",
+  "Arab", "Other Ethnic Group", "Prefer not to say"
+];
+
+const religionOptions = [
+  "None", "Christianity", "Islam", "Hinduism", "Sikhism",
+  "Judaism", "Buddhism", "Other", "Prefer not to say"
+];
+
+const languageOptions = [
+  "English", "Polish", "Urdu", "Bengali", "Tamil", "Gujarati",
+  "Punjabi", "Spanish", "French", "Arabic", "Somali", "Portuguese", "Other"
+];
+
+const dietaryOptions = [
+  "None", "Vegetarian", "Vegan", "Halal", "Kosher",
+  "Gluten-free", "Dairy-free", "Nut-free", "Egg-free", "Other"
+];
+
 const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> = ({
   onClose,
   showSuccess,
@@ -43,7 +73,7 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
     postcode: "",
     ethnicity: "",
     religion: "",
-    firstLanguages: "",
+    firstLanguages: [] as string[],
     festivals: "",
     parent1Name: "",
     parent1Relationship: "",
@@ -64,7 +94,7 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
     immunisations: "",
     allergies: "",
     medication: "",
-    dietaryNeeds: "",
+    dietaryNeeds: [] as string[],
     sendSupport: "",
     sendDetails: "",
     startDate: "",
@@ -108,6 +138,24 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
       daysAttending: prev.daysAttending.includes(day)
         ? prev.daysAttending.filter((d) => d !== day)
         : [...prev.daysAttending, day],
+    }));
+  };
+
+  const handleLanguageToggle = (lang: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      firstLanguages: prev.firstLanguages.includes(lang)
+        ? prev.firstLanguages.filter((l) => l !== lang)
+        : [...prev.firstLanguages, lang],
+    }));
+  };
+
+  const handleDietaryToggle = (diet: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      dietaryNeeds: prev.dietaryNeeds.includes(diet)
+        ? prev.dietaryNeeds.filter((d) => d !== diet)
+        : [...prev.dietaryNeeds, diet],
     }));
   };
 
@@ -264,28 +312,54 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
               required
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                label="Ethnicity / Cultural Background"
-                name="ethnicity"
-                value={formData.ethnicity}
-                onChange={handleInputChange}
-                placeholder="Enter ethnicity"
-              />
-              <FormField
-                label="Religion"
-                name="religion"
-                value={formData.religion}
-                onChange={handleInputChange}
-                placeholder="Enter religion"
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Ethnicity / Cultural Background</label>
+                <select
+                  name="ethnicity"
+                  value={formData.ethnicity}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, ethnicity: e.target.value }))}
+                  className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="">Select ethnicity</option>
+                  {ethnicityOptions.map((eth) => (
+                    <option key={eth} value={eth}>{eth}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Religion</label>
+                <select
+                  name="religion"
+                  value={formData.religion}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, religion: e.target.value }))}
+                  className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="">Select religion</option>
+                  {religionOptions.map((rel) => (
+                    <option key={rel} value={rel}>{rel}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <FormField
-              label="First Language(s)"
-              name="firstLanguages"
-              value={formData.firstLanguages}
-              onChange={handleInputChange}
-              placeholder="Enter first language(s)"
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">First Language(s)</label>
+              <div className="flex flex-wrap gap-2">
+                {languageOptions.map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => handleLanguageToggle(lang)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      formData.firstLanguages.includes(lang)
+                        ? "bg-teal-600 text-white shadow-md"
+                        : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            </div>
             <FormField
               label="Festivals / Cultural Preferences"
               name="festivals"
@@ -312,14 +386,22 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
                 placeholder="Enter full name"
                 required
               />
-              <FormField
-                label="Relationship to Child"
-                name="parent1Relationship"
-                value={formData.parent1Relationship}
-                onChange={handleInputChange}
-                placeholder="e.g., Mother, Father"
-                required
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Relationship to Child <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="parent1Relationship"
+                  value={formData.parent1Relationship}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, parent1Relationship: e.target.value }))}
+                  className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="">Select relationship</option>
+                  {relationshipOptions.map((rel) => (
+                    <option key={rel} value={rel}>{rel}</option>
+                  ))}
+                </select>
+              </div>
               <FormField
                 label="Email"
                 name="parent1Email"
@@ -365,13 +447,20 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
                 onChange={handleInputChange}
                 placeholder="Enter full name"
               />
-              <FormField
-                label="Relationship to Child"
-                name="parent2Relationship"
-                value={formData.parent2Relationship}
-                onChange={handleInputChange}
-                placeholder="e.g., Mother, Father"
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Relationship to Child</label>
+                <select
+                  name="parent2Relationship"
+                  value={formData.parent2Relationship}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, parent2Relationship: e.target.value }))}
+                  className="w-full h-10 px-3 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="">Select relationship</option>
+                  {relationshipOptions.map((rel) => (
+                    <option key={rel} value={rel}>{rel}</option>
+                  ))}
+                </select>
+              </div>
               <FormField
                 label="Email"
                 name="parent2Email"
@@ -484,15 +573,25 @@ const ApplicationRegistrationModal: React.FC<ApplicationRegistrationModalProps> 
               placeholder="List any medications"
               rows={2}
             />
-            <FormField
-              label="Dietary Needs"
-              name="dietaryNeeds"
-              type="textarea"
-              value={formData.dietaryNeeds}
-              onChange={handleInputChange}
-              placeholder="List any dietary requirements"
-              rows={2}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Dietary Needs</label>
+              <div className="flex flex-wrap gap-2">
+                {dietaryOptions.map((diet) => (
+                  <button
+                    key={diet}
+                    type="button"
+                    onClick={() => handleDietaryToggle(diet)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      formData.dietaryNeeds.includes(diet)
+                        ? "bg-teal-600 text-white shadow-md"
+                        : "bg-white text-slate-700 border border-slate-200 hover:border-teal-400"
+                    }`}
+                  >
+                    {diet}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">EHCP / SEND Support?</label>
               <div className="flex gap-3">
