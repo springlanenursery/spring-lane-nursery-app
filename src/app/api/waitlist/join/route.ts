@@ -6,6 +6,7 @@ import {
   generateUserEmailHtml,
   generateUserEmailText,
 } from "@/lib/email-templates";
+import { generateWaitlistPDF } from "@/lib/pdf-generator";
 
 // MongoDB connection
 let cachedDb: Db | null = null;
@@ -26,6 +27,7 @@ async function connectToDatabase(): Promise<Db> {
 interface WaitlistRequest {
   fullName: string;
   phoneNumber: string;
+  email: string;
   childrenDetails: string;
 }
 
@@ -33,6 +35,7 @@ interface WaitlistRequest {
 interface UnvalidatedWaitlistData {
   fullName?: unknown;
   phoneNumber?: unknown;
+  email?: unknown;
   childrenDetails?: unknown;
 }
 
@@ -70,6 +73,20 @@ function validateWaitlistRequest(data: UnvalidatedWaitlistData): {
     }
   }
 
+  // Validate email
+  if (
+    !data.email ||
+    typeof data.email !== "string" ||
+    data.email.trim().length === 0
+  ) {
+    errors.push("Email address is required");
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      errors.push("Please enter a valid email address");
+    }
+  }
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -83,7 +100,49 @@ function generateWaitlistReference(): string {
   return `WL-${timestamp}-${random}`;
 }
 
-// Email service using Postmark with new templates
+// Helper to parse children details string into structured data
+function parseChildrenDetails(childrenDetails: string): {
+  childName: string;
+  childDOB: string;
+  childGender: string;
+  preferredStartDate: string;
+  daysRequired: string;
+  sessionType: string;
+  siblingAtNursery: string;
+  specialRequirements: string;
+} {
+  const result = {
+    childName: "",
+    childDOB: "",
+    childGender: "",
+    preferredStartDate: "",
+    daysRequired: "",
+    sessionType: "",
+    siblingAtNursery: "",
+    specialRequirements: "",
+  };
+
+  if (!childrenDetails) return result;
+
+  const lines = childrenDetails.split("\n");
+  for (const line of lines) {
+    const [key, ...valueParts] = line.split(":");
+    const value = valueParts.join(":").trim();
+
+    if (key.includes("Child Name")) result.childName = value;
+    else if (key.includes("Date of Birth")) result.childDOB = value;
+    else if (key.includes("Gender")) result.childGender = value;
+    else if (key.includes("Preferred Start Date")) result.preferredStartDate = value;
+    else if (key.includes("Days Required")) result.daysRequired = value;
+    else if (key.includes("Session Type")) result.sessionType = value;
+    else if (key.includes("Sibling at Nursery")) result.siblingAtNursery = value;
+    else if (key.includes("Special Requirements")) result.specialRequirements = value;
+  }
+
+  return result;
+}
+
+// Email service using Postmark with PDF attachments
 async function sendWaitlistEmails(
   data: WaitlistRequest,
   position: number,
@@ -99,64 +158,84 @@ async function sendWaitlistEmails(
     return;
   }
 
-  // Generate admin email using new template
-  const adminHtml = generateAdminEmailHtml({
-    formType: "Waitlist Registration",
-    reference: reference,
-    primaryName: data.fullName,
-    additionalInfo: {
-      "Phone Number": data.phoneNumber,
-      "Position": `#${position}`,
-      "Estimated Wait": estimatedWaitTime,
-      "Children Details": data.childrenDetails || "Not provided",
-    },
-  });
-
-  const adminText = generateAdminEmailText({
-    formType: "Waitlist Registration",
-    reference: reference,
-    primaryName: data.fullName,
-    additionalInfo: {
-      "Phone Number": data.phoneNumber,
-      "Position": `#${position}`,
-      "Estimated Wait": estimatedWaitTime,
-      "Children Details": data.childrenDetails || "Not provided",
-    },
-  });
-
-  // Generate user email using new template
-  const userHtml = generateUserEmailHtml({
-    recipientName: data.fullName,
-    formType: "Waitlist Registration",
-    reference: reference,
-    nextSteps: [
-      `You are currently at position #${position} on our waitlist`,
-      `Estimated wait time: ${estimatedWaitTime}`,
-      "We will contact you at " + data.phoneNumber + " when a place becomes available",
-      "You'll have 24-48 hours to confirm your enrollment when contacted",
-      "We prioritize siblings of current children and full-time place requests",
-    ],
-    customMessage: `Thank you for joining our waitlist! We're excited that you're considering Spring Lane Nursery for your child. Your position has been secured and we'll keep you updated on any changes.`,
-    reminder: "Please ensure your phone number is kept up to date so we can reach you when a place becomes available.",
-  });
-
-  const userText = generateUserEmailText({
-    recipientName: data.fullName,
-    formType: "Waitlist Registration",
-    reference: reference,
-    nextSteps: [
-      `You are currently at position #${position} on our waitlist`,
-      `Estimated wait time: ${estimatedWaitTime}`,
-      "We will contact you at " + data.phoneNumber + " when a place becomes available",
-      "You'll have 24-48 hours to confirm your enrollment when contacted",
-      "We prioritize siblings of current children and full-time place requests",
-    ],
-    customMessage: `Thank you for joining our waitlist! We're excited that you're considering Spring Lane Nursery for your child.`,
-    reminder: "Please ensure your phone number is kept up to date so we can reach you when a place becomes available.",
-  });
-
   try {
-    // Send admin notification
+    // Parse children details for PDF
+    const childDetails = parseChildrenDetails(data.childrenDetails);
+
+    // Generate PDF
+    const pdfBuffer = await generateWaitlistPDF(
+      {
+        fullName: data.fullName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        ...childDetails,
+      },
+      reference,
+      estimatedWaitTime
+    );
+    const pdfBase64 = pdfBuffer.toString("base64");
+
+    // Generate admin email using new template (WITH position)
+    const adminHtml = generateAdminEmailHtml({
+      formType: "Waitlist Registration",
+      reference: reference,
+      primaryName: data.fullName,
+      additionalInfo: {
+        "Phone Number": data.phoneNumber,
+        "Email": data.email,
+        "Position": `#${position}`,
+        "Estimated Wait": estimatedWaitTime,
+        "Children Details": childDetails.childName
+          ? `${childDetails.childName} (DOB: ${childDetails.childDOB})`
+          : data.childrenDetails || "Not provided",
+      },
+    });
+
+    const adminText = generateAdminEmailText({
+      formType: "Waitlist Registration",
+      reference: reference,
+      primaryName: data.fullName,
+      additionalInfo: {
+        "Phone Number": data.phoneNumber,
+        "Email": data.email,
+        "Position": `#${position}`,
+        "Estimated Wait": estimatedWaitTime,
+        "Children Details": data.childrenDetails || "Not provided",
+      },
+    });
+
+    // Generate user email (WITHOUT position - only estimated wait time)
+    const userHtml = generateUserEmailHtml({
+      recipientName: data.fullName.split(" ")[0],
+      formType: "Waitlist Registration",
+      reference: reference,
+      nextSteps: [
+        "Your place on our waitlist has been secured",
+        `Estimated wait time: ${estimatedWaitTime}`,
+        "We will contact you when a place becomes available",
+        "You'll have 24-48 hours to confirm your enrollment when contacted",
+        "We prioritize siblings of current children and full-time place requests",
+      ],
+      customMessage: `Thank you for joining our waitlist! We're excited that you're considering Spring Lane Nursery for your child. We'll keep you updated on any changes.`,
+      reminder: "Please ensure your contact details are kept up to date so we can reach you when a place becomes available.",
+    });
+
+    const userText = generateUserEmailText({
+      recipientName: data.fullName.split(" ")[0],
+      formType: "Waitlist Registration",
+      reference: reference,
+      nextSteps: [
+        "Your place on our waitlist has been secured",
+        `Estimated wait time: ${estimatedWaitTime}`,
+        "We will contact you when a place becomes available",
+        "You'll have 24-48 hours to confirm your enrollment when contacted",
+        "We prioritize siblings of current children and full-time place requests",
+      ],
+      customMessage: `Thank you for joining our waitlist! We're excited that you're considering Spring Lane Nursery for your child.`,
+      reminder: "Please ensure your contact details are kept up to date so we can reach you when a place becomes available.",
+    });
+
+    // Send admin notification with PDF attachment (includes position in subject)
     await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
@@ -170,15 +249,43 @@ async function sendWaitlistEmails(
         Subject: `New Waitlist Registration - Position #${position} - ${reference}`,
         HtmlBody: adminHtml,
         TextBody: adminText,
+        Attachments: [
+          {
+            Name: `Waitlist_Registration_${reference}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
     console.log("Waitlist admin notification email sent successfully");
 
-    // Send user confirmation email (using admin email as recipient since we don't have user's email)
-    // Note: The waitlist form doesn't collect email, so we log this for now
-    // If you want to send to user, you'd need to add email field to the form
-    console.log("User confirmation email prepared - email field required for delivery");
+    // Send user confirmation email with PDF attachment (NO position)
+    await fetch("https://api.postmarkapp.com/email", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Postmark-Server-Token": postmarkToken,
+      },
+      body: JSON.stringify({
+        From: fromEmail,
+        To: data.email,
+        Subject: `Waitlist Registration Confirmed - ${reference}`,
+        HtmlBody: userHtml,
+        TextBody: userText,
+        Attachments: [
+          {
+            Name: `Your_Waitlist_Registration_${reference}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
+      }),
+    });
+
+    console.log("Waitlist user confirmation email sent successfully");
 
   } catch (error) {
     console.error("Error sending waitlist email:", error);
@@ -242,6 +349,7 @@ export async function POST(request: NextRequest) {
       reference: reference,
       fullName: body.fullName.trim(),
       phoneNumber: body.phoneNumber.trim(),
+      email: body.email.trim().toLowerCase(),
       childrenDetails: body.childrenDetails?.trim() || "",
       position: position,
       status: "active",
@@ -259,6 +367,7 @@ export async function POST(request: NextRequest) {
     const waitlistRequest: WaitlistRequest = {
       fullName: body.fullName.trim(),
       phoneNumber: body.phoneNumber.trim(),
+      email: body.email.trim().toLowerCase(),
       childrenDetails: body.childrenDetails?.trim() || "",
     };
 
