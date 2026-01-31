@@ -385,11 +385,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: `You've been successfully added to our waitlist! You are currently at position ${position}. Your reference number is ${reference}. We'll contact you as soon as a spot becomes available.`,
+        message: `You've been successfully added to our waitlist! Your reference number is ${reference}. We'll contact you as soon as a spot becomes available.`,
         data: {
           waitlistId: result.insertedId,
           reference: reference,
-          position: position,
           estimatedWaitTime: estimatedWaitTime,
           submittedAt: waitlistEntry.createdAt,
         },
