@@ -236,7 +236,7 @@ async function sendWaitlistEmails(
     });
 
     // Send admin notification with PDF attachment (includes position in subject)
-    await fetch("https://api.postmarkapp.com/email", {
+    const adminResponse = await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -259,10 +259,15 @@ async function sendWaitlistEmails(
       }),
     });
 
-    console.log("Waitlist admin notification email sent successfully");
+    const adminResult = await adminResponse.json();
+    if (!adminResponse.ok) {
+      console.error("Postmark admin email error:", adminResult);
+    } else {
+      console.log("Waitlist admin notification email sent successfully");
+    }
 
     // Send user confirmation email with PDF attachment (NO position)
-    await fetch("https://api.postmarkapp.com/email", {
+    const userResponse = await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -284,6 +289,13 @@ async function sendWaitlistEmails(
         ],
       }),
     });
+
+    const userResult = await userResponse.json();
+    if (!userResponse.ok) {
+      console.error("Postmark user email error:", userResult);
+    } else {
+      console.log("Waitlist user confirmation email sent successfully");
+    }
 
     console.log("Waitlist user confirmation email sent successfully");
 
