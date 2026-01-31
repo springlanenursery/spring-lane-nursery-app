@@ -383,11 +383,12 @@ export async function POST(request: NextRequest) {
       childrenDetails: body.childrenDetails?.trim() || "",
     };
 
-    sendWaitlistEmails(waitlistRequest, position, estimatedWaitTime, reference).catch(
-      (error) => {
-        console.error("Failed to send waitlist email:", error);
-      }
-    );
+    // Await email sending to ensure it completes before serverless function terminates
+    try {
+      await sendWaitlistEmails(waitlistRequest, position, estimatedWaitTime, reference);
+    } catch (error) {
+      console.error("Failed to send waitlist email:", error);
+    }
 
     // Log successful addition
     console.log(
