@@ -3,22 +3,42 @@
 ## Session: 3 February 2026
 
 ### Summary
-Fixed job application email delivery issue (same bug as waitlist).
+Fixed email delivery across ALL form submission endpoints (same serverless timeout bug).
 
 ### Issue
 - Melissa Franklin submitted a Nursery Assistant application on Jan 29
 - She received success confirmation but admin didn't get email notification
-- Same root cause as waitlist: `sendJobApplicationEmail()` was fire-and-forget
+- Same root cause as waitlist: emails were fire-and-forget (not awaited)
+- Found 9 additional routes with the same issue
 
 ### Changes Made
-- Changed `sendJobApplicationEmail()` to be awaited in job application API
-- Manually resent Melissa Franklin's application email (ref: APP-1769703912775-7S4A)
 
-### Files Modified
-- `src/app/api/jobs/apply/route.ts` - Await email sending
+#### 1. Fixed All Email Routes
+Changed fire-and-forget to awaited emails in:
+- `src/app/api/jobs/apply/route.ts`
+- `src/app/api/forms/funding/route.ts`
+- `src/app/api/forms/change/route.ts`
+- `src/app/api/forms/aboutme/route.ts`
+- `src/app/api/forms/medical/route.ts`
+- `src/app/api/forms/consent/route.ts`
+- `src/app/api/forms/application/route.ts`
+- `src/app/api/bookings/route.ts`
+- `src/app/api/availability/check/route.ts`
+- `src/app/api/contact/route.ts`
+
+#### 2. Resent Missed Admin Notifications
+Manually resent emails for submissions that didn't trigger admin emails:
+- Melissa Franklin - Job Application (APP-1769703912775-7S4A)
+- Jason Ohene Oppong Mensuo - Child Application
+- Aparna Methal payyottu - Contact Inquiry
+- Tamoi - Availability Request
+- Jenica Feraru - Availability Request
+- Jason Oppong Mensuo - Medical Form
+- Jason Oppong Mensuo - AboutMe Form
 
 ### Commits
 - `1cfc4ad` - Fix: Await job application email to prevent serverless timeout
+- `1172e04` - Fix: Await all email sends to prevent serverless timeout
 
 ---
 
