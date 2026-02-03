@@ -1,5 +1,27 @@
 # Development Sessions
 
+## Session: 3 February 2026
+
+### Summary
+Fixed job application email delivery issue (same bug as waitlist).
+
+### Issue
+- Melissa Franklin submitted a Nursery Assistant application on Jan 29
+- She received success confirmation but admin didn't get email notification
+- Same root cause as waitlist: `sendJobApplicationEmail()` was fire-and-forget
+
+### Changes Made
+- Changed `sendJobApplicationEmail()` to be awaited in job application API
+- Manually resent Melissa Franklin's application email (ref: APP-1769703912775-7S4A)
+
+### Files Modified
+- `src/app/api/jobs/apply/route.ts` - Await email sending
+
+### Commits
+- `1cfc4ad` - Fix: Await job application email to prevent serverless timeout
+
+---
+
 ## Session: 31 January 2026
 
 ### Summary
