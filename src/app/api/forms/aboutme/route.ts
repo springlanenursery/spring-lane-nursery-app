@@ -203,9 +203,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(aboutMeForm);
 
-    sendAboutMeEmail(body, aboutMeRef).catch((error) => {
-      console.error("Failed to send All About Me email:", error);
-    });
+    await sendAboutMeEmail(body, aboutMeRef);
 
     return NextResponse.json(
       {

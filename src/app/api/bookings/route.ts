@@ -757,10 +757,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(dbRecord);
 
-    // Send email confirmations (async, don't block the response)
-    sendBookingConfirmationEmail(bookingRequest).catch((error) => {
-      console.error("Failed to send booking confirmation email:", error);
-    });
+    await sendBookingConfirmationEmail(bookingRequest);
 
     // Log successful booking
     console.log(

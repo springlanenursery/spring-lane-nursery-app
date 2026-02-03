@@ -213,9 +213,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(medicalForm);
 
-    sendMedicalEmail(body, medicalRef).catch((error) => {
-      console.error("Failed to send medical email:", error);
-    });
+    await sendMedicalEmail(body, medicalRef);
 
     return NextResponse.json(
       {

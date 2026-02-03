@@ -238,10 +238,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(dbRecord);
 
-    // Send email notifications (async, don't block the response)
-    sendAvailabilityRequestEmails(availabilityRequest, reference).catch((error) => {
-      console.error("Failed to send availability request email:", error);
-    });
+    await sendAvailabilityRequestEmails(availabilityRequest, reference);
 
     // Log successful request
     console.log(

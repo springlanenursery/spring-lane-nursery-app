@@ -201,9 +201,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(fundingDeclaration);
 
-    sendFundingEmail(body, fundingRef).catch((error) => {
-      console.error("Failed to send funding email:", error);
-    });
+    await sendFundingEmail(body, fundingRef);
 
     return NextResponse.json(
       {

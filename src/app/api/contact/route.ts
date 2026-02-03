@@ -410,10 +410,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(dbRecord);
 
-    // Send email notification (async, don't block the response)
-    sendContactEmail(contactRequest).catch((error) => {
-      console.error("Failed to send contact notification email:", error);
-    });
+    await sendContactEmail(contactRequest);
 
     // Log successful inquiry
     console.log(

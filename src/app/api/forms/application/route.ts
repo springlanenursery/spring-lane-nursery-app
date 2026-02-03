@@ -210,9 +210,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(application);
 
-    sendApplicationEmail(body, applicationRef).catch((error) => {
-      console.error("Failed to send application email:", error);
-    });
+    await sendApplicationEmail(body, applicationRef);
 
     console.log(
       `New application: ${result.insertedId} - ${body.childFullName}`

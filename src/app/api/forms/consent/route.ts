@@ -219,9 +219,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(consentForm);
 
-    sendConsentEmail(body, consentRef).catch((error) => {
-      console.error("Failed to send consent email:", error);
-    });
+    await sendConsentEmail(body, consentRef);
 
     return NextResponse.json(
       {

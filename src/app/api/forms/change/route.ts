@@ -196,9 +196,7 @@ export async function POST(request: NextRequest) {
 
     const result = await collection.insertOne(changeRecord);
 
-    sendChangeEmail(body, changeRef).catch((error) => {
-      console.error("Failed to send change email:", error);
-    });
+    await sendChangeEmail(body, changeRef);
 
     return NextResponse.json(
       {
