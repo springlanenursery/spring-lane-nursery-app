@@ -450,11 +450,7 @@ export async function POST(request: NextRequest) {
       date: body.date,
     };
 
-    sendJobApplicationEmail(jobApplicationRequest, applicationRef).catch(
-      (error) => {
-        console.error("Failed to send job application email:", error);
-      }
-    );
+    await sendJobApplicationEmail(jobApplicationRequest, applicationRef);
 
     console.log(
       `New job application: ${result.insertedId} - ${body.fullName} for ${body.positionApplyingFor}`
