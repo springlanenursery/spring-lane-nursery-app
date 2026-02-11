@@ -79,6 +79,7 @@ Files updated:
 - `dc7fd81` - Add online deposit payment system with Stripe integration
 - `4c6f7f1` - Fix club name validation and Cal.com light theme
 - `c2073d8` - Remove online deposit payments, add Contact Us buttons
+- `e2e77b1` - Fix button text casing: Contact us for payment.
 
 #### 7. Deposit Payments Removed (Client Request)
 Client requested removal of online deposit payments due to Stripe fees.
