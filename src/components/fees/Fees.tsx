@@ -1,18 +1,8 @@
-"use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { Eye, Download, CreditCard } from 'lucide-react';
-import DepositPaymentModal from '../modals/DepositPaymentModal';
+import { Eye, Download, Phone } from 'lucide-react';
 
 const Fees: React.FC = () => {
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedDepositType, setSelectedDepositType] = useState<"registration" | "security">("registration");
-
-  const openPaymentModal = (depositType: "registration" | "security") => {
-    setSelectedDepositType(depositType);
-    setIsPaymentModalOpen(true);
-  };
-
   return (
     <div className="max-w-7xl mx-auto py-[86px] px-[16px] space-y-15">
       {/* Opening Hours Section */}
@@ -510,13 +500,13 @@ const Fees: React.FC = () => {
               <h3 className="text-sm font-medium text-[#252650]">Registration Fee</h3>
               <p className="text-3xl font-bold text-[#FC4C17]">£75.00</p>
               <p className="text-sm text-[#252650]">Non-refundable</p>
-              <button
-                onClick={() => openPaymentModal("registration")}
+              <a
+                href="tel:02035618257"
                 className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FC4C17] text-white rounded-lg hover:bg-[#e04314] transition-colors font-medium"
               >
-                <CreditCard className="w-4 h-4" />
-                Pay Online
-              </button>
+                <Phone className="w-4 h-4" />
+                Contact Us for Payment
+              </a>
             </div>
           </div>
 
@@ -526,13 +516,13 @@ const Fees: React.FC = () => {
               <h3 className="text-sm font-medium text-[#252650]">Security Deposits</h3>
               <p className="text-3xl font-bold text-[#2AA631]">£250.00</p>
               <p className="text-sm text-[#252650]">Refundable with 4 weeks&apos; notice</p>
-              <button
-                onClick={() => openPaymentModal("security")}
+              <a
+                href="tel:02035618257"
                 className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#2AA631] text-white rounded-lg hover:bg-[#239329] transition-colors font-medium"
               >
-                <CreditCard className="w-4 h-4" />
-                Pay Online
-              </button>
+                <Phone className="w-4 h-4" />
+                Contact Us for Payment
+              </a>
             </div>
           </div>
         </div>
@@ -576,12 +566,6 @@ const Fees: React.FC = () => {
         </div>
       </div>
 
-      {/* Deposit Payment Modal */}
-      <DepositPaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        depositTypeId={selectedDepositType}
-      />
     </div>
   );
 };
