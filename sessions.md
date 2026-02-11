@@ -3,7 +3,7 @@
 ## Session: 11 February 2026
 
 ### Summary
-Major website updates: address change, hours update, Cal.com booking integration, PDF fees document, and Welcome section styling.
+Major website updates: address change, hours update, Cal.com booking integration, PDF fees document, Welcome section styling, and online deposit payment system.
 
 ### Changes Made
 
@@ -48,11 +48,22 @@ Files updated:
 - Added View PDF and Download buttons
 - Location: After Opening Hours section on `/fees`
 
+#### 6. Online Deposit Payment System
+- **Registration Fee (£75)** - Non-refundable, secures child's place
+- **Security Deposit (£250)** - Refundable with 4 weeks' notice
+- Collects: Parent name, email, phone, child's name, preferred start date
+- Stripe PaymentIntent integration
+- Confirmation emails to parent and admin with refund policy
+- Files created:
+  - `src/app/api/deposit-payment/route.ts` - API endpoint
+  - `src/components/modals/DepositPaymentModal.tsx` - Payment modal
+- Updated `src/components/fees/Fees.tsx` with "Pay Online" buttons
+
 ### Files Modified
 - `src/app/layout.tsx` - Added Cal.com script
 - `src/app/page.tsx` - Address and hours in Schema.org
 - `src/components/common/Footer.tsx` - Address and hours
-- `src/components/fees/Fees.tsx` - Hours and PDF section
+- `src/components/fees/Fees.tsx` - Hours, PDF section, and deposit payment buttons
 - `src/components/home/BookClubs.tsx` - Hours update
 - `src/components/home/Hero.tsx` - Cal.com integration
 - `src/components/home/Tour.tsx` - Cal.com integration
@@ -60,6 +71,12 @@ Files updated:
 - `src/lib/email-templates.ts` - Address update
 - `src/lib/pdf-templates/styles.ts` - Address update
 - `public/fees-overview.pdf` - Renamed from "Fee overview - Springlane.pdf"
+- `src/app/api/deposit-payment/route.ts` - New: Stripe deposit payment API
+- `src/components/modals/DepositPaymentModal.tsx` - New: Payment modal component
+
+### Commits
+- `85c2b83` - Update website: address, hours, Cal.com booking, fees PDF
+- `dc7fd81` - Add online deposit payment system with Stripe integration
 
 ### Cal.com Setup Notes
 Admin can manage bookings at: https://app.cal.com
