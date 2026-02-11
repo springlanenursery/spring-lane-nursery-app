@@ -139,7 +139,7 @@ export default function RootLayout({
                 };
               })(window, "https://app.cal.com/embed/embed.js", "init");
               Cal("init", "nursery-visit", {origin:"https://app.cal.com"});
-              Cal.ns["nursery-visit"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#2C97A9"}},"hideEventTypeDetails":false,"layout":"month_view"});
+              Cal.ns["nursery-visit"]("ui", {"theme":"light","cssVarsPerTheme":{"light":{"cal-brand":"#2C97A9","cal-brand-emphasis":"#247d8c","cal-text":"#252650","cal-text-emphasis":"#252650"}},"hideEventTypeDetails":false,"layout":"month_view"});
             `,
           }}
         />

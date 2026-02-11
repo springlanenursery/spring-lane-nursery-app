@@ -89,7 +89,7 @@ function validateClubBookingRequest(data: UnvalidatedBookingData): {
   }
 
   // Club title validation
-  const validClubs = ["Breakfast Club", "After Hours Club"];
+  const validClubs = ["Breakfast Club", "After School Club"];
   if (!data.clubTitle || !validClubs.includes(data.clubTitle as string)) {
     errors.push("Invalid club selection");
   }
