@@ -77,6 +77,15 @@ Files updated:
 ### Commits
 - `85c2b83` - Update website: address, hours, Cal.com booking, fees PDF
 - `dc7fd81` - Add online deposit payment system with Stripe integration
+- `4c6f7f1` - Fix club name validation and Cal.com light theme
+- `c2073d8` - Remove online deposit payments, add Contact Us buttons
+
+#### 7. Deposit Payments Removed (Client Request)
+Client requested removal of online deposit payments due to Stripe fees.
+- Replaced "Pay Online" buttons with "Contact Us for Payment" (tel: link)
+- Deleted `src/components/modals/DepositPaymentModal.tsx`
+- Deleted `src/app/api/deposit-payment/route.ts`
+- Club bookings (Breakfast/After School) still use Stripe
 
 ### Cal.com Setup Notes
 Admin can manage bookings at: https://app.cal.com

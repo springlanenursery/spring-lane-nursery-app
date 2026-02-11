@@ -505,7 +505,7 @@ const Fees: React.FC = () => {
                 className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FC4C17] text-white rounded-lg hover:bg-[#e04314] transition-colors font-medium"
               >
                 <Phone className="w-4 h-4" />
-                Contact Us for Payment
+                Contact us for payment.
               </a>
             </div>
           </div>
@@ -521,7 +521,7 @@ const Fees: React.FC = () => {
                 className="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#2AA631] text-white rounded-lg hover:bg-[#239329] transition-colors font-medium"
               >
                 <Phone className="w-4 h-4" />
-                Contact Us for Payment
+                Contact us for payment.
               </a>
             </div>
           </div>
