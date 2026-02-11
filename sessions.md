@@ -1,5 +1,74 @@
 # Development Sessions
 
+## Session: 11 February 2026
+
+### Summary
+Major website updates: address change, hours update, Cal.com booking integration, PDF fees document, and Welcome section styling.
+
+### Changes Made
+
+#### 1. Address Change (23 → 25 Spring Lane)
+Updated address across all files:
+- `src/lib/email-templates.ts` - Email footer
+- `src/lib/pdf-templates/styles.ts` - PDF documents
+- `src/app/page.tsx` - Schema.org structured data (4 locations)
+- `src/components/common/Footer.tsx` - Desktop and mobile sections
+
+#### 2. Hours Update
+Updated opening hours across website:
+- **Core Hours:** 07:30 - 18:00 (was 7:30am - 6:30pm)
+- **Breakfast Club:** 06:30 - 07:30 (was 6:30am - 7:30am)
+- **After School Club:** 18:00 - 19:00 (was 6:30pm - 7:30pm, renamed from "After Hours Club")
+
+Files updated:
+- `src/components/common/Footer.tsx`
+- `src/components/fees/Fees.tsx`
+- `src/components/home/BookClubs.tsx`
+- `src/app/page.tsx` (Schema.org and FAQ)
+
+#### 3. Cal.com Integration for "Book Your Visit"
+- Replaced custom BookingModal with Cal.com embed
+- Added Cal.com script to `src/app/layout.tsx`
+- Updated booking buttons in:
+  - `src/components/home/Hero.tsx`
+  - `src/components/home/Tour.tsx`
+- Cal.com config:
+  - Username: `spring-lane-nursery-ydrpio`
+  - Event: `nursery-visit`
+  - Brand color: `#2C97A9`
+- Admin can now block dates via Cal.com dashboard
+
+#### 4. Welcome Section Full-Width
+- Fixed `src/components/home/Welcome.tsx`
+- Changed `max-w-[1440px]` to `w-full` for full-width background
+
+#### 5. Fees Overview PDF
+- Added PDF download section to Fees page
+- Renamed PDF: `Fee overview - Springlane.pdf` → `fees-overview.pdf`
+- Added View PDF and Download buttons
+- Location: After Opening Hours section on `/fees`
+
+### Files Modified
+- `src/app/layout.tsx` - Added Cal.com script
+- `src/app/page.tsx` - Address and hours in Schema.org
+- `src/components/common/Footer.tsx` - Address and hours
+- `src/components/fees/Fees.tsx` - Hours and PDF section
+- `src/components/home/BookClubs.tsx` - Hours update
+- `src/components/home/Hero.tsx` - Cal.com integration
+- `src/components/home/Tour.tsx` - Cal.com integration
+- `src/components/home/Welcome.tsx` - Full-width styling
+- `src/lib/email-templates.ts` - Address update
+- `src/lib/pdf-templates/styles.ts` - Address update
+- `public/fees-overview.pdf` - Renamed from "Fee overview - Springlane.pdf"
+
+### Cal.com Setup Notes
+Admin can manage bookings at: https://app.cal.com
+- Block specific dates via Availability → Date Overrides
+- Set buffer times between appointments
+- Syncs with Google Calendar
+
+---
+
 ## Session: 3 February 2026
 
 ### Summary

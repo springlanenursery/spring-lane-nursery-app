@@ -1,14 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import BookingModal from "../modals/BookingModal";
 
 const Hero: React.FC = () => {
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-
-  const openBookingModal = () => setIsBookingModalOpen(true);
-  const closeBookingModal = () => setIsBookingModalOpen(false);
-
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
@@ -89,7 +83,9 @@ const Hero: React.FC = () => {
 
               {/* Book a visit button */}
               <button
-                onClick={openBookingModal}
+                data-cal-link="spring-lane-nursery-ydrpio/nursery-visit"
+                data-cal-namespace="nursery-visit"
+                data-cal-config='{"layout":"month_view"}'
                 className="px-5 py-2 md:px-6 cursor-pointer md:py-2.5 lg:px-8 lg:py-3 bg-[#F95921] text-white font-semibold text-xs md:text-sm lg:text-base hover:bg-[#E8501D] active:bg-[#D94619] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
                 style={{
                   backgroundColor: "#F95269",
@@ -102,9 +98,6 @@ const Hero: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Booking Modal */}
-      <BookingModal isOpen={isBookingModalOpen} onClose={closeBookingModal} />
     </>
   );
 };

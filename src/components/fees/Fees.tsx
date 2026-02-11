@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { Eye, Download } from 'lucide-react';
 
 const Fees: React.FC = () => {
   return (
@@ -24,7 +25,7 @@ const Fees: React.FC = () => {
           <div className="bg-[#FC4C171A] rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">Standard Core Hours</h3>
-              <p className="text-2xl font-bold text-[#FC4C17]">7:30am - 6:30pm</p>
+              <p className="text-2xl font-bold text-[#FC4C17]">07:30 - 18:00</p>
             </div>
           </div>
 
@@ -32,15 +33,50 @@ const Fees: React.FC = () => {
           <div className="bg-[#2C97A91A] rounded-lg p-6">
             <div className="space-y-3">
               <h3 className="text-sm font-medium text-[#252650]">Breakfast Club (Optional add-on)</h3>
-              <p className="text-2xl font-bold text-[#252650]">6:30am - 7:30am</p>
+              <p className="text-2xl font-bold text-[#252650]">06:30 - 07:30</p>
             </div>
           </div>
 
           {/* After Hours Club */}
           <div className="bg-[#2AA6311A] rounded-lg p-6">
             <div className="space-y-3">
-              <h3 className="text-sm font-medium text-[#252650]">After Hours Club (Optional add-on)</h3>
-              <p className="text-2xl font-bold text-[#2AA631]">6:30pm - 7:30pm</p>
+              <h3 className="text-sm font-medium text-[#252650]">After School Club (Optional add-on)</h3>
+              <p className="text-2xl font-bold text-[#2AA631]">18:00 - 19:00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Fees Overview PDF Section */}
+      <div className="bg-[#FFF8E7] rounded-xl p-6 border-2 border-[#F9AE15]">
+        <div className="flex flex-col md:flex-row items-start gap-4">
+          <div className="text-5xl">📄</div>
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-[#252650] mb-2">
+              Fees Overview Document
+            </h3>
+            <p className="text-[#252650] mb-4">
+              Download our complete fee schedule including childcare rates, meals charges, and consumables.
+              This document provides a clear breakdown of all costs to help you plan your childcare budget.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/fees-overview.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2C97A9] text-white rounded-lg hover:bg-[#247d8c] transition-colors font-medium"
+              >
+                <Eye className="w-4 h-4" />
+                View PDF
+              </a>
+              <a
+                href="/fees-overview.pdf"
+                download="Spring-Lane-Nursery-Fees-Overview.pdf"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F95921] text-white rounded-lg hover:bg-[#e04d1a] transition-colors font-medium"
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </a>
             </div>
           </div>
         </div>
@@ -71,7 +107,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#252650]">£75.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per day</p>
-                <p className="text-xs text-[#252650]">7:30am - 6:30pm</p>
+                <p className="text-xs text-[#252650]">07:30 - 18:00</p>
               </div>
             </div>
           </div>
@@ -83,7 +119,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#F6353B]">£45.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">7:30am - 1:00pm</p>
+                <p className="text-xs text-[#252650]">07:30 - 12:30</p>
               </div>
             </div>
           </div>
@@ -95,7 +131,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#F9AE15]">£45.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">1:00pm - 6:30pm</p>
+                <p className="text-xs text-[#252650]">12:30 - 18:00</p>
               </div>
             </div>
           </div>
@@ -107,7 +143,7 @@ const Fees: React.FC = () => {
               <p className="text-3xl font-bold text-[#2AA631]">£8.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Add on</p>
-                <p className="text-xs text-[#252650]">6:30am - 7:30am</p>
+                <p className="text-xs text-[#252650]">06:30 - 07:30</p>
               </div>
             </div>
           </div>
@@ -115,11 +151,11 @@ const Fees: React.FC = () => {
           {/* After Hours Club */}
           <div className="border-2 border-[#2C97A9] rounded-lg p-6 bg-white">
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-[#252650]">After Hours Club</h3>
+              <h3 className="text-sm font-medium text-[#252650]">After School Club</h3>
               <p className="text-3xl font-bold text-[#2C97A9]">£8.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Add on</p>
-                <p className="text-xs text-[#252650]">6:30pm - 7:30pm</p>
+                <p className="text-xs text-[#252650]">18:00 - 19:00</p>
               </div>
             </div>
           </div>

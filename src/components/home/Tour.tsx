@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import BookingModal from "../modals/BookingModal";
 
 const Tour: React.FC = () => {
   const [_, setIsVideoPlaying] = useState(false);
@@ -8,11 +7,6 @@ const Tour: React.FC = () => {
   const handleCloseTour = () => {
     setIsVideoPlaying(false);
   };
-
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-
-  const openBookingModal = () => setIsBookingModalOpen(true);
-  const closeBookingModal = () => setIsBookingModalOpen(false);
 
   return (
     <>
@@ -74,7 +68,9 @@ const Tour: React.FC = () => {
           {/* Book a Tour Button */}
           <div className="text-center">
             <button
-              onClick={openBookingModal}
+              data-cal-link="spring-lane-nursery-ydrpio/nursery-visit"
+              data-cal-namespace="nursery-visit"
+              data-cal-config='{"layout":"month_view"}'
               style={{
                 borderRadius: "0px 25px 25px 25px",
               }}
@@ -85,8 +81,6 @@ const Tour: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* Booking Modal */}
-      <BookingModal isOpen={isBookingModalOpen} onClose={closeBookingModal} />
     </>
   );
 };

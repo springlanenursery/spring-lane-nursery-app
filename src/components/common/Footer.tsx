@@ -97,7 +97,7 @@ const Footer: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-white">23 Spring Lane</p>
+                  <p className="text-white">25 Spring Lane</p>
                   <p className="text-white">Croydon SE25 4SP</p>
                 </div>
               </div>
@@ -131,22 +131,22 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Right Section - Opening Hours */}
-          <div className="lg:max-w-sm">
+          <div className="lg:min-w-[280px]">
             <h3 className="text-xl font-semibold mb-6">Opening Hours</h3>
             <div className="space-y-3">
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-white">Monday - Friday</span>
-                <span className="text-white">7.30am - 6.30pm</span>
+                <span className="text-white whitespace-nowrap">07:30 - 18:00</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-white">Breakfast Club</span>
-                <span className="text-white">6.30am - 7.30am</span>
+                <span className="text-white whitespace-nowrap">06:30 - 07:30</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white">After-School Club</span>
-                <span className="text-white">6.30pm - 7.30pm</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-white">After School Club</span>
+                <span className="text-white whitespace-nowrap">18:00 - 19:00</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span className="text-white">Weekend</span>
                 <span className="text-white">Closed</span>
               </div>
@@ -245,7 +245,7 @@ const Footer: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-white">23 Spring Lane</p>
+                  <p className="text-white">25 Spring Lane</p>
                   <p className="text-white">Croydon SE25 4SP</p>
                 </div>
               </div>
@@ -286,15 +286,15 @@ const Footer: React.FC = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-white">Monday - Friday</span>
-                <span className="text-white">7.30am - 6.30pm</span>
+                <span className="text-white">07:30 - 18:00</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white">Breakfast Club</span>
-                <span className="text-white">6.30am - 7.30am</span>
+                <span className="text-white">06:30 - 07:30</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white">After-School Club</span>
-                <span className="text-white">6.30pm - 7.30pm</span>
+                <span className="text-white">After School Club</span>
+                <span className="text-white">18:00 - 19:00</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white">Weekend</span>
@@ -337,7 +337,7 @@ const Footer: React.FC = () => {
       </div>
 
       {/* Bunny Illustration - Absolutely positioned at bottom center */}
-      <div className="absolute bottom-0 left-1/2  z-10">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
         {/* Desktop bunny image */}
         <div className="hidden lg:block">
           <Image

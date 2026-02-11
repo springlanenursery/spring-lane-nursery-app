@@ -41,7 +41,7 @@ export default function Home() {
       "Ofsted registered nursery in Croydon providing exceptional early years childcare for children aged 0-5 years. EYFS curriculum, government funding accepted.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "23 Spring Lane",
+      streetAddress: "25 Spring Lane",
       addressLocality: "Croydon",
       addressRegion: "Greater London",
       postalCode: "SE25 4SP",
@@ -65,7 +65,7 @@ export default function Home() {
           "Friday",
         ],
         opens: "06:30",
-        closes: "19:30",
+        closes: "19:00",
       },
     ],
     priceRange: "££",
@@ -140,8 +140,8 @@ export default function Home() {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "After Hours Club",
-            description: "Extended care from 6:30pm to 7:30pm",
+            name: "After School Club",
+            description: "Extended care from 18:00 to 19:00",
             offers: {
               "@type": "Offer",
               price: "8.00",
@@ -164,7 +164,7 @@ export default function Home() {
       "Ofsted registered early years education provider following the EYFS curriculum.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "23 Spring Lane",
+      streetAddress: "25 Spring Lane",
       addressLocality: "Croydon",
       postalCode: "SE25 4SP",
       addressCountry: "GB",
@@ -194,7 +194,7 @@ export default function Home() {
     priceRange: "££",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "23 Spring Lane",
+      streetAddress: "25 Spring Lane",
       addressLocality: "Croydon",
       addressRegion: "Greater London",
       postalCode: "SE25 4SP",
@@ -216,7 +216,7 @@ export default function Home() {
           "Friday",
         ],
         opens: "06:30",
-        closes: "19:30",
+        closes: "19:00",
       },
     ],
     aggregateRating: {
@@ -250,7 +250,7 @@ export default function Home() {
         "@type": "Place",
         address: {
           "@type": "PostalAddress",
-          streetAddress: "23 Spring Lane",
+          streetAddress: "25 Spring Lane",
           addressLocality: "Croydon",
           postalCode: "SE25 4SP",
           addressCountry: "GB",
@@ -277,7 +277,7 @@ export default function Home() {
         name: "What are your opening hours?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Our core hours are 7:30am to 6:30pm, Monday to Friday. We also offer a Breakfast Club from 6:30am to 7:30am and After Hours Club from 6:30pm to 7:30pm.",
+          text: "Our core hours are 07:30 to 18:00, Monday to Friday. We also offer a Breakfast Club from 06:30 to 07:30 and After School Club from 18:00 to 19:00.",
         },
       },
       {
@@ -293,7 +293,7 @@ export default function Home() {
         name: "What is your daily rate?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "A full day (7:30am-6:30pm) is £75. Half days are £45. Breakfast Club and After Hours Club are £8 each. Fees are before any government funding deductions.",
+          text: "A full day (07:30-18:00) is £75. Half days are £45. Breakfast Club and After School Club are £8 each. Fees are before any government funding deductions.",
         },
       },
       {

@@ -17,7 +17,7 @@ export const colors = {
 // Nursery contact information
 export const nurseryInfo = {
   name: "Spring Lane Nursery",
-  address: "23 Spring Lane, Croydon SE25 4SP",
+  address: "25 Spring Lane, Croydon SE25 4SP",
   mobile: "07804 549 139",
   landline: "0203 561 8257",
   email: "hello@springlanenursery.co.uk",

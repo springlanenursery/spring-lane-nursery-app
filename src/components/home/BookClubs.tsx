@@ -133,17 +133,17 @@ const BookClubs: React.FC = () => {
       price: "£8.00",
       description:
         "Our Breakfast Club offers a calm and welcoming start to the day. Children can arrive early, enjoy a healthy breakfast, and have time to settle before heading into their nursery session or school. A choice of cereals, toast, fruit and drinks are available each morning. We create a relaxed environment where children can chat with friends, read, or take part in quiet activities to get ready for the day ahead.",
-      time: "6:30AM - 7:30AM",
+      time: "06:30 - 07:30",
       backgroundColor: "#FC4C171A",
       titleColor: "#FC4C17",
       buttonColor: "#F95269",
     },
     {
-      title: "After Hours Club",
+      title: "After School Club",
       price: "£8.00",
       description:
         "Our After School Club provides a safe and supportive space for children at the end of the day. We offer a light snack and opportunities to wind down or take part in fun activities such as arts and crafts, reading, board games or outdoor play (weather permitting). It's a chance for children to relax, socialise with friends, and end the day in a positive and engaging way.",
-      time: "6:30PM - 7:30PM",
+      time: "18:00 - 19:00",
       backgroundColor: "#F9AE151A",
       titleColor: "#F9AE15",
       buttonColor: "#F9AE15",

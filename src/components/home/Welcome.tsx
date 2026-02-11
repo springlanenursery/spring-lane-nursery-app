@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Welcome: React.FC = () => {
   return (
-    <section className="relative max-w-[1440px] py-16 md:py-20 lg:py-24 overflow-hidden">
+    <section className="relative w-full py-16 md:py-20 lg:py-24 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image

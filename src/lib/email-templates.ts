@@ -14,7 +14,7 @@ const config: EmailTemplateConfig = {
   landline: "0203 561 8257",
   mobile: "07804 549 139",
   website: "www.springlanenursery.co.uk",
-  address: "23 Spring Lane, Croydon SE25 4SP",
+  address: "25 Spring Lane, Croydon SE25 4SP",
   email: "hello@springlanenursery.co.uk",
 };
 
