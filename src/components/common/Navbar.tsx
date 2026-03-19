@@ -120,8 +120,8 @@ const Navbar: React.FC = () => {
                 />
               </div>
               {/* Phone number text */}
-              <a href="tel:+447769639328" className="text-[#252650] font-bold text-lg hover:underline">
-                07769 639 328
+              <a href="tel:+447804549139" className="text-[#252650] font-bold text-lg hover:underline">
+                07804 549 139
               </a>
             </div>
           </div>
@@ -260,7 +260,7 @@ const Navbar: React.FC = () => {
                   height={16}
                   className="w-4 h-4"
                 />
-                <a href="tel:+447769639328" className="hover:underline">07769 639 328</a>
+                <a href="tel:+447804549139" className="hover:underline">07804 549 139</a>
               </div>
             </div>
           </div>

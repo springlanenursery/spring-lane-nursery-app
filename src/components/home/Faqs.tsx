@@ -35,6 +35,11 @@ const FAQ: React.FC = () => {
         "Our nursery fees cover high-quality childcare and educational provision. Please note that meals, snacks, nappies, and optional extracurricular or outdoor activities are not included and will incur an additional charge. Full details can be found in our fees section.",
     },
     {
+      question: "Can I pay for hourly childcare?",
+      answer:
+        "We're afraid not - sorry. If you'd like a place at Spring Lane Nursery, your child will need to come along for at least two half sessions, or one full day, each week.",
+    },
+    {
       question: "What does a typical day look like at Spring Lane Nursery?",
       answer:
         "A typical day includes free play, structured learning activities, outdoor time, meals and snacks, rest periods for younger children, and various educational experiences following the EYFS framework.",

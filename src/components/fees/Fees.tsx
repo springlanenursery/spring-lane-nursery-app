@@ -191,35 +191,35 @@ const Fees: React.FC = () => {
             {/* Row 1 */}
             <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
               <div className="text-[#252650]">5 Full Days per Week</div>
-              <div className="text-[#252650]">£75 x 5 days x 4 weeks</div>
-              <div className="font-bold text-[#252650]">£1,500 /month</div>
+              <div className="text-[#252650]">(£75 x 5 days x 51 wks) ÷ 12</div>
+              <div className="font-bold text-[#252650]">£1,593.75 /month</div>
             </div>
-            
+
             {/* Row 2 */}
             <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
               <div className="text-[#252650]">3 Full Days per Week</div>
-              <div className="text-[#252650]">£75 x 3 days x 4 weeks</div>
-              <div className="font-bold text-[#252650]">£900 /month</div>
+              <div className="text-[#252650]">(£75 x 3 days x 51 wks) ÷ 12</div>
+              <div className="font-bold text-[#252650]">£956.25 /month</div>
             </div>
-            
+
             {/* Row 3 */}
             <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
-              <div className="text-[#252650]">5 Full Days per Week</div>
-              <div className="text-[#252650]">£45 x 5 days x 4 weeks</div>
-              <div className="font-bold text-[#252650]">£900 /month</div>
+              <div className="text-[#252650]">5 Half Days per Week</div>
+              <div className="text-[#252650]">(£45 x 5 days x 51 wks) ÷ 12</div>
+              <div className="font-bold text-[#252650]">£956.25 /month</div>
             </div>
-            
+
             {/* Row 4 */}
             <div className="grid grid-cols-3 gap-4 p-4 text-sm">
-              <div className="text-[#252650]">3 Full Days per Week</div>
-              <div className="text-[#252650]">£45 x 3 days x 4 weeks</div>
-              <div className="font-bold text-[#252650]">£540 /month</div>
+              <div className="text-[#252650]">3 Half Days per Week</div>
+              <div className="text-[#252650]">(£45 x 3 days x 51 wks) ÷ 12</div>
+              <div className="font-bold text-[#252650]">£573.75 /month</div>
             </div>
           </div>
         </div>
 
         <p className="text-sm text-[#252650] mt-4">
-          Fees are calculated based on 4 weeks per month for consistency.
+          Monthly fees are calculated by spreading 51 weeks of childcare evenly across 12 months, ensuring consistent payments year-round.
         </p>
       </div>
 
