@@ -11,6 +11,7 @@ import { FormField } from "@/components/ui/form-field";
 interface AvailabilityFormData {
   fullName: string;
   phoneNumber: string;
+  email: string;
   childrenDetails: string;
 }
 
@@ -82,6 +83,7 @@ const AvailabilityWaitingList = () => {
   const [availabilityForm, setAvailabilityForm] = useState<AvailabilityFormData>({
     fullName: "",
     phoneNumber: "",
+    email: "",
     childrenDetails: "",
   });
 
@@ -160,6 +162,13 @@ const AvailabilityWaitingList = () => {
       return;
     }
 
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(availabilityForm.email)) {
+      showError("Invalid Email", "Please enter a valid email address", []);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -184,6 +193,7 @@ const AvailabilityWaitingList = () => {
         setAvailabilityForm({
           fullName: "",
           phoneNumber: "",
+          email: "",
           childrenDetails: "",
         });
 
@@ -449,6 +459,15 @@ Special Requirements: ${waitlistForm.specialRequirements || "None"}
                 <p className="text-xs text-slate-500 -mt-2">
                   International format supported: +44 7123 456789
                 </p>
+                <FormField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={availabilityForm.email}
+                  onChange={handleAvailabilityInputChange}
+                  placeholder="your@email.com"
+                  required
+                />
               </FormSection>
             </FormCard>
 

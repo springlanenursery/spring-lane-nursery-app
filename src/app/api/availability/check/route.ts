@@ -6,6 +6,7 @@ import {
   generateUserEmailHtml,
   generateUserEmailText,
 } from "@/lib/email-templates";
+import { generateAvailabilityPDF } from "@/lib/pdf-generator";
 
 let cachedDb: Db | null = null;
 
@@ -25,6 +26,7 @@ async function connectToDatabase(): Promise<Db> {
 interface AvailabilityRequest {
   fullName: string;
   phoneNumber: string;
+  email: string;
   childrenDetails: string;
 }
 
@@ -32,6 +34,7 @@ interface AvailabilityRequest {
 interface ValidationInput {
   fullName?: unknown;
   phoneNumber?: unknown;
+  email?: unknown;
   childrenDetails?: unknown;
 }
 
@@ -68,6 +71,21 @@ function validateAvailabilityRequest(data: ValidationInput): {
       errors.push("Please enter a valid phone number");
     }
   }
+
+  // Email validation
+  if (
+    !data.email ||
+    typeof data.email !== "string" ||
+    data.email.trim().length === 0
+  ) {
+    errors.push("Email address is required");
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      errors.push("Please enter a valid email address");
+    }
+  }
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -95,64 +113,78 @@ async function sendAvailabilityRequestEmails(
     return;
   }
 
-  // Generate admin email using new template
-  const adminHtml = generateAdminEmailHtml({
-    formType: "Availability Request",
-    reference: reference,
-    primaryName: data.fullName,
-    additionalInfo: {
-      "Phone Number": data.phoneNumber,
-      "Children Details": data.childrenDetails || "Not provided",
-    },
-    alertMessage: "Please respond within 24 hours",
-  });
-
-  const adminText = generateAdminEmailText({
-    formType: "Availability Request",
-    reference: reference,
-    primaryName: data.fullName,
-    additionalInfo: {
-      "Phone Number": data.phoneNumber,
-      "Children Details": data.childrenDetails || "Not provided",
-    },
-  });
-
-  // Generate user email using new template (prepared for when email is collected)
-  const userHtml = generateUserEmailHtml({
-    recipientName: data.fullName,
-    formType: "Availability Request",
-    reference: reference,
-    nextSteps: [
-      "Our team will review your request within 2-4 hours",
-      `We'll call you at ${data.phoneNumber} within 24 hours`,
-      "We'll discuss availability and schedule a tour if desired",
-      "We'll answer any questions about our programs and facilities",
-    ],
-    customMessage:
-      "Thank you for your interest in Spring Lane Nursery! We're excited that you're considering us for your child. Your inquiry is very important to us, and we want to ensure we provide you with all the information you need.",
-    reminder:
-      "Keep an eye on your phone - we'll be calling you soon to discuss your availability request.",
-  });
-
-  const userText = generateUserEmailText({
-    recipientName: data.fullName,
-    formType: "Availability Request",
-    reference: reference,
-    nextSteps: [
-      "Our team will review your request within 2-4 hours",
-      `We'll call you at ${data.phoneNumber} within 24 hours`,
-      "We'll discuss availability and schedule a tour if desired",
-      "We'll answer any questions about our programs and facilities",
-    ],
-    customMessage:
-      "Thank you for your interest in Spring Lane Nursery! We're excited that you're considering us for your child.",
-    reminder:
-      "Keep an eye on your phone - we'll be calling you soon to discuss your availability request.",
-  });
-
   try {
-    // Send admin notification
-    await fetch("https://api.postmarkapp.com/email", {
+    // Generate PDF
+    const pdfBuffer = await generateAvailabilityPDF(
+      {
+        fullName: data.fullName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        childrenDetails: data.childrenDetails,
+      },
+      reference
+    );
+    const pdfBase64 = pdfBuffer.toString("base64");
+
+    // Generate admin email using new template
+    const adminHtml = generateAdminEmailHtml({
+      formType: "Availability Request",
+      reference: reference,
+      primaryName: data.fullName,
+      additionalInfo: {
+        "Phone Number": data.phoneNumber,
+        "Email": data.email,
+        "Children Details": data.childrenDetails || "Not provided",
+      },
+      alertMessage: "Please respond within 24 hours",
+    });
+
+    const adminText = generateAdminEmailText({
+      formType: "Availability Request",
+      reference: reference,
+      primaryName: data.fullName,
+      additionalInfo: {
+        "Phone Number": data.phoneNumber,
+        "Email": data.email,
+        "Children Details": data.childrenDetails || "Not provided",
+      },
+    });
+
+    // Generate user email
+    const userHtml = generateUserEmailHtml({
+      recipientName: data.fullName.split(" ")[0],
+      formType: "Availability Request",
+      reference: reference,
+      nextSteps: [
+        "Our team will review your request within 2-4 hours",
+        "We'll contact you within 24 hours to discuss availability",
+        "We'll discuss availability and schedule a tour if desired",
+        "We'll answer any questions about our programs and facilities",
+      ],
+      customMessage:
+        "Thank you for your interest in Spring Lane Nursery! We're excited that you're considering us for your child. Your inquiry is very important to us, and we want to ensure we provide you with all the information you need.",
+      reminder:
+        "Keep an eye on your phone and email - we'll be in touch soon to discuss your availability request.",
+    });
+
+    const userText = generateUserEmailText({
+      recipientName: data.fullName.split(" ")[0],
+      formType: "Availability Request",
+      reference: reference,
+      nextSteps: [
+        "Our team will review your request within 2-4 hours",
+        "We'll contact you within 24 hours to discuss availability",
+        "We'll discuss availability and schedule a tour if desired",
+        "We'll answer any questions about our programs and facilities",
+      ],
+      customMessage:
+        "Thank you for your interest in Spring Lane Nursery! We're excited that you're considering us for your child.",
+      reminder:
+        "Keep an eye on your phone and email - we'll be in touch soon to discuss your availability request.",
+    });
+
+    // Send admin notification with PDF attachment
+    const adminResponse = await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -165,14 +197,53 @@ async function sendAvailabilityRequestEmails(
         Subject: `New Availability Request - ${reference}`,
         HtmlBody: adminHtml,
         TextBody: adminText,
+        Attachments: [
+          {
+            Name: `Availability_Request_${reference}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
       }),
     });
 
-    console.log("Availability admin notification email sent successfully");
+    const adminResult = await adminResponse.json();
+    if (!adminResponse.ok) {
+      console.error("Postmark admin email error:", adminResult);
+    } else {
+      console.log("Availability admin notification email sent successfully");
+    }
 
-    // Note: The availability form doesn't collect email, so user email isn't sent
-    // If you want to send to user, you'd need to add email field to the form
-    console.log("User confirmation email prepared - email field required for delivery");
+    // Send user confirmation email with PDF attachment
+    const userResponse = await fetch("https://api.postmarkapp.com/email", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Postmark-Server-Token": postmarkToken,
+      },
+      body: JSON.stringify({
+        From: fromEmail,
+        To: data.email,
+        Subject: `Availability Request Confirmed - ${reference}`,
+        HtmlBody: userHtml,
+        TextBody: userText,
+        Attachments: [
+          {
+            Name: `Your_Availability_Request_${reference}.pdf`,
+            Content: pdfBase64,
+            ContentType: "application/pdf",
+          },
+        ],
+      }),
+    });
+
+    const userResult = await userResponse.json();
+    if (!userResponse.ok) {
+      console.error("Postmark user email error:", userResult);
+    } else {
+      console.log("Availability user confirmation email sent successfully");
+    }
 
   } catch (error) {
     console.error("Error sending availability request email:", error);
@@ -223,6 +294,7 @@ export async function POST(request: NextRequest) {
     const availabilityRequest: AvailabilityRequest = {
       fullName: body.fullName.trim(),
       phoneNumber: body.phoneNumber.trim(),
+      email: body.email.trim().toLowerCase(),
       childrenDetails: body.childrenDetails?.trim() || "",
     };
 

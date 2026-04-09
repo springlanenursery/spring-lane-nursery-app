@@ -9,6 +9,7 @@ import { ConsentFormPDF, ConsentFormData } from "./pdf-templates/ConsentFormPDF"
 import { FundingDeclarationPDF, FundingDeclarationData } from "./pdf-templates/FundingDeclarationPDF";
 import { ChangeDetailsPDF, ChangeDetailsData } from "./pdf-templates/ChangeDetailsPDF";
 import { WaitlistPDF, WaitlistData } from "./pdf-templates/WaitlistPDF";
+import { AvailabilityPDF, AvailabilityData } from "./pdf-templates/AvailabilityPDF";
 
 // Helper type for render function
 type PDFElement = React.ReactElement;
@@ -80,5 +81,13 @@ export async function generateWaitlistPDF(
   estimatedWaitTime?: string
 ): Promise<Buffer> {
   const element = React.createElement(WaitlistPDF, { data, reference, estimatedWaitTime });
+  return generatePDF(element);
+}
+
+export async function generateAvailabilityPDF(
+  data: AvailabilityData,
+  reference: string
+): Promise<Buffer> {
+  const element = React.createElement(AvailabilityPDF, { data, reference });
   return generatePDF(element);
 }
