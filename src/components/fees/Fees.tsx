@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Eye, Download, Phone } from 'lucide-react';
+import { Eye, Download, Phone, Utensils } from 'lucide-react';
 
 const Fees: React.FC = () => {
   return (
@@ -99,43 +99,61 @@ const Fees: React.FC = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
-          {/* Full Day */}
-          <div className="border-2 border-[#252650] rounded-lg p-6 bg-white">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Blossom Room */}
+          <div className="border-2 border-[#FC4C17] rounded-lg p-6 bg-white">
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-[#252650]">Full Day</h3>
-              <p className="text-3xl font-bold text-[#252650]">£75.00</p>
-              <div className="space-y-1 flex justify-between">
-                <p className="text-xs text-[#252650]">Per day</p>
-                <p className="text-xs text-[#252650]">07:30 - 18:00</p>
+              <h3 className="text-sm font-medium text-[#252650]">Blossom Room</h3>
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-3xl font-bold text-[#FC4C17]">£82.00</p>
+                  <p className="text-xs text-[#252650]">Full day</p>
+                </div>
+                <div className="flex items-baseline justify-between border-t border-gray-200 pt-3">
+                  <p className="text-2xl font-bold text-[#FC4C17]">£48.00</p>
+                  <p className="text-xs text-[#252650]">Half day</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Morning Half Day */}
-          <div className="border-2 border-[#F6353B] rounded-lg p-6 bg-white">
-            <div className="space-y-4">
-              <h3 className="text-sm font-medium text-[#252650]">Morning Half Day</h3>
-              <p className="text-3xl font-bold text-[#F6353B]">£45.00</p>
-              <div className="space-y-1 flex justify-between">
-                <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">07:30 - 12:30</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Afternoon Half Day */}
+          {/* Sunshine Room */}
           <div className="border-2 border-[#F9AE15] rounded-lg p-6 bg-white">
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-[#252650]">Afternoon Half Day</h3>
-              <p className="text-3xl font-bold text-[#F9AE15]">£45.00</p>
-              <div className="space-y-1 flex justify-between">
-                <p className="text-xs text-[#252650]">Per session</p>
-                <p className="text-xs text-[#252650]">12:30 - 18:00</p>
+              <h3 className="text-sm font-medium text-[#252650]">Sunshine Room</h3>
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-3xl font-bold text-[#F9AE15]">£78.00</p>
+                  <p className="text-xs text-[#252650]">Full day</p>
+                </div>
+                <div className="flex items-baseline justify-between border-t border-gray-200 pt-3">
+                  <p className="text-2xl font-bold text-[#F9AE15]">£46.00</p>
+                  <p className="text-xs text-[#252650]">Half day</p>
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Rainbow Room */}
+          <div className="border-2 border-[#2C97A9] rounded-lg p-6 bg-white">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-[#252650]">Rainbow Room</h3>
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-3xl font-bold text-[#2C97A9]">£72.00</p>
+                  <p className="text-xs text-[#252650]">Full day</p>
+                </div>
+                <div className="flex items-baseline justify-between border-t border-gray-200 pt-3">
+                  <p className="text-2xl font-bold text-[#2C97A9]">£43.00</p>
+                  <p className="text-xs text-[#252650]">Half day</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 className="text-base font-bold text-[#252650] pt-4">Optional Add-ons</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Breakfast Club */}
           <div className="border-2 border-[#2AA631] rounded-lg p-6 bg-white">
             <div className="space-y-4">
@@ -149,10 +167,10 @@ const Fees: React.FC = () => {
           </div>
 
           {/* After Hours Club */}
-          <div className="border-2 border-[#2C97A9] rounded-lg p-6 bg-white">
+          <div className="border-2 border-[#F6353B] rounded-lg p-6 bg-white">
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-[#252650]">After School Club</h3>
-              <p className="text-3xl font-bold text-[#2C97A9]">£8.00</p>
+              <p className="text-3xl font-bold text-[#F6353B]">£8.00</p>
               <div className="space-y-1 flex justify-between">
                 <p className="text-xs text-[#252650]">Add on</p>
                 <p className="text-xs text-[#252650]">18:00 - 19:00</p>
@@ -180,40 +198,47 @@ const Fees: React.FC = () => {
         </div>
 
         {/* Monthly Fees Table */}
-        <div className="bg-gray-50 rounded-lg overflow-hidden">
-          <div className="grid grid-cols-3 gap-4 p-4 bg-gray-100 text-sm font-bold text-[#252650]">
-            <div>Schedule</div>
-            <div>Calculation</div>
-            <div>Monthly Fee</div>
-          </div>
-          
-          <div className="space-y-0">
-            {/* Row 1 */}
-            <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
-              <div className="text-[#252650]">5 Full Days per Week</div>
-              <div className="text-[#252650]">(£75 x 5 days x 51 wks) ÷ 12</div>
-              <div className="font-bold text-[#252650]">£1,593.75 /month</div>
+        <div className="bg-gray-50 rounded-lg overflow-x-auto">
+          <div className="min-w-[560px]">
+            <div className="grid grid-cols-4 gap-4 p-4 bg-gray-100 text-sm font-bold text-[#252650]">
+              <div>Schedule</div>
+              <div>Blossom</div>
+              <div>Sunshine</div>
+              <div>Rainbow</div>
             </div>
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
-              <div className="text-[#252650]">3 Full Days per Week</div>
-              <div className="text-[#252650]">(£75 x 3 days x 51 wks) ÷ 12</div>
-              <div className="font-bold text-[#252650]">£956.25 /month</div>
-            </div>
+            <div className="space-y-0">
+              {/* Row 1 */}
+              <div className="grid grid-cols-4 gap-4 p-4 border-b border-gray-200 text-sm">
+                <div className="text-[#252650]">5 Full Days per Week</div>
+                <div className="font-bold text-[#252650]">£1,742.50</div>
+                <div className="font-bold text-[#252650]">£1,657.50</div>
+                <div className="font-bold text-[#252650]">£1,530.00</div>
+              </div>
 
-            {/* Row 3 */}
-            <div className="grid grid-cols-3 gap-4 p-4 border-b border-gray-200 text-sm">
-              <div className="text-[#252650]">5 Half Days per Week</div>
-              <div className="text-[#252650]">(£45 x 5 days x 51 wks) ÷ 12</div>
-              <div className="font-bold text-[#252650]">£956.25 /month</div>
-            </div>
+              {/* Row 2 */}
+              <div className="grid grid-cols-4 gap-4 p-4 border-b border-gray-200 text-sm">
+                <div className="text-[#252650]">3 Full Days per Week</div>
+                <div className="font-bold text-[#252650]">£1,045.50</div>
+                <div className="font-bold text-[#252650]">£994.50</div>
+                <div className="font-bold text-[#252650]">£918.00</div>
+              </div>
 
-            {/* Row 4 */}
-            <div className="grid grid-cols-3 gap-4 p-4 text-sm">
-              <div className="text-[#252650]">3 Half Days per Week</div>
-              <div className="text-[#252650]">(£45 x 3 days x 51 wks) ÷ 12</div>
-              <div className="font-bold text-[#252650]">£573.75 /month</div>
+              {/* Row 3 */}
+              <div className="grid grid-cols-4 gap-4 p-4 border-b border-gray-200 text-sm">
+                <div className="text-[#252650]">5 Half Days per Week</div>
+                <div className="font-bold text-[#252650]">£1,020.00</div>
+                <div className="font-bold text-[#252650]">£977.50</div>
+                <div className="font-bold text-[#252650]">£913.75</div>
+              </div>
+
+              {/* Row 4 */}
+              <div className="grid grid-cols-4 gap-4 p-4 text-sm">
+                <div className="text-[#252650]">3 Half Days per Week</div>
+                <div className="font-bold text-[#252650]">£612.00</div>
+                <div className="font-bold text-[#252650]">£586.50</div>
+                <div className="font-bold text-[#252650]">£548.25</div>
+              </div>
             </div>
           </div>
         </div>
@@ -526,6 +551,86 @@ const Fees: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Meals, Snacks and Consumables Contribution Section */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2 mb-6">
+          <Utensils className="w-6 h-6 text-[#252650]" />
+          <h2 className="text-xl font-bold text-[#252650]">
+            Meals, Snacks and Consumables Contribution
+          </h2>
+        </div>
+
+        <p className="text-[#252650] leading-relaxed">
+          At Spring Lane Nursery, we are committed to providing a safe, healthy and inclusive environment for all children. Due to the layout of our nursery and the need to effectively manage allergies, dietary requirements and food safety, we are unable to accept packed lunches, snacks or food brought from home. All children are provided with freshly prepared meals and healthy snacks throughout the day. We cater for individual dietary, cultural, religious and medical requirements and work closely with families to ensure every child&apos;s needs are met.
+        </p>
+
+        <p className="text-[#252650] leading-relaxed">
+          To support the provision of meals, snacks, consumables and enhanced learning experiences, we ask for the following voluntary contribution:
+        </p>
+
+        <div className="grid grid-cols-1 text-center md:grid-cols-2 gap-4">
+          {/* Full Day Contribution */}
+          <div className="bg-[#2AA6311A] rounded-lg p-6">
+            <div className="space-y-3">
+              <h3 className="text-sm font-medium text-[#252650]">Per Full Day</h3>
+              <p className="text-3xl font-bold text-[#2AA631]">£9.50</p>
+              <p className="text-sm text-[#252650]">Voluntary contribution</p>
+            </div>
+          </div>
+
+          {/* Half Day Contribution */}
+          <div className="bg-[#2C97A91A] rounded-lg p-6">
+            <div className="space-y-3">
+              <h3 className="text-sm font-medium text-[#252650]">Per Half Day</h3>
+              <p className="text-3xl font-bold text-[#2C97A9]">£4.50</p>
+              <p className="text-sm text-[#252650]">Voluntary contribution</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <h3 className="text-lg font-bold text-[#252650] mb-4">This contribution helps to cover:</h3>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Breakfast</span> – £1.00</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Lunch</span> – £5.00 (including preparation, serving and clearing)</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Two healthy snacks</span> – £0.60</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Tea</span> – £1.00</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Consumables</span> – £0.50 (including wipes, sun cream and other daily essentials)</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Creative and exploratory resources</span> – £0.50 (including clay, watercolours, role-play resources, natural materials and project resources)</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Enrichment activities</span> – £0.50 (including special workshops, outdoor learning experiences and additional curriculum activities)</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-2 h-2 bg-[#252650] rounded-full mt-2 flex-shrink-0"></div>
+              <p className="text-[#252650]"><span className="font-medium">Events and celebrations</span> – £0.40 (including Mother&apos;s Day, Father&apos;s Day, cultural celebrations, graduation and special events)</p>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-[#252650] leading-relaxed">
+          As we are unable to accept food from home due to allergy and safety considerations, we will always work with families to find a reasonable solution if they are unable to contribute towards meals and consumables. Please speak to a member of the management team in confidence to discuss available support options. No child will ever be denied access to their funded entitlement because a family is unable to make this contribution.
+        </p>
       </div>
 
       {/* Important Notes Section */}

@@ -88,11 +88,11 @@ export default function Home() {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Full Day Care",
-            description: "Full day childcare from 7:30am to 6:30pm",
+            name: "Blossom Room - Full Day",
+            description: "Full day childcare in the Blossom Room from 7:30am to 6:00pm",
             offers: {
               "@type": "Offer",
-              price: "75.00",
+              price: "82.00",
               priceCurrency: "GBP",
             },
           },
@@ -101,11 +101,11 @@ export default function Home() {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Morning Half Day",
-            description: "Morning session from 7:30am to 1:00pm",
+            name: "Blossom Room - Half Day",
+            description: "Half day session in the Blossom Room",
             offers: {
               "@type": "Offer",
-              price: "45.00",
+              price: "48.00",
               priceCurrency: "GBP",
             },
           },
@@ -114,11 +114,50 @@ export default function Home() {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Afternoon Half Day",
-            description: "Afternoon session from 1:00pm to 6:30pm",
+            name: "Sunshine Room - Full Day",
+            description: "Full day childcare in the Sunshine Room from 7:30am to 6:00pm",
             offers: {
               "@type": "Offer",
-              price: "45.00",
+              price: "78.00",
+              priceCurrency: "GBP",
+            },
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Sunshine Room - Half Day",
+            description: "Half day session in the Sunshine Room",
+            offers: {
+              "@type": "Offer",
+              price: "46.00",
+              priceCurrency: "GBP",
+            },
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Rainbow Room - Full Day",
+            description: "Full day childcare in the Rainbow Room from 7:30am to 6:00pm",
+            offers: {
+              "@type": "Offer",
+              price: "72.00",
+              priceCurrency: "GBP",
+            },
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Rainbow Room - Half Day",
+            description: "Half day session in the Rainbow Room",
+            offers: {
+              "@type": "Offer",
+              price: "43.00",
               priceCurrency: "GBP",
             },
           },
