@@ -18,13 +18,6 @@ const CareersPage: React.FC = () => {
 
   const jobPositions: JobPosition[] = [
     {
-      title: "Nursery Manager",
-      description:
-        "We are seeking an experienced, motivated, and passionate Nursery Manager to lead our team and oversee the day-to-day running of Spring Lane Nursery.",
-      isRemote: false,
-      isFullTime: true,
-    },
-    {
       title: "Early Years Teacher",
       description:
         "We are looking for an enthusiastic and qualified Early Years Teacher to join our team and lead the implementation of the Early Years Foundation Stage (EYFS).",

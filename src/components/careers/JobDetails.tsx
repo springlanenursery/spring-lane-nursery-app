@@ -14,63 +14,6 @@ const JobDetails: React.FC<JobDetailsProps> = ({ jobTitle, onBack }) => {
 
   // Job data for different positions
   const jobData = {
-    "Nursery Manager": {
-      description:
-        "We are seeking an experienced, motivated, and passionate Nursery Manager to lead our team and oversee the day-to-day running of Spring Lane Nursery. The successful candidate will ensure that the highest standards of care, education, compliance, and leadership are consistently maintained throughout the setting. This role requires someone who can take initiative, develop strong foundations for best practice, and help shape the nursery's ethos, values, and long-term vision as we grow.",
-      salary: "£34,000 - £42,000 per annum",
-      location: "Spring Lane Nursery, South Norwood, London",
-      type: "Full Time",
-      contract: "Permanent, Full-Time (40 hours per week)",
-      startDate: "ASAP",
-      aboutCompany:
-        "Spring Lane Nursery is a vibrant and inclusive early years setting in the heart of South Norwood, London. We are committed to delivering high-quality childcare and education to children aged 0 to 5 years. Our mission is to create a nurturing, safe, and inspiring environment where every child can thrive, explore, and develop a lifelong love for learning. We are a small, homely nursery with a total capacity of around 20 children, allowing for a warm, personal approach to care and education.",
-      keyResponsibilities: [
-        "Lead, support and manage the nursery team to deliver outstanding early years care and education",
-        "Conduct regular supervision, appraisals and team meetings",
-        "Develop and implement staff rotas, training plans, and ongoing CPD",
-        "Create a positive, collaborative, and professional working culture",
-        "Oversee the smooth running of all nursery rooms and daily routines",
-        "Ensure compliance with the EYFS, Ofsted standards, health and safety, and safeguarding policies",
-        "Complete and maintain accurate records including attendance, accidents, assessments, and audits",
-        "Prepare for and lead Ofsted inspections confidently and competently",
-        "Monitor and support children's progress through effective observation, assessment, and planning",
-        "Promote inclusive practice and ensure that individual needs are met",
-        "Work with SENCO and external professionals where necessary to support children with additional needs",
-        "Build strong relationships with parents and carers, ensuring excellent communication at all times",
-        "Handle feedback, complaints, and concerns professionally and promptly",
-        "Organise parent events, open days, and community partnerships",
-        "Manage nursery budgets, invoicing, occupancy, and fee collection",
-        "Support marketing, advertising, and enrolment of new children",
-        "Ensure all administrative and legal documents are up to date and compliant",
-      ],
-      requirements: [
-        "Level 3 or above qualification in Childcare and Education (e.g. NVQ, CACHE, or equivalent)",
-        "Experience working in a new or start-up nursery setting, with the ability to build team culture and lead development",
-        "At least 2 years' experience in a senior leadership role within an early years setting",
-        "In-depth knowledge of the EYFS, safeguarding, Ofsted requirements, and child development",
-        "Strong leadership, interpersonal, organisational, and communication skills",
-        "DBS clearance and eligibility to work in the UK",
-      ],
-      desirableRequirements: [
-        "Level 5 or above in Leadership for the Children and Young People's Workforce or similar",
-        "Designated Safeguarding Lead (DSL) training",
-        "SENCO trained or experience supporting children with special educational needs",
-        "Paediatric First Aid certificate",
-        "Experience using nursery management software (e.g. Famly, Tapestry)",
-      ],
-      whatWeOffer: [
-        "Competitive salary package (£34,000 - £42,000 depending on experience and qualifications)",
-        "Performance bonus awarded upon successful Ofsted inspection graded Good or Outstanding",
-        "28 days holiday including bank holidays (increasing with length of service)",
-        "Pension scheme",
-        "Ongoing training and professional development opportunities",
-        "Staff childcare discount",
-        "Opportunities to grow with a thriving and expanding setting",
-        "Small, homely environment allowing for meaningful relationships with staff and families",
-      ],
-      email: "info@springlanenursery.co.uk", // You may want to update this with the actual application email
-      deadline: "Open until filled",
-    },
     "Nursery Assistant": {
       description:
         "We are looking for warm, friendly and enthusiastic Nursery Assistants to join our team. You will play a vital role in supporting the children's development and wellbeing, assisting with daily routines, and creating a positive and fun environment. This is a great opportunity for someone who is passionate about working with young children and wants to grow their career in early years education.",

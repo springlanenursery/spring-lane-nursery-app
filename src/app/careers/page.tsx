@@ -5,7 +5,7 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "Join our passionate team at Spring Lane Nursery. We're hiring Nursery Managers, Early Years Teachers, Room Leaders, and Nursery Assistants. Full-time positions in Croydon.",
+    "Join our passionate team at Spring Lane Nursery. We're hiring Early Years Teachers, Room Leaders, and Nursery Assistants. Full-time positions in Croydon.",
   openGraph: {
     title: "Careers at Spring Lane Nursery | Join Our Team",
     description:
@@ -18,40 +18,6 @@ export const metadata: Metadata = {
 };
 
 export default function Careers() {
-  // JobPosting Schema - Nursery Manager
-  const nurseryManagerJobSchema = {
-    "@context": "https://schema.org",
-    "@type": "JobPosting",
-    title: "Nursery Manager",
-    description:
-      "We are seeking an experienced, motivated, and passionate Nursery Manager to lead our team and oversee the day-to-day running of Spring Lane Nursery.",
-    datePosted: "2024-01-01",
-    hiringOrganization: {
-      "@type": "EducationalOrganization",
-      name: "Spring Lane Nursery",
-      sameAs: "https://www.springlanenursery.co.uk",
-      logo: "https://www.springlanenursery.co.uk/assets/logo.png",
-    },
-    jobLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "23 Spring Lane",
-        addressLocality: "Croydon",
-        addressRegion: "Greater London",
-        postalCode: "SE25 4SP",
-        addressCountry: "GB",
-      },
-    },
-    employmentType: "FULL_TIME",
-    workHours: "Monday to Friday, 7:30am - 6:30pm",
-    jobLocationType: "ONSITE",
-    applicantLocationRequirements: {
-      "@type": "Country",
-      name: "United Kingdom",
-    },
-  };
-
   // JobPosting Schema - Early Years Teacher
   const earlyYearsTeacherJobSchema = {
     "@context": "https://schema.org",
@@ -174,13 +140,6 @@ export default function Careers() {
   return (
     <>
       {/* JSON-LD Structured Data */}
-      <Script
-        id="nursery-manager-job-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(nurseryManagerJobSchema),
-        }}
-      />
       <Script
         id="early-years-teacher-job-schema"
         type="application/ld+json"
